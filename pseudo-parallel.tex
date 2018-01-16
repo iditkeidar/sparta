@@ -1,0 +1,112 @@
+
+\begin{algorithm*}[htb]
+\begin{multicols}{2}
+\begin{algorithmic}[1]
+\For{$i=1$ to $m$} \Comment processing $m$-term query
+\State add {\sc processTerm($i$)} to job queue \label{l:par-init-job}
+%\State \TMap[i] $\leftarrow$ pointer to \DMap
+\EndFor
+\State spawn up to $m$ execution threads to run jobs from queue\label{l:start-threads}
+\State wait until \RAStop
+\State \Comment all candidate documents have been  encountered
+\State add {\sc cleaner()} to job queue %\Comment parallel with term processing
+\State wait until $done$
+\State return \DHeap \label{l:par-end}
+%
+
+\Statex 
+\Procedure{processTerm}{$i$} 
+%\Statex
+%	\State $\langle id,$ score$\rangle \leftarrow$ next entry in $i$th posting list
+%  	\If{$id \not\in \DMap$}
+%    	\State create new document object $D$
+ %       \State add $D$ to $\DMap(id)$
+%	\Else 
+ %   	\State $D \leftarrow \DMap(id)$
+%	\EndIf
+%	\State {\sc evaluate}($D$, score, $i$)
+ %   \State $UB[i] \leftarrow$ score 
+  % 	\Comment update term's upper bound \label{l:seq-update-ub}
+%\EndIf
+%\Statex 
+	\If{\RAStop\, $\wedge\, |\DMap | < \Phi $}  
+		\State \Comment \DMap\ is in shrinking phase and small
+		\If{\TMap[i]=\DMap} \label{l:hash-start}
+		\State {\sc initMap($i$)}
+  	\EndIf \EndIf \label{l:hash-end}
+    \Statex
+	\For{$j=1$ to \emph{segSize}} 
+%	\Statex \Comment evaluate documents in segment
+		\If{\emph{done}} return \EndIf
+    		\State $\langle id,$ score$\rangle \leftarrow$ next entry in $i$th posting list
+		\State $D \leftarrow$ \TMap$[i](id)$
+ 	  		\If{$D = \bot$} \Comment document missing 
+ 	  			\If{$\neg$\RAStop} \Comment hash incomplete
+		 			\State create new document object $D$
+ 					\State add $D$ to $\TMap[i](id)$
+				\Else\ continue
+				\EndIf
+    			\EndIf
+        			\State $D.score[i] \leftarrow$ score \Comment update $D$'s term $t_i$ score
+			\If{$\Sigma_{j=1}^{m} D.score[j] >  \Theta$}  
+			\State \Comment $D$ belongs in heap
+				\State {\sc update\_heap}($D$)
+			\EndIf	
+	\EndFor % $id$ is last in chunk
+	\State $UB[i] \leftarrow$ score \Comment update term's upper bound \label{l:thread-update-ub}    
+	\State add {\sc processTerm($i$)} to job queue \label{l:new-task}
+\EndProcedure
+
+%\Statex
+
+\Procedure{initMap}{$i$}	
+        			\State \Comment create cache-friendly local copy of \DMap\ %for evaluating term $i$
+        			\State \TMap[i] $\leftarrow$ new hash map
+    			\ForAll{$D \in$ \DMap\ where $D.score[i] = 0$} 
+            			\State add $D$ to \TMap[i] \label{l:hash-chash}
+            		\EndFor
+\EndProcedure
+\Statex 
+\Procedure{update\_heap}{$D$} 
+\State lock \DHeap \label{l:lock-heap}
+\If{$D\not\in$\DHeap} 
+	\ForAll{$d \in$ \DHeap}  \label{l:for-all-heap-docs}
+		\State $d$.LB $\leftarrow \Sigma_{j=1}^{m} d.score[j]$
+		\State move $d$ to correct place in heap \label{l:fix-heap}
+	\EndFor
+\State insert $D$ to \DHeap 
+\State \emph{HeapUpdateTime} $\leftarrow$ current time 
+\State  $\Theta \leftarrow$ lowest score in \DHeap
+\EndIf
+\State unlock \DHeap  \label{l:unlock-heap}
+\EndProcedure
+%
+%
+\Statex 
+\Procedure{cleaner}{} \label{l:clean-start}
+%\While{\DMap\ has more than $k$ entries}
+\If{$|\DMap | > \Phi $} 
+\State \LDMap\ $\leftarrow$ new hash map \label{l:clean-local-copy}
+%a local copy of \DMap 
+\For{every doc $D$ $\in$ \DMap} 
+\If{$UB(D) > \Theta \vee D \in$ \DHeap}
+	\State add   $D$ to \LDMap
+\EndIf
+\EndFor
+\State replace \DMap\ by \LDMap \label{l:clean-replace}
+\EndIf
+\Statex
+\State \emph{Stop} $\leftarrow \big( |\DMap| = |\DHeap| \big)$ \label{l:clean-stop-cond}
+\If{\emph{HeapUpdateTime} $ + \Delta < $ now $\vee\ $ \emph{Stop}} 
+\State \emph{done} $\leftarrow$ true
+\Else 
+\State add {\sc cleaner()} to job queue
+\EndIf
+\label{l:clean-end}
+%\EndWhile
+\EndProcedure 
+\end{algorithmic}
+\end{multicols}
+\caption{\alg\ algorithm.}
+\label{alg:sparta}
+\end{algorithm*}

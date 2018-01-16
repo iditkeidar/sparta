@@ -1,0 +1,86 @@
+
+\begin{algorithm*}[htb]
+\begin{multicols}{2}
+\begin{algorithmic}[1]
+
+\Repeat \Comment sequential phase \label{l:seq-start}
+	\State $i \leftarrow argmax_{j}(UB[j])$ 
+	\State $\langle id,$ score$\rangle \leftarrow$ next entry 
+    	in $i$th posting list
+   	\If{$id \not\in \DMap$}
+    	\State create new document object $D$
+        \State add $D$ to $\DMap(id)$
+	\Else 
+    	\State $D \leftarrow \DMap(id)$
+	\EndIf
+	\State {\sc evaluate}($D$, score, $i$)
+    \State $UB[i] \leftarrow$ score 
+    	\Comment update term's upper bound \label{l:seq-update-ub}
+\Until{$\sum_{i=1}^m UB[i] \le \Theta$} \label{l:seq-end}
+\Statex 
+\For{$i=1$ to $m$} \Comment parallel phase \label{l:par-begin}
+\State add {\sc processTerm($i$)} to job queue \label{l:par-init-job}
+\State \TMap[i] $\leftarrow$ pointer to \DMap
+\EndFor
+\State spawn up to $m$ execution threads running jobs from queue\label{l:start-threads}
+\State {\sc cleaner()} \Comment runs in parallel with execution threads
+\State return \DHeap \label{l:par-end}
+%
+\Statex 
+\Procedure{evaluate}{$D$, score, $i$} 
+   	\State $D[i] \leftarrow$ score \Comment update document's term score
+	\If{$LB(D) \le\Theta$} 
+        \State return %{\sc updateHeap}($D$) % $\Theta$
+    \EndIf
+\If{in parallel phase} lock \DHeap \EndIf \label{l:lock-heap}
+\State update \DHeap\ with $D$'s new LB %, keep top $k$ docs
+\State update $\Theta$
+\If{in parallel phase} unlock \DHeap \EndIf \label{l:unlock-heap}
+\EndProcedure
+%
+\Statex 
+\Procedure{processTerm}{$i$} 
+	\If{$|\DMap | < \Phi$ $\wedge$ \TMap[i]=\DMap} \label{l:hash-start}
+    \State \Comment cache-friendly local copy of \DMap\ for evaluating term $i$
+        	\State \TMap[i] $\leftarrow$ new hash map
+    		\ForAll{$D \in$ \DMap\ where $D[i]$ is empty} 
+            	\State add $D$ to \TMap[i] \label{l:hash-chash}
+            \EndFor
+    \EndIf \label{l:hash-end}
+    \Statex
+	\For{$j=1$ to segSize} \Comment evaluate documents in segment
+    	\State $\langle id,$ score$\rangle \leftarrow$ next entry 
+    	in $i$th posting list
+	   	\If{$id \not\in $ \TMap[i]} 
+        	\State continue 
+        \Else 
+        	\State $D \leftarrow$ \TMap$[i](id)$
+        \EndIf
+        \State lock $D$
+		\State {\sc evaluate}($D$, score, $i$)
+        \State unlock $D$ 
+	\EndFor % $id$ is last in chunk
+	\State $UB[i] \leftarrow$ score \Comment update term's upper bound \label{l:thread-update-ub}    
+	\State add {\sc processTerm($i$)} to job queue \label{l:new-task}
+\EndProcedure
+
+%
+\Statex 
+\Procedure{cleaner}{} \label{l:clean-start}
+\While{\DMap\ has more than $k$ entries}
+\State \LDMap\ $\leftarrow$ new hash map \label{l:clean-local-copy}
+%a local copy of \DMap 
+\For{every doc $D$ in \DMap} 
+\If{$UB(D) > \Theta \vee D \in$ \DHeap}
+	\State add   $D$ to \LDMap
+\EndIf
+\EndFor
+\State replace \DMap\ by \LDMap \label{l:clean-replace}
+\label{l:clean-end}
+\EndWhile
+\EndProcedure 
+\end{algorithmic}
+\end{multicols}
+\caption{\alg\ algorithm.}
+\label{alg:sparta}
+\end{algorithm*}

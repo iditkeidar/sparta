@@ -1,0 +1,470 @@
+%%% -*-BibTeX-*-
+%%% Do NOT edit. File created by BibTeX with style
+%%% ACM-Reference-Format-Journals [18-Jan-2012].
+
+\begin{thebibliography}{00}
+
+%%% ====================================================================
+%%% NOTE TO THE USER: you can override these defaults by providing
+%%% customized versions of any of these macros before the \bibliography
+%%% command.  Each of them MUST provide its own final punctuation,
+%%% except for \shownote{}, \showDOI{}, and \showURL{}.  The latter two
+%%% do not use final punctuation, in order to avoid confusing it with
+%%% the Web address.
+%%%
+%%% To suppress output of a particular field, define its macro to expand
+%%% to an empty string, or better, \unskip, like this:
+%%%
+%%% \newcommand{\showDOI}[1]{\unskip}   % LaTeX syntax
+%%%
+%%% \def \showDOI #1{\unskip}           % plain TeX syntax
+%%%
+%%% ====================================================================
+
+\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi
+\ifx \showDOI      \undefined \def \showDOI       #1{#1}\fi
+\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi
+\ifx \showISBNxiii \undefined \def \showISBNxiii  #1{\unskip}     \fi
+\ifx \showISSN     \undefined \def \showISSN      #1{\unskip}     \fi
+\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi
+\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi
+\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi
+\ifx \showURL      \undefined \def \showURL       {\relax}        \fi
+% The following commands are used for tagged output and should be
+% invisible to TeX
+\providecommand\bibfield[2]{#2}
+\providecommand\bibinfo[2]{#2}
+\providecommand\natexlab[1]{#1}
+\providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[\protect\citeauthoryear{??}{Clu}{}]%
+        {ClueWeb09}
+\bibinfo{title}{The ClueWeb09 Dataset}.
+\newblock   (\bibinfo{year}{????}).
+\newblock
+\showURL{%
+\url{https://lemurproject.org/clueweb09/}}
+
+
+\bibitem[\protect\citeauthoryear{Akbarinia, Pacitti, and Valduriez}{Akbarinia
+  et~al\mbox{.}}{2007}]%
+        {Akbarinia:2007}
+\bibfield{author}{\bibinfo{person}{Reza Akbarinia}, \bibinfo{person}{Esther
+  Pacitti}, {and} \bibinfo{person}{Patrick Valduriez}.}
+  \bibinfo{year}{2007}\natexlab{}.
+\newblock \showarticletitle{Best Position Algorithms for Top-k Queries}. In
+  \bibinfo{booktitle}{{\em Proceedings of VLDB}}. \bibinfo{publisher}{VLDB
+  Endowment}, \bibinfo{pages}{495--506}.
+\newblock
+\showISBNx{978-1-59593-649-3}
+\showURL{%
+\url{http://dl.acm.org/citation.cfm?id=1325851.1325909}}
+
+
+\bibitem[\protect\citeauthoryear{Ao, Zhang, Wu, Stones, Wang, Liu, Liu, and
+  Lin}{Ao et~al\mbox{.}}{2011}]%
+        {Ao:2011}
+\bibfield{author}{\bibinfo{person}{Naiyong Ao}, \bibinfo{person}{Fan Zhang},
+  \bibinfo{person}{Di Wu}, \bibinfo{person}{Douglas~S. Stones},
+  \bibinfo{person}{Gang Wang}, \bibinfo{person}{Xiaoguang Liu},
+  \bibinfo{person}{Jing Liu}, {and} \bibinfo{person}{Sheng Lin}.}
+  \bibinfo{year}{2011}\natexlab{}.
+\newblock \showarticletitle{Efficient Parallel Lists Intersection and Index
+  Compression Algorithms Using Graphics Processing Units}.
+\newblock \bibinfo{journal}{{\em Proc. VLDB Endow.\/}} \bibinfo{volume}{4},
+  \bibinfo{number}{8} (\bibinfo{date}{May} \bibinfo{year}{2011}),
+  \bibinfo{pages}{470--481}.
+\newblock
+\showISSN{2150-8097}
+\showDOI{%
+\url{https://doi.org/10.14778/2002974.2002975}}
+
+
+\bibitem[\protect\citeauthoryear{Arapakis, Bai, and Cambazoglu}{Arapakis
+  et~al\mbox{.}}{2014}]%
+        {Arapakis:2014:IRL:2600428.2609627}
+\bibfield{author}{\bibinfo{person}{Ioannis Arapakis}, \bibinfo{person}{Xiao
+  Bai}, {and} \bibinfo{person}{B.~Barla Cambazoglu}.}
+  \bibinfo{year}{2014}\natexlab{}.
+\newblock \showarticletitle{Impact of Response Latency on User Behavior in Web
+  Search}. In \bibinfo{booktitle}{{\em Proceedings of SIGIR}}.
+  \bibinfo{publisher}{ACM}, \bibinfo{pages}{103--112}.
+\newblock
+\showISBNx{978-1-4503-2257-7}
+
+
+\bibitem[\protect\citeauthoryear{Baeza-Yates and Ribeiro-Neto}{Baeza-Yates and
+  Ribeiro-Neto}{1999}]%
+        {Baeza-Yates:1999:MIR:553876}
+\bibfield{author}{\bibinfo{person}{Ricardo~A. Baeza-Yates} {and}
+  \bibinfo{person}{Berthier Ribeiro-Neto}.} \bibinfo{year}{1999}\natexlab{}.
+\newblock \bibinfo{booktitle}{{\em Modern Information Retrieval}}.
+\newblock \bibinfo{publisher}{Addison-Wesley Longman Publishing Co., Inc.},
+  \bibinfo{address}{Boston, MA, USA}.
+\newblock
+\showISBNx{020139829X}
+
+
+\bibitem[\protect\citeauthoryear{Bast, Majumdar, Schenkel, Theobald, and
+  Weikum}{Bast et~al\mbox{.}}{2006}]%
+        {Bast:2006}
+\bibfield{author}{\bibinfo{person}{Holger Bast}, \bibinfo{person}{Debapriyo
+  Majumdar}, \bibinfo{person}{Ralf Schenkel}, \bibinfo{person}{Martin
+  Theobald}, {and} \bibinfo{person}{Gerhard Weikum}.}
+  \bibinfo{year}{2006}\natexlab{}.
+\newblock \showarticletitle{IO-Top-k: Index-access Optimized Top-k Query
+  Processing}. In \bibinfo{booktitle}{{\em Proceedings of VLDB}}.
+  \bibinfo{publisher}{VLDB Endowment}, \bibinfo{pages}{475--486}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Bonacic, Garc\'{\i}a, Marin, Prieto-Matias,
+  and Tirado}{Bonacic et~al\mbox{.}}{2010}]%
+        {Bonacic:2010}
+\bibfield{author}{\bibinfo{person}{Carolina Bonacic}, \bibinfo{person}{Carlos
+  Garc\'{\i}a}, \bibinfo{person}{Mauricio Marin}, \bibinfo{person}{Manuel
+  Prieto-Matias}, {and} \bibinfo{person}{Francisco Tirado}.}
+  \bibinfo{year}{2010}\natexlab{}.
+\newblock \showarticletitle{Building Efficient Multi-threaded Search Nodes}. In
+  \bibinfo{booktitle}{{\em Proceedings of CIKM}}. \bibinfo{publisher}{ACM},
+  \bibinfo{pages}{1249--1258}.
+\newblock
+\showISBNx{978-1-4503-0099-5}
+
+
+\bibitem[\protect\citeauthoryear{Bortnikov, Carmel, and Golan-Gueta}{Bortnikov
+  et~al\mbox{.}}{2017}]%
+        {Bortnikov:2017}
+\bibfield{author}{\bibinfo{person}{Edward Bortnikov}, \bibinfo{person}{David
+  Carmel}, {and} \bibinfo{person}{Guy Golan-Gueta}.}
+  \bibinfo{year}{2017}\natexlab{}.
+\newblock \showarticletitle{Top-k Query Processing with Conditional Skips}. In
+  \bibinfo{booktitle}{{\em Proceedings of WWW Companion}}.
+  \bibinfo{pages}{653--661}.
+\newblock
+\showISBNx{978-1-4503-4914-7}
+
+
+\bibitem[\protect\citeauthoryear{Broder, Carmel, Herscovici, Soffer, and
+  Zien}{Broder et~al\mbox{.}}{2003}]%
+        {Broder:2003}
+\bibfield{author}{\bibinfo{person}{Andrei~Z. Broder}, \bibinfo{person}{David
+  Carmel}, \bibinfo{person}{Michael Herscovici}, \bibinfo{person}{Aya Soffer},
+  {and} \bibinfo{person}{Jason Zien}.} \bibinfo{year}{2003}\natexlab{}.
+\newblock \showarticletitle{Efficient Query Evaluation Using a Two-level
+  Retrieval Process}. In \bibinfo{booktitle}{{\em Proceedings of CIKM}}.
+  \bibinfo{publisher}{ACM}, \bibinfo{pages}{426--434}.
+\newblock
+\showISBNx{1-58113-723-0}
+
+
+\bibitem[\protect\citeauthoryear{Crane, Culpepper, Lin, Mackenzie, and
+  Trotman}{Crane et~al\mbox{.}}{2017}]%
+        {Crane:2017}
+\bibfield{author}{\bibinfo{person}{Matt Crane}, \bibinfo{person}{J.~Shane
+  Culpepper}, \bibinfo{person}{Jimmy Lin}, \bibinfo{person}{Joel Mackenzie},
+  {and} \bibinfo{person}{Andrew Trotman}.} \bibinfo{year}{2017}\natexlab{}.
+\newblock \showarticletitle{A Comparison of Document-at-a-Time and
+  Score-at-a-Time Query Evaluation}. In \bibinfo{booktitle}{{\em Proceedings of
+  the Tenth ACM International Conference on Web Search and Data Mining}} {\em
+  (\bibinfo{series}{WSDM '17})}. \bibinfo{publisher}{ACM},
+  \bibinfo{address}{New York, NY, USA}, \bibinfo{pages}{201--210}.
+\newblock
+\showISBNx{978-1-4503-4675-7}
+\showDOI{%
+\url{https://doi.org/10.1145/3018661.3018726}}
+
+
+\bibitem[\protect\citeauthoryear{Ding and Suel}{Ding and Suel}{2011}]%
+        {Ding:2011}
+\bibfield{author}{\bibinfo{person}{Shuai Ding} {and} \bibinfo{person}{Torsten
+  Suel}.} \bibinfo{year}{2011}\natexlab{}.
+\newblock \showarticletitle{Faster Top-k Document Retrieval Using Block-max
+  Indexes}. In \bibinfo{booktitle}{{\em Proceedings of SIGIR}}.
+  \bibinfo{publisher}{ACM}, \bibinfo{pages}{993--1002}.
+\newblock
+\showISBNx{978-1-4503-0757-4}
+
+
+\bibitem[\protect\citeauthoryear{Fagin, Lotem, and Naor}{Fagin
+  et~al\mbox{.}}{2001}]%
+        {Fagin:2001}
+\bibfield{author}{\bibinfo{person}{Ronald Fagin}, \bibinfo{person}{Amnon
+  Lotem}, {and} \bibinfo{person}{Moni Naor}.} \bibinfo{year}{2001}\natexlab{}.
+\newblock \showarticletitle{Optimal Aggregation Algorithms for Middleware}. In
+  \bibinfo{booktitle}{{\em Proceedings of PODS}}. \bibinfo{publisher}{ACM},
+  \bibinfo{address}{New York, NY, USA}, \bibinfo{pages}{102--113}.
+\newblock
+\showISBNx{1-58113-361-8}
+\showDOI{%
+\url{https://doi.org/10.1145/375551.375567}}
+
+
+\bibitem[\protect\citeauthoryear{Fagin, Lotem, and Naor}{Fagin
+  et~al\mbox{.}}{2003}]%
+        {Fagin:2003}
+\bibfield{author}{\bibinfo{person}{Ronald Fagin}, \bibinfo{person}{Amnon
+  Lotem}, {and} \bibinfo{person}{Moni Naor}.} \bibinfo{year}{2003}\natexlab{}.
+\newblock \showarticletitle{Optimal aggregation algorithms for middleware}.
+\newblock \bibinfo{journal}{{\em Journal of computer and system sciences\/}}
+  \bibinfo{volume}{66}, \bibinfo{number}{4} (\bibinfo{year}{2003}),
+  \bibinfo{pages}{614--656}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Gursk\'{y} and Vojt\'{a}\v{s}}{Gursk\'{y} and
+  Vojt\'{a}\v{s}}{2008}]%
+        {Gursky:2008}
+\bibfield{author}{\bibinfo{person}{Peter Gursk\'{y}} {and}
+  \bibinfo{person}{Peter Vojt\'{a}\v{s}}.} \bibinfo{year}{2008}\natexlab{}.
+\newblock \showarticletitle{Speeding Up the NRA Algorithm}. In
+  \bibinfo{booktitle}{{\em Proceedings of the 2Nd International Conference on
+  Scalable Uncertainty Management}} {\em (\bibinfo{series}{SUM '08})}.
+  \bibinfo{publisher}{Springer-Verlag}, \bibinfo{pages}{243--255}.
+\newblock
+\showISBNx{978-3-540-87992-3}
+\showDOI{%
+\url{https://doi.org/10.1007/978-3-540-87993-0_20}}
+
+
+\bibitem[\protect\citeauthoryear{Guy}{Guy}{2016}]%
+        {sigir/Guy16}
+\bibfield{author}{\bibinfo{person}{Ido Guy}.} \bibinfo{year}{2016}\natexlab{}.
+\newblock \showarticletitle{Searching by Talking: Analysis of Voice Queries on
+  Mobile Web Search}. In \bibinfo{booktitle}{{\em Proceedings of SIGIR}}.
+  \bibinfo{publisher}{ACM}, \bibinfo{pages}{35--44}.
+\newblock
+\showISBNx{978-1-4503-4069-4}
+
+
+\bibitem[\protect\citeauthoryear{Huston and Croft}{Huston and Croft}{2010}]%
+        {Huston:2010}
+\bibfield{author}{\bibinfo{person}{Samuel Huston} {and}
+  \bibinfo{person}{W.~Bruce Croft}.} \bibinfo{year}{2010}\natexlab{}.
+\newblock \showarticletitle{Evaluating Verbose Query Processing Techniques}. In
+  \bibinfo{booktitle}{{\em Proceedings of SIGIR '10}}.
+  \bibinfo{publisher}{ACM}, \bibinfo{pages}{291--298}.
+\newblock
+\showISBNx{978-1-4503-0153-4}
+\showDOI{%
+\url{https://doi.org/10.1145/1835449.1835499}}
+
+
+\bibitem[\protect\citeauthoryear{Ilyas, Beskales, and Soliman}{Ilyas
+  et~al\mbox{.}}{2008}]%
+        {ilyas2008survey}
+\bibfield{author}{\bibinfo{person}{Ihab~F Ilyas}, \bibinfo{person}{George
+  Beskales}, {and} \bibinfo{person}{Mohamed~A Soliman}.}
+  \bibinfo{year}{2008}\natexlab{}.
+\newblock \showarticletitle{A survey of top-k query processing techniques in
+  relational database systems}.
+\newblock \bibinfo{journal}{{\em ACM Computing Surveys (CSUR)\/}}
+  \bibinfo{volume}{40}, \bibinfo{number}{4} (\bibinfo{year}{2008}),
+  \bibinfo{pages}{11}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Jeon, Kim, Hwang, He, Elnikety, Cox, and
+  Rixner}{Jeon et~al\mbox{.}}{2014}]%
+        {Jeon:2014}
+\bibfield{author}{\bibinfo{person}{Myeongjae Jeon}, \bibinfo{person}{Saehoon
+  Kim}, \bibinfo{person}{Seung-won Hwang}, \bibinfo{person}{Yuxiong He},
+  \bibinfo{person}{Sameh Elnikety}, \bibinfo{person}{Alan~L. Cox}, {and}
+  \bibinfo{person}{Scott Rixner}.} \bibinfo{year}{2014}\natexlab{}.
+\newblock \showarticletitle{Predictive Parallelization: Taming Tail Latencies
+  in Web Search}. In \bibinfo{booktitle}{{\em Proceedings of SIGIR}}.
+  \bibinfo{publisher}{ACM}, \bibinfo{pages}{253--262}.
+\newblock
+\showISBNx{978-1-4503-2257-7}
+\showDOI{%
+\url{https://doi.org/10.1145/2600428.2609572}}
+
+
+\bibitem[\protect\citeauthoryear{Lin and Trotman}{Lin and Trotman}{2015}]%
+        {Lin:2015}
+\bibfield{author}{\bibinfo{person}{Jimmy Lin} {and} \bibinfo{person}{Andrew
+  Trotman}.} \bibinfo{year}{2015}\natexlab{}.
+\newblock \showarticletitle{Anytime Ranking for Impact-Ordered Indexes}. In
+  \bibinfo{booktitle}{{\em Proceedings ICTIR}}. \bibinfo{publisher}{ACM},
+  \bibinfo{pages}{301--304}.
+\newblock
+\showISBNx{978-1-4503-3833-2}
+
+
+\bibitem[\protect\citeauthoryear{Mamoulis, Yiu, Cheng, and Cheung}{Mamoulis
+  et~al\mbox{.}}{2007}]%
+        {Mamoulis:2007}
+\bibfield{author}{\bibinfo{person}{Nikos Mamoulis}, \bibinfo{person}{Man~Lung
+  Yiu}, \bibinfo{person}{Kit~Hung Cheng}, {and} \bibinfo{person}{David~W.
+  Cheung}.} \bibinfo{year}{2007}\natexlab{}.
+\newblock \showarticletitle{Efficient Top-k Aggregation of Ranked Inputs}.
+\newblock \bibinfo{journal}{{\em ACM Trans. Database Syst.\/}}
+  \bibinfo{volume}{32}, \bibinfo{number}{3}, Article \bibinfo{articleno}{19}
+  (\bibinfo{date}{Aug.} \bibinfo{year}{2007}).
+\newblock
+\showISSN{0362-5915}
+\showDOI{%
+\url{https://doi.org/10.1145/1272743.1272749}}
+
+
+\bibitem[\protect\citeauthoryear{Rojas, Gil-Costa, and Marin}{Rojas
+  et~al\mbox{.}}{2013a}]%
+        {rojas2013distributing}
+\bibfield{author}{\bibinfo{person}{Oscar Rojas}, \bibinfo{person}{Veronica
+  Gil-Costa}, {and} \bibinfo{person}{Mauricio Marin}.}
+  \bibinfo{year}{2013}\natexlab{a}.
+\newblock \showarticletitle{Distributing efficiently the Block-Max WAND
+  algorithm}.
+\newblock \bibinfo{journal}{{\em Procedia Computer Science\/}}
+  \bibinfo{volume}{18} (\bibinfo{year}{2013}), \bibinfo{pages}{120--129}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Rojas, Gil-Costa, and Marin}{Rojas
+  et~al\mbox{.}}{2013b}]%
+        {rojas2013efficient}
+\bibfield{author}{\bibinfo{person}{Oscar Rojas}, \bibinfo{person}{Veronica
+  Gil-Costa}, {and} \bibinfo{person}{Mauricio Marin}.}
+  \bibinfo{year}{2013}\natexlab{b}.
+\newblock \showarticletitle{Efficient parallel block-max WAND algorithm}. In
+  \bibinfo{booktitle}{{\em European Conference on Parallel Processing}}.
+  Springer, \bibinfo{pages}{394--405}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Spink, Wolfram, Jansen, and Saracevic}{Spink
+  et~al\mbox{.}}{2001}]%
+        {Spink:2001:SWP:362968.362979}
+\bibfield{author}{\bibinfo{person}{Amanda Spink}, \bibinfo{person}{Dietmar
+  Wolfram}, \bibinfo{person}{Major B.~J. Jansen}, {and} \bibinfo{person}{Tefko
+  Saracevic}.} \bibinfo{year}{2001}\natexlab{}.
+\newblock \showarticletitle{Searching the Web: The Public and Their Queries}.
+\newblock \bibinfo{journal}{{\em J. Am. Soc. Inf. Sci. Technol.\/}}
+  \bibinfo{volume}{52}, \bibinfo{number}{3} (\bibinfo{date}{Feb.}
+  \bibinfo{year}{2001}), \bibinfo{pages}{226--234}.
+\newblock
+\showISSN{1532-2882}
+
+
+\bibitem[\protect\citeauthoryear{Strohman and Croft}{Strohman and
+  Croft}{2007}]%
+        {Strohman:2007}
+\bibfield{author}{\bibinfo{person}{Trevor Strohman} {and}
+  \bibinfo{person}{W.~Bruce Croft}.} \bibinfo{year}{2007}\natexlab{}.
+\newblock \showarticletitle{Efficient Document Retrieval in Main Memory}. In
+  \bibinfo{booktitle}{{\em Proceedings of SIGIR}}. \bibinfo{publisher}{ACM},
+  \bibinfo{pages}{175--182}.
+\newblock
+\showISBNx{978-1-59593-597-7}
+
+
+\bibitem[\protect\citeauthoryear{Strohman, Turtle, and Croft}{Strohman
+  et~al\mbox{.}}{2005}]%
+        {Strohman:2005}
+\bibfield{author}{\bibinfo{person}{Trevor Strohman}, \bibinfo{person}{Howard
+  Turtle}, {and} \bibinfo{person}{W.~Bruce Croft}.}
+  \bibinfo{year}{2005}\natexlab{}.
+\newblock \showarticletitle{Optimization Strategies for Complex Queries}. In
+  \bibinfo{booktitle}{{\em Proceedings of SIGIR}}. \bibinfo{publisher}{ACM},
+  \bibinfo{pages}{219--225}.
+\newblock
+\showISBNx{1-59593-034-5}
+
+
+\bibitem[\protect\citeauthoryear{Tatikonda, Cambazoglu, and
+  Junqueira}{Tatikonda et~al\mbox{.}}{2011}]%
+        {Tatikonda:2011}
+\bibfield{author}{\bibinfo{person}{Shirish Tatikonda},
+  \bibinfo{person}{B.~Barla Cambazoglu}, {and} \bibinfo{person}{Flavio~P.
+  Junqueira}.} \bibinfo{year}{2011}\natexlab{}.
+\newblock \showarticletitle{Posting List Intersection on Multicore
+  Architectures}. In \bibinfo{booktitle}{{\em Proceedings of SIGIR}}.
+  \bibinfo{publisher}{ACM}, \bibinfo{pages}{963--972}.
+\newblock
+\showISBNx{978-1-4503-0757-4}
+
+
+\bibitem[\protect\citeauthoryear{Theobald, Bast, Majumdar, Schenkel, and
+  Weikum}{Theobald et~al\mbox{.}}{2008}]%
+        {Theobald:2008}
+\bibfield{author}{\bibinfo{person}{Martin Theobald}, \bibinfo{person}{Holger
+  Bast}, \bibinfo{person}{Debapriyo Majumdar}, \bibinfo{person}{Ralf Schenkel},
+  {and} \bibinfo{person}{Gerhard Weikum}.} \bibinfo{year}{2008}\natexlab{}.
+\newblock \showarticletitle{TopX: Efficient and Versatile Top-k Query
+  Processing for Semistructured Data}.
+\newblock \bibinfo{journal}{{\em The VLDB Journal\/}} \bibinfo{volume}{17},
+  \bibinfo{number}{1} (\bibinfo{date}{Jan.} \bibinfo{year}{2008}),
+  \bibinfo{pages}{81--115}.
+\newblock
+\showISSN{1066-8888}
+\showDOI{%
+\url{https://doi.org/10.1007/s00778-007-0072-z}}
+
+
+\bibitem[\protect\citeauthoryear{Theobald, Weikum, and Schenkel}{Theobald
+  et~al\mbox{.}}{2004}]%
+        {Theobald:2004}
+\bibfield{author}{\bibinfo{person}{Martin Theobald}, \bibinfo{person}{Gerhard
+  Weikum}, {and} \bibinfo{person}{Ralf Schenkel}.}
+  \bibinfo{year}{2004}\natexlab{}.
+\newblock \showarticletitle{Top-k Query Evaluation with Probabilistic
+  Guarantees}. In \bibinfo{booktitle}{{\em Proceedings of VLDB}} {\em
+  (\bibinfo{series}{VLDB '04})}. \bibinfo{publisher}{VLDB Endowment},
+  \bibinfo{pages}{648--659}.
+\newblock
+\showISBNx{0-12-088469-0}
+\showURL{%
+\url{http://dl.acm.org/citation.cfm?id=1316689.1316746}}
+
+
+\bibitem[\protect\citeauthoryear{Turtle and Flood}{Turtle and Flood}{1995}]%
+        {Turtle:1995}
+\bibfield{author}{\bibinfo{person}{Howard Turtle} {and} \bibinfo{person}{James
+  Flood}.} \bibinfo{year}{1995}\natexlab{}.
+\newblock \showarticletitle{Query Evaluation: Strategies and Optimizations}.
+\newblock \bibinfo{journal}{{\em Inf. Process. Manage.\/}}
+  \bibinfo{volume}{31}, \bibinfo{number}{6} (\bibinfo{date}{Nov.}
+  \bibinfo{year}{1995}), \bibinfo{pages}{831--850}.
+\newblock
+\showISSN{0306-4573}
+
+
+\bibitem[\protect\citeauthoryear{Wang, Lin, and Metzler}{Wang
+  et~al\mbox{.}}{2011}]%
+        {Wang:2011}
+\bibfield{author}{\bibinfo{person}{Lidan Wang}, \bibinfo{person}{Jimmy Lin},
+  {and} \bibinfo{person}{Donald Metzler}.} \bibinfo{year}{2011}\natexlab{}.
+\newblock \showarticletitle{A Cascade Ranking Model for Efficient Ranked
+  Retrieval}. In \bibinfo{booktitle}{{\em Proceedings of SIGIR}}.
+  \bibinfo{publisher}{ACM}, \bibinfo{pages}{105--114}.
+\newblock
+\showISBNx{978-1-4503-0757-4}
+
+
+\bibitem[\protect\citeauthoryear{Yuan, Sun, Luo, Lian, and Chen}{Yuan
+  et~al\mbox{.}}{2012}]%
+        {yuan:2012}
+\bibfield{author}{\bibinfo{person}{Jing Yuan}, \bibinfo{person}{Guangzhong
+  Sun}, \bibinfo{person}{Tao Luo}, \bibinfo{person}{Defu Lian}, {and}
+  \bibinfo{person}{Guoliang Chen}.} \bibinfo{year}{2012}\natexlab{}.
+\newblock \showarticletitle{Efficient processing of top-k queries: selective
+  NRA algorithms}.
+\newblock \bibinfo{journal}{{\em Journal of Intelligent Information Systems\/}}
+  \bibinfo{volume}{39}, \bibinfo{number}{3} (\bibinfo{year}{2012}),
+  \bibinfo{pages}{687--710}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Zobel and Moffat}{Zobel and Moffat}{2006}]%
+        {Zobel:2006}
+\bibfield{author}{\bibinfo{person}{Justin Zobel} {and}
+  \bibinfo{person}{Alistair Moffat}.} \bibinfo{year}{2006}\natexlab{}.
+\newblock \showarticletitle{Inverted Files for Text Search Engines}.
+\newblock \bibinfo{journal}{{\em ACM Comput. Surv.\/}} \bibinfo{volume}{38},
+  \bibinfo{number}{2}, Article \bibinfo{articleno}{6} (\bibinfo{date}{July}
+  \bibinfo{year}{2006}).
+\newblock
+\showISSN{0360-0300}
+
+
+\end{thebibliography}

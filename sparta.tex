@@ -1,0 +1,82 @@
+\documentclass[sigconf]{acmart}
+%\usepackage{balance}  % for  \balance command ON LAST PAGE  (only there!)
+\usepackage{color}
+\usepackage{subcaption}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{url}
+\usepackage{multicol}
+\usepackage{booktabs} % For formal tables
+
+\setcopyright{rightsretained}
+
+\acmConference[Submitted to SIGIR '18]{SIGIR}{2018}{} 
+\acmYear{2018}
+
+
+\begin{document}
+
+\newcommand{\alg}{Sparta}  
+\newcommand{\inred}[1]{{\color{red}{#1}}}
+\newcommand{\inblue}[1]{{\color{blue}{#1}}}
+\newcommand{\remove}[1]{}
+
+% ****************** TITLE ****************************************
+
+\title{Fast Parallel Top-K Retrieval of Verbose Queries}
+
+
+\author{ }
+
+% Gali Sheffi\\
+%        \affaddr{Yahoo! Research}\\
+%        \email{gsheffi@yahoo-inc.com}
+% Dmitry Basin\\
+%        \affaddr{Yahoo! Research}\\
+%        \email{dbasin@yahoo-inc.com}
+% Edward Bortnikov\\
+%        \affaddr{Yahoo! Research}\\
+%        \email{ebortnik@yahoo-inc.com}\\
+% David Carmel\\
+%        \affaddr{Yahoo! Research}\\
+%        \email{dcarmel@yahoo-inc.com}
+% Idit Keidar\\
+%        \affaddr{Technion and Yahoo! Research}\\
+%       \email{idish@yahoo-inc.com}
+
+
+
+\begin{abstract}
+Top-k document retrieval is emerging as a performance bottleneck in query processing as verbose queries are becoming 
+mainstream, while state-of-the-art algorithms fail to process such long queries in real time. Accelerating the top-k evaluation 
+via approximate result computation and intra-query parallelism have produced limited results thus far. 
+
+We present \alg\ -- a practical parallel algorithm that exploits multi-core hardware to run approximate top-k retrieval 
+within interactive latency bounds. Its design is inspired by the seminal Threshold Algorithm for optimal aggregation in databases 
+by Fagin et al. \alg\ scales through lightweight coordination and context sharing among concurrent threads. The resulting algorithm 
+is highly scalable, 
+both in the number of query terms and in the searched index size. For example, when applied to the 50M-document public ClueWeb09B 
+dataset, \alg\  processes $12$-term queries $3.6$ times faster than the state-of-the-art. On a tenfold  bigger index, 
+\alg\ continues to process queries at the same speed, whereas today's best-in-class algorithm is more than 60 times slower. 
+\alg\ further significantly improves throughput on production-motivated query mixes. 
+\end{abstract}
+\keywords{Top-k search, web search, parallel algorithms}
+
+\maketitle
+\input{macros}
+
+\input{intro}
+\input{Background}
+\input{algorithm}
+\input{evaluation}
+\input{related}
+\input{conclusions}
+
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{references}  
+
+
+\end{document}
