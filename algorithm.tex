@@ -56,12 +56,12 @@ The stopping conditions are evaluated by a \emph{cleaner} task,
 which also checks the heap's latest update time \HeapUpdateTime\ and 
 sets the \Done\ flag once the algorithm can stop.
 
-\begin{figure*}[tbh]
+\begin{figure}[tbh]
 \centering
-\includegraphics[width=.8\linewidth]{figures/localData}
+\includegraphics[width=\columnwidth]{figures/localData}
 \caption{\alg\/ data structures. The \DMap\ keeps track of partially scored documents; \LDMap\ and \TMap\ are local partial copies of \DMap.}
 \label{fig:sparta_ds}
-\end{figure*}
+\end{figure}
 
 In addition, to reduce the synchronization overhead and improve cache locality, \alg\ uses 
 two local data structures that hold partial copies of the global \DMap, namely the \TMap\ array with a (local) hash map per term, 
