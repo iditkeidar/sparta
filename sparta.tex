@@ -12,7 +12,7 @@
 
 \setcopyright{rightsretained}
 
-\acmConference[Submitted to SIGIR '18]{SIGIR}{2018}{} 
+\acmConference{Submitted to SIGIR}{2018}{} 
 \acmYear{2018}
 
 
@@ -50,19 +50,20 @@
 
 \begin{abstract}
 Top-k document retrieval is emerging as a performance bottleneck in query processing as verbose queries are becoming 
-mainstream, while state-of-the-art algorithms fail to process such long queries in real time. Accelerating the top-k evaluation 
-via approximate result computation and intra-query parallelism have produced limited results thus far. 
+mainstream, while state-of-the-art algorithms fail to process such long queries in real time. To date, attempts to
+accelerate top-k evaluation 
+via approximate result computation and intra-query parallelism have produced limited results. 
 
 We present \alg\ -- a practical parallel algorithm that exploits multi-core hardware to run approximate top-k retrieval 
-within interactive latency bounds. Its design is inspired by the seminal Threshold Algorithm for optimal aggregation in databases 
-by Fagin et al. \alg\ scales through lightweight coordination and context sharing among concurrent threads. The resulting algorithm 
+within interactive latency bounds. Its design is inspired by  Fagin et al.'s seminal Threshold Algorithm for  aggregation in databases. 
+\alg\ scales through lightweight coordination and context sharing among concurrent threads. The resulting algorithm 
 is highly scalable, 
 both in the number of query terms and in the searched index size. For example, when applied to the 50M-document public ClueWeb09B 
 dataset, \alg\  processes $12$-term queries $3.6$ times faster than the state-of-the-art. On a tenfold  bigger index, 
 \alg\ continues to process queries at the same speed, whereas today's best-in-class algorithm is more than 60 times slower. 
 \alg\ further significantly improves throughput on production-motivated query mixes. 
 \end{abstract}
-\keywords{Top-k search, web search, parallel algorithms}
+\keywords{Top-k search, web search, performance, parallel algorithms}
 
 \maketitle
 \input{macros}

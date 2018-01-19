@@ -1,5 +1,6 @@
 
 \begin{algorithm*}[htb]
+\small
 \begin{multicols}{2}
 \begin{algorithmic}[1]
 \For{$i=1$ to $m$} \Comment processing $m$-term query
@@ -8,7 +9,8 @@
 \EndFor
 \State spawn up to $m$ execution threads to run jobs from queue\label{l:start-threads}
 \State wait until \RAStop
-\State \Comment all candidate documents have been  encountered
+%\State	
+	\Comment all candidate documents are in \DMap
 \State add {\sc cleaner()} to job queue %\Comment parallel with term processing
 \State wait until $done$
 \State return \DHeap \label{l:par-end}
@@ -30,11 +32,11 @@
 %\EndIf
 %\Statex 
 	\If{\RAStop\, $\wedge\, |\DMap | < \Phi $}  
-		\State \Comment \DMap\ is in shrinking phase and small
+		\Comment \DMap\ is shrinking and small
 		\If{\TMap[i]=\DMap} \label{l:hash-start}
 		\State {\sc initMap($i$)}
   	\EndIf \EndIf \label{l:hash-end}
-    \Statex
+%    \Statex
 	\For{$j=1$ to \emph{segSize}} 
 %	\Statex \Comment evaluate documents in segment
 		\If{\emph{done}} return \EndIf
@@ -49,7 +51,7 @@
     			\EndIf
         			\State $D.score[i] \leftarrow$ score \Comment update $D$'s term $t_i$ score
 			\If{$\Sigma_{j=1}^{m} D.score[j] >  \Theta$}  
-			\State \Comment $D$ belongs in heap
+			\Comment $D$ belongs in heap
 				\State {\sc update\_heap}($D$)
 			\EndIf	
 	\EndFor % $id$ is last in chunk
@@ -60,7 +62,7 @@
 %\Statex
 
 \Procedure{initMap}{$i$}	
-        			\State \Comment create cache-friendly local copy of \DMap\ %for evaluating term $i$
+        			\Comment create cache-friendly local copy of \DMap\ %for evaluating term $i$
         			\State \TMap[i] $\leftarrow$ new hash map
     			\ForAll{$D \in$ \DMap\ where $D.score[i] = 0$} 
             			\State add $D$ to \TMap[i] \label{l:hash-chash}
@@ -95,12 +97,11 @@
 \EndFor
 \State replace \DMap\ by \LDMap \label{l:clean-replace}
 \EndIf
-\Statex
-\State \emph{Stop} $\leftarrow \big( |\DMap| = |\DHeap| \big)$ \label{l:clean-stop-cond}
-\If{\emph{HeapUpdateTime} $ + \Delta < $ now $\vee\ $ \emph{Stop}} 
+%\Statex
+%\State \emph{Stop} $\leftarrow \big( |\DMap| = |\DHeap| \big)$ 
+\If{\emph{HeapUpdateTime} $ + \Delta < $ now $\vee\ \big( |\DMap| = |\DHeap| \big)$ } \label{l:clean-stop-cond}
 \State \emph{done} $\leftarrow$ true
-\Else 
-\State add {\sc cleaner()} to job queue
+\Else\ add {\sc cleaner()} to job queue
 \EndIf
 \label{l:clean-end}
 %\EndWhile
