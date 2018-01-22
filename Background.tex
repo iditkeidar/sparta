@@ -58,7 +58,7 @@ contiguous chunks of the lists are infrequently fetched from disk into memory.
 
 In order to avoid scoring a huge number of documents per query, state-of-the-art algorithms reduce the number of evaluated documents while identifying the top scored results. 
 {\em MaxScore}~\cite{Strohman:2005,Turtle:1995}, {\em WAND}~\cite{Broder:2003}, and {\em Block-Max WAND (BMW)}~\cite{Ding:2011} are popular examples of such algorithms, widely used in production systems. 
-They  simultaneoulsy scan all relevant posting lists in order of document id, evaluating the full score of each document before moving to the next one. They track the top-k documents among those scored so far (typically, in a heap). A variable $\Theta$ -- called the \emph{threshold} -- holds the score of the $k$-th (lowest-ranked) document in the heap;  any document whose  score is below this threshold is not a candidate for the final top-k list.
+They  simultaneoulsy scan all relevant posting lists in order of document id, evaluating the full score of each document before moving to the next one. They track the top-k documents among those scored so far (typically, in a heap). A variable $\Theta$ -- called the \emph{threshold} -- holds the score of the $k$-th (lowest-ranked) document in the heap;  any document whose  score is below this threshold is not a candidate for the final top-k list. As long as the heap contains fewer than $k$ documents, $\Theta$ remains zero.
 % and can be safely pruned.
 % For DAAT-based methods, all posting lists must be sorted by the same unique key, typically by increasing document id. 
 
@@ -80,7 +80,7 @@ an example of the posting list traversal and corresponding update of UB. Here, $
 \begin{tabular}{|l l|}
 \hline
 $\DHeap$   	& current top-k documents \\
-$\Theta$  & threshold -- minimal score in $\DHeap$ \\
+$\Theta$  & threshold -- $k^{th}$ score in $\DHeap$ \\
 $UB[m]$  & upper bounds on non-traversed postings\\ 
 \RAStop  & UB stopping condition, $\sum_{i=1}^m UB[i] \le \Theta$ \\ 
 \hline

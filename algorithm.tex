@@ -76,10 +76,7 @@ The hash map
 NRA's first stopping condition is checked by the macro \RAStop, and the 
 second stopping condition is checked as follows: 
 \begin{equation} \label{eq:stop2}
-\begin{split}
-\forall D\in \DMap \setminus \DHeap : UB(D) \le \Theta, \enskip where \\
-UB(D) = \sum_{i=1}^m \big(D.score[i] > 0 \enskip ? \enskip D.score[i] : UB[i] \big)
-\end{split}
+\forall D\in \DMap \setminus \DHeap : UB(D) \le \Theta
 \end{equation}
 The stopping conditions are evaluated by a \emph{cleaner} task,
 which also checks the heap's latest update time \HeapUpdateTime\ and 

@@ -72,13 +72,18 @@
 \Procedure{update\_heap}{$D$} 
 \State lock \DHeap \label{l:lock-heap}
 \If{$D\not\in$\DHeap} 
+	\State insert $D$ to \DHeap
 	\ForAll{$d \in$ \DHeap}  \label{l:for-all-heap-docs}
 		\State $d$.LB $\leftarrow \Sigma_{j=1}^{m} d.score[j]$
 		\State move $d$ to correct place in heap \label{l:fix-heap}
 	\EndFor
-\State insert $D$ to \DHeap 
-\State \emph{HeapUpdateTime} $\leftarrow$ current time 
-\State  $\Theta \leftarrow$ lowest score in \DHeap
+	\If{$|\DHeap | > k $} 
+		\State remove doc with the lowest score from \DHeap
+	\EndIf
+	\If{$|\DHeap | = k $}
+		\State  $\Theta \leftarrow$ lowest score in \DHeap
+	\EndIf
+	\State \emph{HeapUpdateTime} $\leftarrow$ current time 
 \EndIf
 \State unlock \DHeap  \label{l:unlock-heap}
 \EndProcedure
