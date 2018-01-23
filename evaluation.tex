@@ -119,7 +119,7 @@ $f \geq 1$, which multiplies $\Theta$ to obtain a higher threshold for document 
 
 \subsubsection{Parallel TA variants}
 
-\sNRA\ is a shared-nothing parallelization of NRA, where the index is partitioned (sharded) by document id. 
+\sNRA\ is a shared-nothing parallelization of NRA, where the index is partitioned to $12$ shards by document id. 
 Each thread finds the top-k documents in its shard by running NRA independently with thread-local data structures. 
 When all threads complete, their lists are merged and the global top-k documents are kept.  
 \inred{Since \sNRA's performance is poor even for the small dataset, we didn't experiment with it on the large one.} 
@@ -267,7 +267,7 @@ Its  $95\%$ latency is below $500$ ms.
 	\caption{Average latency, \cwten}
     \end{subfigure}  
 \end{tabular}
-\caption{Top-k ($k=1000$) query latency scaling with the number of query terms, for different instances of \alg, \pRA, and \pBMW. 
+\caption{Top-k ($k=1000$) query latency scaling with the number of query terms. 
 The intra-query parallelism is equal to the number of terms in all algorithms. }
 \label{fig:terms-scaling}
 \end{figure*}
