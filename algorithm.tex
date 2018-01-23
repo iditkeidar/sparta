@@ -213,8 +213,8 @@ exact version ($\Delta = \infty$) is safe, and returns the top-k results.
 In terms of performance, NRA was shown to be \emph{instance-optimal} when  random access is impossible~\cite{Fagin:2001}, 
 namely, its number of accesses to posting list entries is asymptotically close the optimum for every problem instance.  
 This property holds for pNRA as long as the rates in which different threads access different posting lists are within constant multiples of each other~\cite{Fagin:2001}, because in this case a thread that ``runs ahead'' without knowing it should stop only accesses a constant factor more entries than the algorithm needs to, which the asymptotic
-analysis ignores. \alg\ differs from pNRA in delaying updates to UB until the end of the segment, 
-which may further delay stopping until the thread accesses \emph{segSize} posting list entries. Since \emph{segSize} is constant, \alg\ is asymptotically
+analysis ignores. \alg\ differs from pNRA in deferring updates to UB until the end of the segment, 
+which may further delay stopping for \emph{segSize} additional posting list accesses. Since \emph{segSize} is constant, \alg\ is asymptotically
 instance-optimal under the same assumptions as pNRA.
 
 
