@@ -67,9 +67,9 @@ kept entirely in RAM. We therefore base our algorithm on  NRA.
 Transforming NRA into an efficient concurrent algorithm is challenging because coordination around 
 shared state can become a major bottleneck unless carefully designed. On the one hand,
 sharing state among threads is essential in order to benefit from TA's early stopping feature.
-Indeed, a shared-nothing (sharded) parallelization of NRA perfroms \inred{significantly} 
+Indeed, a shared-nothing (partitioned) parallelization of NRA performs two times 
 worse than a single-threaded implementation. On the other hand, 
-a na\"ive attempt to parallelize NRA using shared memory also  results in 
+a na\"ive attempt to parallelize NRA using shared memory also results in 
 worse performance than the sequential algorithm. \alg\ judiciously shares 
 information among threads while significantly reducing the synchronization 
 overhead and memory overlap among them, 
