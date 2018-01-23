@@ -65,13 +65,16 @@ kept entirely in RAM. We therefore base our algorithm on  NRA.
 
 
 Transforming NRA into an efficient concurrent algorithm is challenging because coordination around 
-shared state can become a major bottleneck unless carefully designed. Indeed, 
-a na\"ive attempt to parallelize NRA on a shared-memory multi-core architecture  
-performs even worse than the sequential algorithm. \alg\ 
-%is inspired by NRA, but 
-significantly reduces the synchronization 
-overhead and memory overlap among executing threads, which results in efficient use 
-of hardware resources, leading to major performance gains. 
+shared state can become a major bottleneck unless carefully designed. On the one hand,
+sharing state among threads is essential in order to benefit from TA's early stopping feature.
+Indeed, a shared-nothing (sharded) parallelization of NRA perfroms \inred{significantly} 
+worse than a single-threaded implementation. On the other hand, 
+a na\"ive attempt to parallelize NRA using shared memory also  results in 
+worse performance than the sequential algorithm. \alg\ judiciously shares 
+information among threads while significantly reducing the synchronization 
+overhead and memory overlap among them, 
+%which results in efficient use of hardware resources, 
+leading to major performance gains. 
 
 Our results show that \alg\ scales well with both query length and corpus size.
 E.g., on the 50M-document TREC ClueWeb09B dataset~\cite{ClueWeb09}, %\footnote{\url{https://lemurproject.org/clueweb09}}, 
@@ -88,7 +91,7 @@ pBMW's processing time grows linearly with the index size.
 Summing up, we present a practical scalable parallel algorithm that significantly improves the state-of-the-art latency  of long query processing
 on large search indices.
 The remainder of this paper is organized as follows. Section~\ref{sec:problem} defines the top-k retrieval problem and associated metrics. 
-Section~\ref{sec:background} gives background on RA and NRA. 
+Section~\ref{sec:background} gives background on existing algorithms. 
 Section~\ref{sec:alg} presents \alg, and Section~\ref{sec:eval}  evaluates it.
 Finally, 
 Section~\ref{sec:related} discusses related work and Section~\ref{sec:conclusions} concludes the paper.

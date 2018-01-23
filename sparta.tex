@@ -1,4 +1,5 @@
-\documentclass[sigconf]{acmart}
+\documentclass[sigconf,anonymous]{acmart}
+\settopmatter{printfolios=true,printccs=false,printacmref=false}
 %\usepackage{balance}  % for  \balance command ON LAST PAGE  (only there!)
 \usepackage{color}
 \usepackage{subcaption}
@@ -10,7 +11,8 @@
 \usepackage{multicol}
 \usepackage{booktabs} % For formal tables
 
-\setcopyright{rightsretained}
+\setcopyright{none}
+
 
 \acmConference{Submitted to SIGIR}{2018}{} 
 \acmYear{2018}
@@ -61,7 +63,7 @@ is highly scalable,
 both in the number of query terms and in the searched index size. For example, when applied to the 50M-document public ClueWeb09B 
 dataset, \alg\  processes $12$-term queries $3.6$ times faster than the state-of-the-art. On a tenfold  bigger index, 
 \alg\ continues to process queries at the same speed, whereas today's best-in-class algorithm is more than 60 times slower. 
-\alg\ further significantly improves throughput on production-motivated query mixes. 
+\alg\ further significantly improves throughput.% on production-motivated query mixes. 
 \end{abstract}
 \keywords{Top-k search, web search, performance, parallel algorithms}
 
