@@ -4,14 +4,14 @@
 \alg\/ is a parallel algorithm that applies the NRA design principles to shared-memory multiprocessor hardware platforms. 
 Like our implementation of RA and NRA described above, 
 it can be configured to provide approximate results by stopping after the heap does not change for some $\Delta$ time. 
-\remove{
-Section~\ref{sssec:ds} describes the algorithm's data
+
+Section~\ref{ssec:ds} describes the algorithm's data
 structures. Section~\ref{sssec:tasks} explains how we divide the work involved in query processing among threads. Section~\ref{sec:synch} describes synchronization around the shared data structures.
-%Finally, Section~\ref{ssec:unsafe} describes the early-stopping (unsafe) version of \alg, which trades latency for recall. 
-}
+Finally, Section~\ref{ssec:analysis} discusses the properties of our algorithm. 
+
 
 \subsection{\alg\ Data Structures}
-\label{sssec:ds}
+\label{ssec:ds}
 
 \begin{table}[htb]
 \centering
@@ -63,8 +63,8 @@ name & value & description\\
 
 }
 
-Table~\ref{alg:sparta-ds} defines the data structures used by \alg.
-%and Figure~\ref{fig:sparta_ds} illustrates them. 
+Table~\ref{alg:sparta-ds} defines the data structures used by \alg\
+and Figure~\ref{fig:sparta_ds} illustrates them. 
 As in NRA, the algorithm maintains the current top-k results in a heap, \DHeap, and its lowest value in $\Theta$. It keeps $m$ pointers to the next elements to traverse in all posting lists (not listed in Table~\ref{alg:sparta-ds})
 and an array $UB$ of upper bounds on non-traversed term scores. 
 $UB$ is used for computing the documents' upper bounds 
@@ -82,14 +82,14 @@ The stopping conditions are evaluated by a \emph{cleaner} task,
 which also checks the heap's latest update time \HeapUpdateTime\ and 
 sets the \Done\ flag once the algorithm can stop.
 
-\remove{
+
 \begin{figure}[tbh]
 \centering
 \includegraphics[width=\columnwidth]{figures/localData}
 \caption{\alg\/ data structures. The \DMap\ keeps track of partially scored documents; \LDMap\ and \TMap\ are local partial copies of \DMap.}
 \label{fig:sparta_ds}
 \end{figure}
-}
+
 
 In addition, to reduce the synchronization overhead and improve cache locality, \alg\ uses 
 two local data structures that hold partial copies of the global \DMap, namely the \TMap\ array with a (local) hash map per term, 
@@ -206,6 +206,7 @@ Note that since every posting list is accessed by a single worker at any given t
 %We show in the next section that by using \TMap s, we expedite \alg's query processing latency by up to $35\%$.
 
 \subsection{Analysis}
+\label{ssec:analysis}
 
 \alg\ accesses posting lists in the same manner as NRA does, and stops only when NRA's stopping conditions hold. Thus, like NRA, its 
 exact version ($\Delta = \infty$) is safe, and returns the top-k results. 

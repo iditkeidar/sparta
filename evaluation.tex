@@ -8,11 +8,10 @@ algorithms, for completeness, we also experiment with their exact counterparts.
 %
 % We study all these algorithms in both exact and approximate variants -- the latter over a spectrum of heuristic parameters that strike different performance-vs-recall tradeoffs.  
 
-\remove{
 In what follows, Section~\ref{ssec:setup} describes the experiment setup, 
 Section~\ref{ssec:implementation} explains how the algorithms are 
 implemented, and Section~\ref{ssec:results} presents our results.
-} 
+
 
 \subsection{Experiment Setup}
 \label{ssec:setup}
@@ -32,18 +31,19 @@ When testing latency, the thread pool is used by a single query.
 In the throughput evaluation mode, queries are scheduled first-come-first-served, 
 and a new query is scheduled for execution (i.e., assigned threads) 
 once  there are idle threads with no outstanding work from currently executing queries.
+All queries scheduled for execution equally share the thread pool.
 
 In all experiments, the index is pre-built offline and stored on disk as a collection of binary files, 
 each storing a shard of data partitioned by term.  The benchmark environment memory-maps the content 
-of these files.  
-%via the MappedByteBuffer API\footnote{\small{\url{https://docs.oracle.com/javase/7/docs/api/java/nio/MappedByteBuffer.html}}}. 
+of these files via the MappedByteBuffer API\footnote{\small{\url{https://docs.oracle.com/javase/7/docs/api/java/nio/MappedByteBuffer.html}}}.
+Prior to each experiment, we flush the file system's page cache so all pages are physically read from disk during the experiment.
 %such that the algorithm code can access the data identically to RAM. 
 %The application code makes no attempt to optimize the disk access beyond the standard filesystem mechanisms 
 %(e.g., caching of popular blocks). 
 
 %\subsubsection{Datasets}
 We  experiment with two document corpora. The first  is the TREC {\cw\/} dataset, 
-Category B ({\cw}09B)~\cite{ClueWeb09}, which is widely used for information retrieval research. This dataset includes approximately 50M web documents. 
+Category B ({\cw}09B)~\cite{ClueWeb09}, which is widely used for information retrieval research. This dataset includes approximately 50M web documents and takes up roughly 30GB of original content, uncompressed.
 The second corpus is a synthetic 10x scale-up of \cw, named \cwten, which we created to explore the algorithms' scalability 
 with the dataset size. 
 % \cwten\ is a superset of {\cw}09B.
@@ -107,7 +107,7 @@ $\Theta_T$ is \emph{at least} the lowest score in the local heap, but may be hig
 Thread $T$ periodically compares $\Theta$ to its local $\Theta_T$, and promotes the smaller of the two to $\max(\Theta_T, \Theta)$. 
 This way,  slower workers catch up with  faster ones.
 
-\pBMW
+\pBMW\
 %, which is applied to a segment of posting lists, further 
 splits posting list segments into blocks, and uses block-level
 statistics to prune the search~\cite{Ding:2011}. We experimented with multiple block sizes and selected $64$, 
@@ -122,7 +122,6 @@ $f \geq 1$, which multiplies $\Theta$ to obtain a higher threshold for document 
 \sNRA\ is a shared-nothing parallelization of NRA, where the index is partitioned to $12$ shards by document id. 
 Each thread finds the top-k documents in its shard by running NRA independently with thread-local data structures. 
 When all threads complete, their lists are merged and the global top-k documents are kept.  
-\inred{Since \sNRA's performance is poor even for the small dataset, we didn't experiment with it on the large one.} 
 
 \pNRA\ is a na\"{\i}ve shared-state parallelization of NRA that does not employ \alg's optimizations. 
 Namely, it uses a shared document map, which it does not clean, and updates the term
@@ -183,14 +182,14 @@ None of the algorithms meets  real-time SLAs. }
 \label{tab:safe-latency}
 \end{table}
 
-Our first experiment shows that none of the exact algorithms meets a real-time SLA for for verbose queries. 
+Our first experiment shows that none of the exact algorithms meets a real-time SLA for  verbose queries. 
 Table~\ref{tab:safe-latency} depicts the mean processing latencies of 12-term queries with 12 worker 
 threads (i.e., a single query fully exploits the multi-core CPU). Most of the algorithms complete within 
 %500 ms to 
-1 s for on the {\cw} dataset, but run for many seconds on \cwten. 
+1 second for on the {\cw} dataset, but run for many seconds on \cwten. 
 {\pRA} is the fastest algorithm in this setting, whereas
 \pNRA\/ is much worse than the other algorithms. Its average latency exceeds 
-13 s on \cw\/ and 1.5 minutes on \cwten.
+13 seconds on \cw\/ and 1.5 minutes on \cwten.
 
 We will revisit the algorithms' execution dynamics -- namely, how fast they accrue their results -- 
 as we study approximate algorithms in the sequel. 
@@ -200,8 +199,8 @@ as we study approximate algorithms in the sequel.
 With  exact instances of all  algorithms failing to match  real-time requirements, we turn to focus on the approximate instances. 
 %Namely, 
 We parameterize \alg, \pRA, \pNRA, and \sNRA\/ with $\Delta=10$ ms. 
-This yields high recall and satisfactory performance in the first three and low recall in \sNRA. 
-\pBMW\/ is instantiated with $f=5$ for high recall and $f=10$ for low recall.  
+This yields high recall in all four algorithms,  and satisfactory performance (meeting SLA requirements) in \alg. 
+We instantiate \pBMW\/ with $f=5$ for high recall and $f=10$ for low recall.  
 
 {\bf Accuracy.\ } Table~\ref{tab:recall-mrr-distance} depicts the empirical accuracy results for 12-term queries. We see that the MRR-distance is high for the high-recall algorithms, 
 %metric is closely correlated with recall 
@@ -286,9 +285,10 @@ is equal to the number of terms in all parallel algorithms.}
 \end{figure}
 }
 
-\pRA\/ exhibits much weaker scalability. For example, for $12$-term queries it is slower than \alg\
+
+In contrast, \pRA\/ exhibits much weaker scalability. For example, for $12$-term queries it is slower than \alg\
 by more than $2$x 
-when applied to \cw, and by more than $10$x on to \cwten. We explain this by the cost of evaluating the complete 
+when applied to \cw, and by more than $10$x on \cwten. We explain this by the cost of evaluating the complete 
 document scores in \pRA, which forces  intensive access to the secondary index. This translates to volumes of random 
 I/O that cannot be sustained even with modern SSD hardware. Note that this trend is the reverse of the one observed for \pRA\ex, 
 which outperforms \alg\ex\/ (Table~\ref{tab:safe-latency}). That is, \alg\/ spends much more work than \pRA\/ 
@@ -302,17 +302,21 @@ However, this is seldom the case when diverse queries are applied to a large ind
 %besides, it does not manifest with the \cwten\/ dataset in statistically significant way. 
 } 
 
-On \cw, the shared-nothing and unoptimized parallelization of NRA are weaker than all other alternatives. 
-\pNRA's  average latency for 12-term queries is $1$ s, and \sNRA's is $1.7$ s. 
-On the larger dataset, \pNRA\ is still poorer than \alg, but performs better than \pBMW. 
-This is thanks to the high scalability and early-stopping nature of the approximate NRA approach.
-These results emphasize the importance of the locality optimizations employed in \alg's design (especially the background 
-cleaning of \DMap), which substantially improve the hardware cache performance. We omit \pNRA\/ 
-and \sNRA\/ from further discussion. 
-
+We see that 
 \pBMW, the best-in-class algorithm in the literature, fails to match \alg's speed. For example, for 12-term queries, 
-\pBMW\hi\/ completes  within $630$ ms on average on \cw, and within as long as $9.9$ s on \cwten. \pBMW\lo, 
+\pBMW\hi\/ completes  within $630$ ms on average on \cw, and within as long as $9.9$ seconds on \cwten. \pBMW\lo, 
 which sacrifices $20\%$ of the recall for performance, only succeeds to improve these latencies by $10\%$ to $15\%$. 
+
+
+On \cw, the shared-nothing and unoptimized parallelization of NRA are weaker than all other alternatives:
+\pNRA's  average latency for 12-term queries is $1$ second, and \sNRA's is $1.7$ seconds. 
+On the larger dataset, \pNRA\ and \sNRA\ are still poorer than \alg, but perform better than \pBMW. 
+This is thanks to the high scalability and early-stopping nature of the approximate NRA approach.
+These results emphasize the necessity of sharing information among threads (unlike \sNRA) on the one hand,
+and the importance of \alg's locality optimizations, (which are missing in \pNRA), on the other. 
+Specifically, the background cleaning and local copies of \DMap\ and the lazy updates of \emph{UB} allow \alg\ to benefit from 
+local access to data that resides in hardware caches. 
+We omit \pNRA\/ and \sNRA\/ from further discussion. 
 
 \begin{figure*}[hbt]
 \centering
@@ -346,8 +350,8 @@ we show the dynamics of the exact versions only.  The same is not true for \pBMW
 Hence, we show the dynamics of all three instances of \pBMW. 
 In the exact algorithms's curves, the rightmost data point corresponds to the exact algorithm's completion time.   
 
-We see that \alg's recall growth is the fastest. For instance, it surpasses $80\%$ recall (the \alg\lo\/ instance) in less than $50$ ms, 
-and $90\%$ recall in less than 100. But over time, its returns  diminish, and most of the work becomes non-productive. Whereas
+We see that \alg's recall growth is the fastest. For instance, it surpasses $80\%$ recall in less than $50$ ms, 
+and $90\%$ recall in less than 100. But over time, its returns  diminish, and most of the work becomes unproductive. Whereas
 \pRA\/ takes much longer to converge because it needs to fully score each encountered document,  its concluding phase is faster because 
 most relevant documents   have complete  scores. 
 \pBMW\/ scans the postings in the order of document ids, which is unrelated to document scores, and hence accumulates the true hits 
@@ -359,8 +363,11 @@ two accrue results at similar rates until \pBMW\lo\/ stops at approximately $80\
 %We next study the scaling of query latency with  intra-query parallelism. 
 We next consider  $12$-term queries with a number of threads varying from $1$ to $12$. 
 The results appear in Figure~\ref{fig:threads-scaling}(a) (for \cw) and Figure~\ref{fig:threads-scaling}(b) (for \cwten). The latter depicts only \alg\/ and \pRA\/ 
-because none of the \pBMW\/ instances scales close to real-time performance.  \alg\ requires some level of parallelism for real-time speed -- e.g., for \cw\/ the sequential
-latency is $840$ ms, which is  above typical SLA requirements. Most of the gain is achieved at low-parallelism levels (2 threads suffice). 
+because none of the \pBMW\/ instances scales close to real-time performance.  The left-most data point in each curve refers to the performance of 
+the respective sequential algorithm.
+
+\alg\ requires some level of parallelism in order to achieve real-time speed, e.g., its sequential
+latency on \cw\/  is $840$ ms, which is  above typical SLA requirements. Most of the gain is achieved at low-parallelism levels (2 threads suffice). 
 On the other hand, for \pBMW, much higher parallelism is essential -- its latency is inversely proportional to the number of threads. Thus, \alg\ is not only faster 
 than \pBMW, but also requires less resources, which benefits throughput as we next show.
 %offers the system designer a latency-throughput tradeoff if some slack in latency can be tolerated. 
