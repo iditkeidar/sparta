@@ -22,7 +22,7 @@ We therefore focus on the latency induced by this backend search tier at a given
 Obtaining the exact top-k matches out of a large corpus is often too slow to meet stringent SLA requirements. 
 Given that the top-k selection is only the first query  processing step, perfect results are often not essential, as later query processing 
 stages can be satisfied by approximate results~\cite{Lin:2015}. We leverage this observation and focus on \emph{approximate} 
-(sometimes called \emph{non-safe}) query evaluation, tuned to achieve a certain high recall (e.g., $97\%$ or more). 
+(sometimes called \emph{non-safe}) query evaluation, tuned to achieve a certain high recall (e.g., $97\%$ or more of the top-k results). 
 %of the original results).
 % that is deemed sufficient for the application at hand. 
 
