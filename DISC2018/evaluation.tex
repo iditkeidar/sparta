@@ -33,9 +33,10 @@ and a new query is scheduled for execution (i.e., assigned threads)
 once  there are idle threads with no outstanding work from currently executing queries.
 All queries scheduled for execution equally share the thread pool.
 
-In all experiments, the index is pre-built offline and stored on disk as a collection of binary files, 
+In all experiments, the appropriate index (either in id order or in score order)
+is pre-built offline and stored uncompressed on disk as a collection of binary files, 
 each storing a shard of data partitioned by term.  The benchmark environment memory-maps the content 
-of these files via the MappedByteBuffer API\footnote{\small{\url{https://docs.oracle.com/javase/7/docs/api/java/nio/MappedByteBuffer.html}}}.
+of these files via the MappedByteBuffer API~\cite{java-hashmap}.
 Prior to each experiment, we flush the file system's page cache so all pages are physically read from disk during the experiment.
 %such that the algorithm code can access the data identically to RAM. 
 %The application code makes no attempt to optimize the disk access beyond the standard filesystem mechanisms 
@@ -54,12 +55,12 @@ so that the number of occurrences of a term $t_i$ with an original
 global frequency rate of $F(t_i)$ is drawn from a geometric distribution with a stopping probability of $1-F(t_i)$. This  process preserves 
 the  term frequency distribution of {\cw\/} in \cwten.
  
-We use the popular Lucene open-source search engine\footnote{\small{\url{https://lucene.apache.org/}}} for text tokenization, posting list maintenance, 
+We use the popular Lucene open-source search engine~\cite{lucene} for text tokenization, posting list maintenance, 
 and term statistics retrieval.
 We score documents using 
 a standard tf-idf score function with document length normalization~\cite{Baeza-Yates:1999:MIR:553876}. 
 
-We draw queries from the public AOL search log\footnote{\small{\url{http://www.cim.mcgill.ca/~dudek/206/Logs/AOL-user-ct-collection/}}}.
+We draw queries from the public AOL search log~\cite{aol}.
 For each number of terms from $1$ to $12$, we independently sample $100$ queries of this length uniformly at random from the AOL log.
 We also  experimented with a query log of another commercial web search engine; this experiment  
 produced statistically similar results, and so we omit them here.  
@@ -83,7 +84,7 @@ and $|D|$ is the number of tokens in $D$.
 %All algorithms store 
 Posting lists are stored as contiguous uncompressed arrays;  {\pRA} also stores 
 its secondary index (document id to position in the posting list mapping) in the same form. 
-Term scores are stored in the posting lists as integers, scaled by $10^6$ and rounded. 
+Term scores are stored in the posting lists as integers, scaled by $10^6$ and rounded as in~\cite{Bortnikov:2017}. 
 Using integer arithmetics instead of floating-point significantly speeds up document evaluation. 
 
 The specific algorithm implementations are as follows.
@@ -202,10 +203,11 @@ We parameterize \alg, \pRA, \pNRA, and \sNRA\/ with $\Delta=10$ ms.
 This yields high recall in all four algorithms,  and satisfactory performance (meeting SLA requirements) in \alg. 
 We instantiate \pBMW\/ with $f=5$ for high recall and $f=10$ for low recall.  
 
-{\bf Accuracy.\ } Table~\ref{tab:recall-mrr-distance} depicts the empirical accuracy results for 12-term queries. We see that the MRR-distance is high for the high-recall algorithms, 
+{\bf Accuracy.\ } Table~\ref{tab:recall-mrr-distance} depicts the empirical accuracy results for 12-term queries. 
+%We see that the MRR-distance is high for the high-recall algorithms, 
 %metric is closely correlated with recall 
-e.g., \alg\hi\/ yields $99\%$ recall and $0.002$ MRR-distance on \cwten. That is, these 
-algorithms not only  retain a large fraction of the true results, but also succeed in retaining the highest ranked ones. 
+%e.g., \alg\hi\/ yields $99\%$ recall and $0.002$ MRR-distance on \cwten. That is, these 
+%algorithms not only  retain a large fraction of the true results, but also succeed in retaining the highest ranked ones. 
 
 \remove{
 This result is particularly interesting for \alg, which only computes partial scores. In practice, these scores are very close to the complete ones. 
@@ -221,11 +223,17 @@ Summing up, under certain parameter choices the approximate algorithms achieve v
 \begin{tabular}{| c | c | c | c | c | c | c |}
 \hline
   & \alg\hi &  \pRA\hi & \pNRA\hi & \sNRA\hi & \pBMW\hi & \pBMW\lo \\ \hline
-  \cw & 97.5\% / 0.004 &  98.5\% / 0.002 & 98.5\% / 0.002 & 99\% / 0.001  & 97.5\% / 0.009 & 80\% / 0.048 \\ \hline
-  \cwten & 99\% / 0.002 & 99\% / 0.001 & 99\% / 0.001 & 99\% / 0.001  & 97\% / 0.009 & 79.9\% / 0.099 \\
-\hline
+  \cw & 
+   97.5\%  &  98.5\%  & 98.5\%  & 99\%   & 97.5\% & 80\%  
+  % 97.5\% / 0.004 &  98.5\% / 0.002 & 98.5\% / 0.002 & 99\% / 0.001  & 97.5\% / 0.009 & 80\% / 0.048 
+  \\ \hline
+  \cwten & 
+  99\%  & 99\%  & 99\%  & 99\%  & 97\%  & 79.9\%  
+  % 99\% / 0.002 & 99\% / 0.001 & 99\% / 0.001 & 99\% / 0.001  & 97\% / 0.009 & 79.9\% / 0.099 
+  \\ \hline
 \end{tabular}
-\caption{Recall / MRR-distance induced by the approximate algorithms for 12-term queries.}
+%\caption{Recall / MRR-distance induced by the approximate algorithms for 12-term queries.}
+\caption{Recall of approximate algorithms for 12-term queries.}
 \label{tab:recall-mrr-distance}
 \end{table*}
 
@@ -253,17 +261,17 @@ Its  $95\%$ latency is below $500$ ms.
 \begin{tabular}{ccc}
       \begin{subfigure}[t]{0.3\textwidth}
          \includegraphics[width=\textwidth]{figures/latency_12threads_clueweb.pdf}
-        \caption[]{Average latency, \cw}
+        \caption[]{Average, \cw}
       \end{subfigure}     
 
 	\begin{subfigure}[t]{0.3\textwidth}
     	\includegraphics[width=\textwidth]{figures/latency_95th_percentile_clueweb.pdf}
-	\caption{95\% latency, \cw}
+	\caption{95\%, \cw}
     \end{subfigure}  
 
     \begin{subfigure}[t]{0.3\textwidth}
     \includegraphics[width=\textwidth]{figures/latency_12threads_cluewebX10.pdf}
-	\caption{Average latency, \cwten}
+	\caption{Average, \cwten}
     \end{subfigure}  
 \end{tabular}
 \caption{Top-k ($k=1000$) query latency scaling with the number of query terms. 

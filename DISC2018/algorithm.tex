@@ -13,8 +13,15 @@ Finally, Section~\ref{ssec:analysis} discusses the properties of our algorithm.
 \subsection{\alg\ Data Structures}
 \label{ssec:ds}
 
+
+
+
+
 \begin{table}[htb]
-%\centering
+
+\setlength{\columnsep}{1.5cm}
+
+\begin{multicols}{2}
 \begin{tabular}{l l }
 \hline
 name & value \\
@@ -24,17 +31,36 @@ name & value \\
  $\Theta$ & init $0$  \\
  $UB[m]$ & init $\infty$ \\
  \RAStop&  $\sum_{i=1}^m UB[i] \le \Theta$ \\
- $UB(doc)$ & $\sum_{i=1}^m \big( doc.score[i] > 0$ $?$ $doc.score[i] : UB[i] \big)$  \\
+
+ $UB(D)$ & $\sum_{i=1}^m \big( D.score[i] > 0$ $?$ $D.score[i] : UB[i] \big)$  \\
+   \hline
+  
+\end{tabular}
+\begin{tabular}{l l }
+\hline
+name & value \\
+\hline
  \DMap & init empty  \\
  \HeapUpdateTime & init now \\
  \Done & init false \\
  \TMap[m] & init pointer to \DMap \\ 
   \LDMap & init empty \\ 
-  \hline
+  \\
+    \hline
 \end{tabular}
+\end{multicols}
 \caption{\alg's data structures and  initial values.\vspace{-5mm}}
 \label{alg:sparta-ds}
 \end{table}
+
+\begin{figure}[tbh]
+\centering
+\includegraphics[width=0.7\columnwidth]{figures/localData}
+\caption{\alg\/ data structures. The \DMap\ keeps track of partially scored documents; \LDMap\ and \TMap\ are local partial copies of \DMap.}
+\label{fig:sparta_ds}
+\end{figure}
+
+
 
 \remove{
 
@@ -83,12 +109,7 @@ which also checks the heap's latest update time \HeapUpdateTime\ and
 sets the \Done\ flag once the algorithm can stop.
 
 
-\begin{figure}[tbh]
-\centering
-\includegraphics[width=0.7\columnwidth]{figures/localData}
-\caption{\alg\/ data structures. The \DMap\ keeps track of partially scored documents; \LDMap\ and \TMap\ are local partial copies of \DMap.}
-\label{fig:sparta_ds}
-\end{figure}
+
 
 
 In addition, to reduce the synchronization overhead and improve cache locality, \alg\ uses 

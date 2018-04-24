@@ -23,12 +23,14 @@ An \emph{exact} top-k retrieval primitive returns a list of the $k$ documents wi
 An \emph{approximate} solution returns a list of $k$ results that approximates the top $k$. 
 Let $L$ be the exact list of top-k documents sorted in decreasing order of document scores,  
 and let $A$ be the list returned by an approximate solution. 
-The quality (or accuracy) of  $A$ is measured by two metrics. 
-First, \emph{recall} is  the fraction of the actual top-k included in $A$.
+The quality (or accuracy) of  $A$ is measured by its
+%two metrics. First, 
+\emph{recall}, which is  the fraction of the actual top-k included in $A$.
 %\begin{equation} \label{eq:recall}
 %\dfrac{\mid L \cap A \mid}{k}
 %\nonumber
 %\end{equation}
+\remove{
 Second, the
 MRR-distance captures the proximity between two ordered sequences, where the topmost documents matter the most.  
 Specifically, 
@@ -37,7 +39,7 @@ the \emph{MRR weight} of the $i$-th item in the list is $1/i$, and the \emph{MRR
 \textit{MRR-distance}(L,A) \triangleq \dfrac{\sum_{i=1,d_i \in L \setminus A}^k 1/i}{\sum_{i=1}^k 1/i}.
 \nonumber
 \end{equation}
-
+}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -48,7 +50,7 @@ the \emph{MRR weight} of the $i$-th item in the list is $1/i$, and the \emph{MRR
 \label{sec:background}
 
 %\alg\ belongs to the family of \emph{dynamic pruning algorithms}, and is closely based on Fagin et al.'s Threshold Algorithm~\cite{Fagin:2003}. In this section, 
-We  provide background on  state-of-the-art top-k algorithms and Fagin et al.'s Threshold Algorithm~\cite{Fagin:2003}.
+We  provide background on  state-of-the-art top-k algorithms and Fagin et al.'s TA~\cite{Fagin:2003}.
 %that we compare our work to. 
 
 \subsection{State-of-the-art Top-k Algorithms}
@@ -72,10 +74,13 @@ TA uses  term posting lists sorted in decreasing order of term score.
 To evaluate a query $q = t_1, \dots t_m$, it dynamically traverses the $m$ corresponding posting lists of the query terms in an interleaved manner. 
 An \emph{upper bound} vector, $UB$[$m$], 
 bounds the term scores of documents that were not yet visited in each term's posting list. 
-Table~\ref{table:threshold-ds} lists the data structures used by TA, and 
+%Table~\ref{table:threshold-ds} lists the data structures used by TA, and 
 %
 Figure~\ref{fig:lists} shows
 an example posting list traversal and the corresponding values in UB. Here, $m=3$ and the scores of the last traversed items in each list are $UB$[1] = 38, $UB$[2] = 32, and $UB$[3] = 41. 
+
+\remove{
+
 \begin{table}[t]
 %\centering
 \begin{tabular}{ l l }
@@ -90,6 +95,7 @@ $UB[m]$  & upper bounds on non-traversed postings\\
 \label{table:threshold-ds}
 \end{table}
 
+} % remove
 
 
 \begin{figure*}[tbh]

@@ -3,6 +3,12 @@
 \bibitem{java-hashmap}
 \url{https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ConcurrentHashMap.html}.
 
+\bibitem{lucene}
+https://lucene.apache.org.
+
+\bibitem{aol}
+http://www.cim.mcgill.ca/~dudek/206/Logs/AOL-user-ct-collection.
+
 \bibitem{Akbarinia:2007}
 Reza Akbarinia, Esther Pacitti, and Patrick Valduriez.
 \newblock Best position algorithms for top-k queries.
@@ -125,6 +131,17 @@ Myeongjae Jeon, Saehoon Kim, Seung-won Hwang, Yuxiong He, Sameh Elnikety,
 Jimmy Lin and Andrew Trotman.
 \newblock Anytime ranking for impact-ordered indexes.
 \newblock In {\em Proceedings ICTIR}, pages 301--304. ACM, 2015.
+
+\bibitem{Liu:2018:GUC:3178487.3178512}
+Yang Liu, Jianguo Wang, and Steven Swanson.
+\newblock Griffin: Uniting cpu and gpu in information retrieval systems for
+  intra-query parallelism.
+\newblock In {\em Proceedings of the 23rd ACM SIGPLAN Symposium on Principles
+  and Practice of Parallel Programming}, PPoPP '18, pages 327--337, New York,
+  NY, USA, 2018. ACM.
+\newblock URL: \url{http://doi.acm.org/10.1145/3178487.3178512}, \href
+  {http://dx.doi.org/10.1145/3178487.3178512}
+  {\path{doi:10.1145/3178487.3178512}}.
 
 \bibitem{Mamoulis:2007}
 Nikos Mamoulis, Man~Lung Yiu, Kit~Hung Cheng, and David~W. Cheung.
