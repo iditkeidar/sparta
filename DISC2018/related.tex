@@ -8,7 +8,7 @@ Crane et al.~\cite{Crane:2017} showed that  algorithms that traverse documents i
 are susceptible to tail queries that may take orders of magnitude longer than the median query; approximate query evaluation in WAND and BMW does not significantly reduce the variance. Moreover, in agreement with our findings, they showed that algorithms that access  posting lists in decreasing score order are less sensitive to tail queries due to their effective early termination capability. 
 
 %With the rapid development in multiprocessor hardware, a new line of research has emerged on exploiting multi-threaded programing for top-k retrieval. 
-Some previous works,  e.g.,~\cite{Tatikonda:2011,Liu:2018:GUC:3178487.3178512}, studied parallel computation  of conjunctive queries  via posting list interection. 
+Some previous works,  e.g.,~\cite{Tatikonda:2011,Liu:2018:GUC:3178487.3178512}, studied parallel computation  of conjunctive queries  via posting list intersection. 
 Note that this problem is different from (and easier than) the problem considered in this paper, where a top-scored document does not necessarily include all query terms. 
 
 Other works~\cite{Bonacic:2010,rojas2013efficient} have parallelized state-of-the-art sequential algorithms like WAND and BMW  by sharding the document space, computing the top-k in each shard independently, and finally merging the results.  Implementations differ in whether threads share a common  
