@@ -1,7 +1,5 @@
-%\documentclass[sigconf,anonymous]{acmart}
-\documentclass[a4paper,english]{lipics-v2018}
-%\usepackage{microtype}%if unwanted, comment out or use option "draft"
-%\settopmatter{printfolios=true,printccs=false,printacmref=false}
+\documentclass[sigconf]{acmart}
+\settopmatter{printfolios=true,printccs=false,printacmref=false,authorsperrow=5}
 %\usepackage{balance}  % for  \balance command ON LAST PAGE  (only there!)
 \usepackage{color}
 \usepackage{subcaption}
@@ -14,45 +12,58 @@
 \usepackage{booktabs} % For formal tables
 \usepackage{times}
 
-%\setcopyright{none}
+\setcopyright{none}
+
+
 %\acmConference{Submitted to SIGIR}{2018}{} 
 %\acmYear{2018}
 
-\usepackage{multicol}
-\input{macros}
+
+\begin{document}
 
 \newcommand{\alg}{Sparta}  
 \newcommand{\inred}[1]{{\color{red}{#1}}}
 \newcommand{\inblue}[1]{{\color{blue}{#1}}}
 \newcommand{\remove}[1]{}
 
-\bibliographystyle{plainurl}% the recommnded bibstyle
-
-\nolinenumbers
-
 % ****************** TITLE ****************************************
 
 \title{Fast Parallel Top-K Retrieval of Verbose Queries}
 
-%\titlerunning{Dummy short title}%optional, please use if title is longer than one line
 
-\author{Gali Sheffi}{Yahoo Research, Oath}{gsheffi@oath.com}{}{}
-\author{Dmitry Basin}{Yahoo Research, Oath}{dbasin@oath.com}{}{}
-\author{Edward Bortnikov}{Yahoo Research, Oath}{ebortnik@oath.com}{}{}
-\author{David Carmel}{Amazon}{david.carmel@gmail.com}{}{}
-\author{Idit Keidar}{Technion and Yahoo Research, Oath}{idish@ee.technion.ac.il}{}{}
+\author{Gali Sheffi}
+\affiliation{Yahoo! Research}
 
-\authorrunning{Sheffi et al.}
+\author{Dmitry Basin}
+\affiliation{Yahoo! Research}
 
-\Copyright{Gali Sheffi and Dmitry Basin and Edward Bortnikov and David Carmel and Idit Keidar}%mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
+\author{Edward Bortnikov}
+\affiliation{Yahoo! Research\thanks{*Work done while at Yahoo! Research}}
 
-\subjclass{C.1.4 Parallel Architectures and D.1.3 Concurrent Programming}% mandatory: Please choose ACM 2012 classifications from https://www.acm.org/publications/class-2012 or https://dl.acm.org/ccs/ccs_flat.cfm . E.g., cite as "General and reference $\rightarrow$ General literature" or \ccsdesc[100]{General and reference~General literature}. 
+\author{David Carmel}
+\affiliation{Amazon\footnote{Work done while at Yahoo! Research}}
 
-\keywords{Parallel computing, web-search, top-k}%mandatory
+\author{Idit Keidar}
+\affiliation{Yahoo! Research \\ and Technion}
 
-\begin{document}
 
-\maketitle
+% Gali Sheffi\\
+%        \affaddr{Yahoo! Research}\\
+%        \email{gsheffi@yahoo-inc.com}
+% Dmitry Basin\\
+%        \affaddr{Yahoo! Research}\\
+%        \email{dbasin@yahoo-inc.com}
+% Edward Bortnikov\\
+%        \affaddr{Yahoo! Research}\\
+%        \email{ebortnik@yahoo-inc.com}\\
+% David Carmel\\
+%        \affaddr{Yahoo! Research}\\
+%        \email{dcarmel@yahoo-inc.com}
+% Idit Keidar\\
+%        \affaddr{Technion and Yahoo! Research}\\
+%       \email{idish@yahoo-inc.com}
+
+
 
 \begin{abstract}
 Top-k document retrieval is emerging as a performance bottleneck in query processing as verbose queries are becoming 
@@ -63,25 +74,22 @@ via approximate result computation and intra-query parallelism have produced lim
 We present \alg\ -- a practical parallel algorithm that exploits multi-core hardware to run approximate top-k retrieval 
 within interactive latency bounds. Its design is inspired by  Fagin et al.'s seminal Threshold Algorithm for  aggregation in databases. 
 \alg\ scales through lightweight coordination and context sharing among concurrent threads. The resulting algorithm 
-is highly scalable, 
-both in the number of query terms and in the searched index size. For example, when applied to the 50M-document public ClueWeb09B 
-dataset, \alg\  processes $12$-term queries $3.6$ times faster than the state-of-the-art. On a tenfold  bigger index, 
-\alg\ continues to process queries at the same speed, whereas today's best-in-class algorithm is more than 60 times slower. 
-\alg\ further significantly improves throughput.% on production-motivated query mixes. 
+is highly scalable in the number of query terms. For example, when applied to the 50M-document public ClueWeb09B 
+dataset, \alg\  processes $12$-term queries $3.6$ times faster than the state-of-the-art. 
 \end{abstract}
 
 \maketitle
-
+\input{macros}
 
 \input{intro}
 \input{Background}
 \input{algorithm}
 \input{evaluation}
 \input{related}
-\input{conclusions}
+%\input{conclusions}
 
-\clearpage
-%\bibliographystyle{ACM-Reference-Format}
+
+\bibliographystyle{ACM-Reference-Format}
 \bibliography{references}  
 
 

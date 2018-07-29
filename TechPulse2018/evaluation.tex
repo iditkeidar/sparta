@@ -8,9 +8,7 @@ algorithms, for completeness, we also experiment with their exact counterparts.
 %
 % We study all these algorithms in both exact and approximate variants -- the latter over a spectrum of heuristic parameters that strike different performance-vs-recall tradeoffs.  
 
-In what follows, Section~\ref{ssec:setup} describes the experiment setup, 
-Section~\ref{ssec:implementation} explains how the algorithms are 
-implemented, and Section~\ref{ssec:results} presents our results.
+%In what follows, Section~\ref{ssec:setup} describes the experiment setup, Section~\ref{ssec:implementation} explains how the algorithms are implemented, and Section~\ref{ssec:results} presents our results.
 
 
 \subsection{Experiment Setup}
@@ -29,54 +27,27 @@ uses a thread pool for intra-query parallelism.
 The driver controls the pool size. % by notifying the algorithm how many threads are available to it.
 When testing latency, the thread pool is used by a single query. 
 In the throughput evaluation mode, queries are scheduled first-come-first-served, 
-and a new query is scheduled for execution (i.e., assigned threads) 
+and a new query is scheduled for execution 
 once  there are idle threads with no outstanding work from currently executing queries.
 All queries scheduled for execution equally share the thread pool.
 
-In all experiments, the appropriate index (either in id order or in score order)
-is pre-built offline and stored uncompressed on disk as a collection of binary files, 
+In all experiments, the index is pre-built offline and stored on disk as a collection of binary files, 
 each storing a shard of data partitioned by term.  The benchmark environment memory-maps the content 
-of these files via the MappedByteBuffer API~\cite{java-hashmap}.
+of these files via a MappedByteBuffer.
 Prior to each experiment, we flush the file system's page cache so all pages are physically read from disk during the experiment.
-%such that the algorithm code can access the data identically to RAM. 
-%The application code makes no attempt to optimize the disk access beyond the standard filesystem mechanisms 
-%(e.g., caching of popular blocks). 
-
-%\subsubsection{Datasets}
-We  experiment with two document corpora. The first  is the TREC {\cw\/} dataset, 
-Category B ({\cw}09B)~\cite{ClueWeb09}, which is widely used for information retrieval research. This dataset includes approximately 50M web documents and takes up roughly 30GB of original content, uncompressed.
-The second corpus is a synthetic 10x scale-up of \cw, named \cwten, which we created to explore the algorithms' scalability 
-with the dataset size. 
-% \cwten\ is a superset of {\cw}09B.
-The 450M synthetic documents in {\cwten\/} are generated as follows. Each document is a bag of words drawn from the original {\cw\/} dictionary 
-(the order is immaterial for our document scoring function) 
-%, see Section~\ref{ssec:scoring}) 
-so that the number of occurrences of a term $t_i$ with an original 
-global frequency rate of $F(t_i)$ is drawn from a geometric distribution with a stopping probability of $1-F(t_i)$. This  process preserves 
-the  term frequency distribution of {\cw\/} in \cwten.
- 
-We use the popular Lucene open-source search engine~\cite{lucene} for text tokenization, posting list maintenance, 
+We  experiment with the TREC {\cw\/} dataset, 
+Category B (ClueWeb09B) \cite{ClueWeb09}, which is widely used for information retrieval research. This dataset includes approximately 50M web documents and takes up roughly 30GB of original content, uncompressed.
+We use the Lucene open-source search engine for text tokenization, posting list maintenance, 
 and term statistics retrieval.
 We score documents using 
 a standard tf-idf score function with document length normalization~\cite{Baeza-Yates:1999:MIR:553876}. 
 
-We draw queries from the public AOL search log~\cite{aol}.
+We draw queries from the public AOL search log.
 For each number of terms from $1$ to $12$, we independently sample $100$ queries of this length uniformly at random from the AOL log.
 We also  experimented with a query log of another commercial web search engine; this experiment  
 produced statistically similar results, and so we omit them here.  
-
 We use  $k=1000$. 
 (Experiments with $k=100$ produced qualitatively similar results).
-
-\remove{
-\subsubsection{Document Scoring}
-\label{ssec:scoring}
-For document evaluation, we apply a simple tf-idf score function with document length normalization~\cite{Baeza-Yates:1999:MIR:553876} as follows:
-\[ \textit{ts}(D, t_i) \triangleq \frac{\textit{idf}(t_i) \cdot \textit{freq}(D, t_i)}{\sqrt{|D|}},\]
-where \textit{freq}$(D, t_i)$ is the frequency of term $t_i$ in document $D$,
-$\textit{idf}(t_i)$ is  the inverse document frequency of term $t_i$,
-and $|D|$ is the number of tokens in $D$. 
-}
 
 \subsection{Implementation}
 \label{ssec:implementation}
@@ -84,9 +55,8 @@ and $|D|$ is the number of tokens in $D$.
 %All algorithms store 
 Posting lists are stored as contiguous uncompressed arrays;  {\pRA} also stores 
 its secondary index (document id to position in the posting list mapping) in the same form. 
-Term scores are stored in the posting lists as integers, scaled by $10^6$ and rounded as in~\cite{Bortnikov:2017}. 
+Term scores are stored in the posting lists as integers, scaled by $10^6$ and rounded. 
 Using integer arithmetics instead of floating-point significantly speeds up document evaluation. 
-
 The specific algorithm implementations are as follows.
 
 \subsubsection{\pBMW}
@@ -128,22 +98,11 @@ When all threads complete, their lists are merged and the global top-k documents
 Namely, it uses a shared document map, which it does not clean, and updates the term
 upper bounds upon every document evaluation. As in \alg, a dedicated task checks the stopping condition.
 (Distributed stopping detection yielded worse results).
-
-\remove{
-Similarly to {\pNRA} and \alg, {\pRA} traverses the posting lists in segments, using a job queue. 
-In contrast with them, {\pRA} computes complete document scores using its secondary index, 
-instead of maintaining partial scores. 
-Note that {\pRA} is the only studied algorithm that exercises random access to persistent storage.  
-} 
-
 {\pRA} maintains its results in a shared heap (experiments did not show any advantage to using local heaps).
 Note that the algorithm's multiple worker threads may encounter postings of the same document independently, 
 and consequently score that document and try to insert it into the heap multiple times. The implementation guarantees 
 the uniqueness of insertion (only the first one takes effect).
-
-%{\pRA} halts execution if no new results have been produced for $\Delta$ time ($\Delta=\infty$ means the result is exact). 
-Since RA's stopping detection is lightweight, we do not dedicate a task to it. Instead, all workers check the  
-\RAStop\ condition and monitor the time elapsed since the last heap update, and notify each other if they 
+Since RA's stopping detection is lightweight, we do not dedicate a task to it. Instead, all workers check the stopping condition and monitor the time elapsed since the last heap update, and notify each other if they 
 decide to stop.
 %A thread that detects that the algorithm can stop notifies all threads.
 
@@ -155,43 +114,17 @@ decide to stop.
 For an algorithm A, we consider the following variants: exact (denoted A\ex), high-recall (denoted A\hi), and
 low-recall (denoted A\lo). Note that the approximate algorithms' parameters ($\Delta$ and $f$) affect the recall
 but do not directly control it; our high recall instances are ones that empirically achieve a  recall of $97\%$ or 
-higher for both datasets.
-%\cw\/ and \cwten. 
-
-\remove{
-We evaluate the query processing latency and throughput 
-induced by the candidate algorithms, 
-for $k=1000$. 
-(Experiments with $k=100$ produced qualitatively similar results).
- }
+higher.
 
 
 \subsubsection{Exact Algorithms}
 
-\begin{table}[tbp]
-\begin{center}
-\begin{tabular}{| c | c | c | c | c | c |}
-\hline
-  & Sparta & \pNRA & \sNRA & \pRA & \pBMW \\ \hline
- ClueWeb & 860 & 13\!,291 & 5\!,553 & 480 & 750 \\ \hline
- ClueWebX10 & 12\!,010 & $90\!,000+$ & 56\!,223 & $7\!,410$ & $10\!,210$ \\
-\hline
-\end{tabular}
-\end{center}
-\caption{Average query latency (in ms) of 12-term queries with exact algorithms using 12  threads. 
-None of the algorithms meets  real-time SLAs. }
-\label{tab:safe-latency}
-\end{table}
 
 Our first experiment shows that none of the exact algorithms meets a real-time SLA for  verbose queries. 
-Table~\ref{tab:safe-latency} depicts the mean processing latencies of 12-term queries with 12 worker 
-threads (i.e., a single query fully exploits the multi-core CPU). Most of the algorithms complete within 
-%500 ms to 
-1 second for on the {\cw} dataset, but run for many seconds on \cwten. 
+When processing 12-term queries with 12 worker threads (i.e., a single query fully exploits the multi-core CPU), most of the algorithms complete within 1 second. 
 {\pRA} is the fastest algorithm in this setting, whereas
 \pNRA\/ is much worse than the other algorithms. Its average latency exceeds 
-13 seconds on \cw\/ and 1.5 minutes on \cwten.
-
+13 seconds. For lack of space, these results are not presented here.
 We will revisit the algorithms' execution dynamics -- namely, how fast they accrue their results -- 
 as we study approximate algorithms in the sequel. 
  
@@ -203,156 +136,52 @@ We parameterize \alg, \pRA, \pNRA, and \sNRA\/ with $\Delta=10$ ms.
 This yields high recall in all four algorithms,  and satisfactory performance (meeting SLA requirements) in \alg. 
 We instantiate \pBMW\/ with $f=5$ for high recall and $f=10$ for low recall.  
 
-{\bf Accuracy.\ } Table~\ref{tab:recall-mrr-distance} depicts the empirical accuracy results for 12-term queries. 
-%We see that the MRR-distance is high for the high-recall algorithms, 
-%metric is closely correlated with recall 
-%e.g., \alg\hi\/ yields $99\%$ recall and $0.002$ MRR-distance on \cwten. That is, these 
-%algorithms not only  retain a large fraction of the true results, but also succeed in retaining the highest ranked ones. 
+{\bf Accuracy.\ } All high-recall algorithms yield high recall (above $97\%$) and MRR-distance  (below $0.001$), while pBMW-low  suffers from low recall ($80\%$) and MRR-distance (0.048).
 
-\remove{
-This result is particularly interesting for \alg, which only computes partial scores. In practice, these scores are very close to the complete ones. 
-In our experiments, on average, $93\%$ of the top-k documents have a correct score at the end of the execution. The average Pearson correlation
- between the correct scores and the partial scores is $0.999$.%, whereas the average Kendall's $\tau$ rank correlation is $0.86$. 
-
-
-Summing up, under certain parameter choices the approximate algorithms achieve very high accuracy. We now focus on their performance. 
-}
-  
-\begin{table*}[htbp]
-\centering
-\begin{tabular}{| c | c | c | c | c | c | c |}
-\hline
-  & \alg\hi &  \pRA\hi & \pNRA\hi & \sNRA\hi & \pBMW\hi & \pBMW\lo \\ \hline
-  \cw & 
-   97.5\%  &  98.5\%  & 98.5\%  & 99\%   & 97.5\% & 80\%  
-  % 97.5\% / 0.004 &  98.5\% / 0.002 & 98.5\% / 0.002 & 99\% / 0.001  & 97.5\% / 0.009 & 80\% / 0.048 
-  \\ \hline
-  \cwten & 
-  99\%  & 99\%  & 99\%  & 99\%  & 97\%  & 79.9\%  
-  % 99\% / 0.002 & 99\% / 0.001 & 99\% / 0.001 & 99\% / 0.001  & 97\% / 0.009 & 79.9\% / 0.099 
-  \\ \hline
-\end{tabular}
-%\caption{Recall / MRR-distance induced by the approximate algorithms for 12-term queries.}
-\caption{Recall of approximate algorithms for 12-term queries.}
-\label{tab:recall-mrr-distance}
-\end{table*}
 
 {\bf Latency.\ } 
 Figure~\ref{fig:terms-scaling} depicts the scaling of single-query latency of the approximate algorithms  
 as the number of terms scales from $1$ to $12$. The number of workers in each test 
 is equal to the number of terms (for \alg, \pRA, and \pNRA, this allows maximal parallelism). 
 
-Figure~\ref{fig:terms-scaling}(a) and Figure~\ref{fig:terms-scaling}(b) present, respectively, the  mean and  
-$95\%$ latencies of queries on  {\cw}. The latter captures the so-called ``tail latency'' of 
-the slowest $5\%$ of the queries;  Figure~\ref{fig:terms-scaling}(c) depicts the mean latency
-for \cwten.
-%
-\alg\/ outperforms its competitors on all query sizes. The margin is especially big for verbose queries
-($5+$ terms). \alg's average query latency scales perfectly with the dataset size, 
-remaining below $180$ ms for all query lengths for both \cw\/ and \cwten.  
-%In other words, \alg's result set solidifies after processing 
-%a similar number of postings, 
-% even when the overall index size grows $10$x. 
-Its  $95\%$ latency is below $500$ ms. 
+%We also measured the $95\%$ latencies of queries on  {\cw}, which captures the so-called ``tail latency'' of the slowest $5\%$ of the queries;  \alg\/ outperformed its competitors on all query sizes. The margin was especially big for verbose queries ($5+$ terms). We omitted this result for lack of space. 
 
 
-\begin{figure*}[tbh]
-\centering
-\begin{tabular}{ccc}
-      \begin{subfigure}[t]{0.3\textwidth}
-         \includegraphics[width=\textwidth]{figures/latency_12threads_clueweb.pdf}
-        \caption[]{Average, \cw}
-      \end{subfigure}     
-
-	\begin{subfigure}[t]{0.3\textwidth}
-    	\includegraphics[width=\textwidth]{figures/latency_95th_percentile_clueweb.pdf}
-	\caption{95\%, \cw}
-    \end{subfigure}  
-
-    \begin{subfigure}[t]{0.3\textwidth}
-    \includegraphics[width=\textwidth]{figures/latency_12threads_cluewebX10.pdf}
-	\caption{Average, \cwten}
-    \end{subfigure}  
-\end{tabular}
-\caption{Top-k ($k=1000$) query latency scaling with the number of query terms. 
-The intra-query parallelism is equal to the number of terms in all algorithms. }
-\label{fig:terms-scaling}
-\end{figure*}
-
-\commentOut{
 \begin{figure}[tbh]
 \centering
-\begin{tabular}{ccc}
-      \begin{subfigure}[t]{0.3\textwidth}
-         \includegraphics[width=\textwidth]{figures/throughput_12threads_clueweb.pdf}
-      \end{subfigure}      
-\end{tabular}
-\caption{Top-k query throughput scaling with the number of query terms. The intra-query parallelism 
-is equal to the number of terms in all parallel algorithms.}
-\label{fig:throughput-scaling}
+\includegraphics[width=9cm]{figures/latency_12threads_clueweb.pdf}
+\caption{\small Top-k ($k=1000$) average query latency scaling with the number of query terms. 
+The intra-query parallelism is equal to the number of terms. }
+\label{fig:terms-scaling}
 \end{figure}
-}
 
-
-In contrast, \pRA\/ exhibits much weaker scalability. For example, for $12$-term queries it is slower than \alg\
-by more than $2$x 
-when applied to \cw, and by more than $10$x on \cwten. We explain this by the cost of evaluating the complete 
+\pRA\/ exhibits much weaker scalability. For example, for $12$-term queries it is slower than \alg\
+by more than $2$x. We explain this by the cost of evaluating the complete 
 document scores in \pRA, which forces  intensive access to the secondary index. This translates to volumes of random 
 I/O that cannot be sustained even with modern SSD hardware. Note that this trend is the reverse of the one observed for \pRA\ex, 
-which outperforms \alg\ex\/ (Table~\ref{tab:safe-latency}). That is, \alg\/ spends much more work than \pRA\/ 
+which outperforms \alg\ex\/. That is, \alg\/ spends much more work than \pRA\/ 
 in order to collect the remaining $2.5\%$ of the exact result set. We revisit this phenomenon  below. 
 
-\remove{
-As an aside, note that \pRA\/ scales somewhat better if its whole working set fits into memory. 
-However, this is seldom the case when diverse queries are applied to a large index.
-%, e.g., when the same small set of queries is evaluated over and over again. 
-%This use case is of limited interest.  
-%besides, it does not manifest with the \cwten\/ dataset in statistically significant way. 
-} 
 
 We see that 
 \pBMW, the best-in-class algorithm in the literature, fails to match \alg's speed. For example, for 12-term queries, 
-\pBMW\hi\/ completes  within $630$ ms on average on \cw, and within as long as $9.9$ seconds on \cwten. \pBMW\lo, 
-which sacrifices $20\%$ of the recall for performance, only succeeds to improve these latencies by $10\%$ to $15\%$. 
-
-
-On \cw, the shared-nothing and unoptimized parallelization of NRA are weaker than all other alternatives:
+\pBMW\hi\/ completes  within $630$ ms on average. \pBMW\lo, 
+which sacrifices $20\%$ of the recall for performance, only succeeds to improve these latencies by $10\%$ to $15\%$.
+The shared-nothing and unoptimized parallelization of NRA are weaker than all other alternatives:
 \pNRA's  average latency for 12-term queries is $1$ second, and \sNRA's is $1.7$ seconds. 
-On the larger dataset, \pNRA\ and \sNRA\ are still poorer than \alg, but perform better than \pBMW. 
-This is thanks to the high scalability and early-stopping nature of the approximate NRA approach.
-These results emphasize the necessity of sharing information among threads (unlike \sNRA) on the one hand,
-and the importance of \alg's locality optimizations, (which are missing in \pNRA), on the other. 
-Specifically, the background cleaning and local copies of \DMap\ and the lazy updates of \emph{UB} allow \alg\ to benefit from 
-local access to data that resides in hardware caches. 
 We omit \pNRA\/ and \sNRA\/ from further discussion. 
 
-\begin{figure*}[hbt]
+\begin{figure}[tbh]
 \centering
-\begin{tabular}{ccc}
-      \begin{subfigure}[t]{0.4\textwidth}
-         \includegraphics[width=\textwidth]{figures/cumulative_12threads_clueweb.pdf}
-        \caption[]{ClueWeb}
-        \label{fig:dynamics-clueweb}
-      \end{subfigure} 
-    
-& 
-	\hspace{0.1\textwidth}
-& 
-      \begin{subfigure}[t]{0.4\textwidth}
-      	\includegraphics[width=\textwidth]{figures/cumulative_12threads_cluewebX10.pdf}
-	    \caption{ClueWebX10}
-	\label{fig:dynamics-cluewebX10}
-      \end{subfigure}  
-
-\end{tabular}
-       \caption{Recall dynamics with elapsed time, for 12-term queries, with 12 worker threads.}
-       \label{fig:dynamics}
-\end{figure*}
+\includegraphics[width=9cm]{figures/cumulative_12threads_clueweb.pdf}
+\caption{Recall dynamics with elapsed time, for 12-term queries, with 12 worker threads.}
+\label{fig:dynamics}
+\end{figure}
 
 {\bf Recall dynamics.\ } 
 In order to understand how the top-k results get accrued by the different algorithms, we zoom in on the dynamics of query 
 recall over the running time. We focus on 12-term queries in a 12-worker configuration. 
-Figure~\ref{fig:dynamics}(a) and Figure~\ref{fig:dynamics}(b) present the results for the \cw\/ and \cwten\/ datasets, respectively. 
+Figure~\ref{fig:dynamics} presents the results. 
 Because the approximate versions of \alg\ and \pRA\ are  identical to the respective exact versions until they stop, 
 we show the dynamics of the exact versions only.  The same is not true for \pBMW, where $f$ impacts the algorithm's results from the outset.
 Hence, we show the dynamics of all three instances of \pBMW. 
@@ -366,51 +195,35 @@ most relevant documents   have complete  scores.
 at a near-linear rate. Obviously, the convergence rate of \pBMW\hi\/ and \pBMW\lo\/ is faster than that of \pBMW\ex. For both datasets, the first 
 two accrue results at similar rates until \pBMW\lo\/ stops at approximately $80\%$ recall. 
 
-%Figure~\ref{fig:terms-scaling}(c) zooms in on \alg's performance versus other variants of NRA: AllPar -- a na\"{\i}ve parallelization  (without the initial sequential phase),  Seq -- a sequential implementation, and SharedState -- a version of \alg\ that does not use local \TMap\/s. Neither of the first two scales with real-time latency. Interestingly, AllPar is slower than Seq, underscoring the importance of aggressive pruning prior to starting the concurrent execution. SharedState is substantially faster, but fails to utilize the hardware cache efficiently due to lack of locality. It thus lags behind \alg\/ by approximately $35\%$ for long queries. 
 {\bf Parallelism.\ } 
 %We next study the scaling of query latency with  intra-query parallelism. 
 We next consider  $12$-term queries with a number of threads varying from $1$ to $12$. 
-The results appear in Figure~\ref{fig:threads-scaling}(a) (for \cw) and Figure~\ref{fig:threads-scaling}(b) (for \cwten). The latter depicts only \alg\/ and \pRA\/ 
-because none of the \pBMW\/ instances scales close to real-time performance.  The left-most data point in each curve refers to the performance of 
+The results appear in Figure~\ref{fig:threads-scaling}.  The left-most data point in each curve refers to the performance of 
 the respective sequential algorithm.
 
 \alg\ requires some level of parallelism in order to achieve real-time speed, e.g., its sequential
-latency on \cw\/  is $840$ ms, which is  above typical SLA requirements. Most of the gain is achieved at low-parallelism levels (2 threads suffice). 
+latency is $840$ ms, which is  above typical SLA requirements. Most of the gain is achieved at low-parallelism levels (2 threads suffice). 
 On the other hand, for \pBMW, much higher parallelism is essential -- its latency is inversely proportional to the number of threads. Thus, \alg\ is not only faster 
 than \pBMW, but also requires less resources, which benefits throughput as we next show.
-%offers the system designer a latency-throughput tradeoff if some slack in latency can be tolerated. 
 
-\begin{figure*}[tbh]
+\begin{figure}[tbh]
 \centering
-\begin{tabular}{ccc}
-      \begin{subfigure}[t]{0.4\textwidth}
-         \includegraphics[width=\textwidth]{figures/latency_12terms_clueweb.pdf}
-        \caption[]{ClueWeb}
-    %    \label{fig:varying-threads-6-terms}
-      \end{subfigure} 
-& 
-	\hspace{0.1\textwidth}
-& 
-      \begin{subfigure}[t]{0.4\textwidth}
-      \includegraphics[width=\textwidth]{figures/latency_12terms_cluewebX10.pdf}
-	  \caption{ClueWebX10}
-	% \label{fig:varying-threads-12-terms}
-      \end{subfigure}
-\end{tabular}
+\includegraphics[width=9cm]{figures/latency_12terms_clueweb.pdf}
 \caption{Top-k query latency scaling with intra-query parallelism, for $12$-term queries.}
 \label{fig:threads-scaling}
-\end{figure*}
+\end{figure}
+
 
 \begin{table}[htb]
 \centering
-\begin{tabular}{| c | c  | c | c | c | }
+\begin{tabular}{| c  | c | c | c | }
 \hline
-  & \alg\hi &  \pRA\hi & \pBMW\hi & \pBMW\lo \\  \hline
-  \cw &  12.5 &  10.9 & 5.95 &  6.64 \\ \hline
-  \cwten & 9.6 & 1.8 & 0.38 & 0.42 \\
+  \alg &  \pRA & \pBMW & \pBMW \\ 
+  \hi &  \hi & \hi & \lo \\ \hline
+  12.5 &  10.9 & 5.95 &  6.64 \\ 
 \hline
 \end{tabular}
-\caption{Average throughput (in queries per second) of the approximate algorithms on a query distribution measured for voice queries in production. }
+\caption{Average throughput (in queries per second) on a query distribution measured for voice queries in production. }
 \label{tab:thpt}
 \end{table}
 
@@ -421,7 +234,6 @@ The queries are generated as follows: we first sample a query length $\ell$ from
 select a query uniformly at random among all the length-$\ell$ queries in the complete set of  $1200$ AOL queries. 
 
 Table~\ref{tab:thpt} depicts the results of running this query mix on a shared worker pool  of $12$ threads. 
-Here too, \alg\/ improves over its competitors by a wide margin, especially on \cwten, where its throughput
-is 25x that of \pBMW\hi. This  advantage is thanks to a combination of \alg's speed and lower resource utilization.
+Here too, \alg\/ improves over its competitors by a wide margin. This  advantage is thanks to a combination of \alg's speed and lower resource utilization.
 
  

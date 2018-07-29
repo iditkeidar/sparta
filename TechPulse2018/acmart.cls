@@ -177,23 +177,23 @@ Computing Machinery]
 \ifx\ACM@fontsize\@empty
   \ifcase\ACM@format@nr
   \relax % manuscript
-    \def\ACM@fontsize{9pt}%
+    \def\ACM@fontsize{6pt}%
   \or % acmsmall
-    \def\ACM@fontsize{10pt}%
+    \def\ACM@fontsize{6pt}%
   \or % acmlarge
-    \def\ACM@fontsize{10pt}%
+    \def\ACM@fontsize{6pt}%
   \or % acmtog
-    \def\ACM@fontsize{9pt}%
+    \def\ACM@fontsize{6pt}%
   \or % sigconf
-    \def\ACM@fontsize{9pt}%
+    \def\ACM@fontsize{6pt}%
   \or % siggraph
-    \def\ACM@fontsize{9pt}%
+    \def\ACM@fontsize{6pt}%
    \or % sigplan
-    \def\ACM@fontsize{10pt}%
+    \def\ACM@fontsize{6pt}%
    \or % sigchi
-    \def\ACM@fontsize{10pt}%
+    \def\ACM@fontsize{6pt}%
   \or % sigchi-a
-    \def\ACM@fontsize{10pt}%
+    \def\ACM@fontsize{6pt}%
   \fi
 \fi
 \ClassInfo{\@classname}{Using fontsize \ACM@fontsize}
@@ -489,53 +489,53 @@ Computing Machinery]
 \RequirePackage{geometry}
 \ifcase\ACM@format@nr
 \relax % manuscript
-   \geometry{letterpaper,head=13pt,
+   \geometry{letterpaper,head=3pt,
    marginparwidth=6pc,heightrounded}%
 \or % acmsmall
    \geometry{twoside=true,
-     includeheadfoot, head=13pt, foot=2pc,
-     paperwidth=6.75in, paperheight=10in,
+     includeheadfoot, head=3pt, foot=2pc,
+     paperwidth=10.5in, paperheight=10in,
      top=58pt, bottom=44pt, inner=46pt, outer=46pt,
      marginparwidth=2pc,heightrounded
    }%
 \or % acmlarge
-   \geometry{twoside=true, head=13pt, foot=2pc,
-     paperwidth=8.5in, paperheight=11in,
+   \geometry{twoside=true, head=3pt, foot=2pc,
+     paperwidth=10.5in, paperheight=11in,
      includeheadfoot,
      top=78pt, bottom=114pt, inner=81pt, outer=81pt,
      marginparwidth=4pc,heightrounded
      }%
 \or % acmtog
-   \geometry{twoside=true, head=13pt, foot=2pc,
-     paperwidth=8.5in, paperheight=11in,
+   \geometry{twoside=true, head=3pt, foot=2pc,
+     paperwidth=10.5in, paperheight=11in,
      includeheadfoot, columnsep=24pt,
      top=52pt, bottom=75pt, inner=52pt, outer=52pt,
      marginparwidth=2pc,heightrounded
      }%
 \or % sigconf
-   \geometry{twoside=true, head=13pt,
-     paperwidth=8.5in, paperheight=11in,
+   \geometry{twoside=true, head=3pt,
+     paperwidth=10.5in, paperheight=11in,
      includeheadfoot, columnsep=2pc,
      top=57pt, bottom=73pt, inner=54pt, outer=54pt,
      marginparwidth=2pc,heightrounded
      }%
 \or % siggraph
-   \geometry{twoside=true, head=13pt,
-     paperwidth=8.5in, paperheight=11in,
+   \geometry{twoside=true, head=3pt,
+     paperwidth=10.5in, paperheight=11in,
      includeheadfoot, columnsep=2pc,
      top=57pt, bottom=73pt, inner=54pt, outer=54pt,
      marginparwidth=2pc,heightrounded
      }%
 \or % sigplan
-   \geometry{twoside=true, head=13pt,
-     paperwidth=8.5in, paperheight=11in,
+   \geometry{twoside=true, head=3pt,
+     paperwidth=10.5in, paperheight=11in,
      includeheadfoot=false, columnsep=2pc,
      top=1in, bottom=1in, inner=0.75in, outer=0.75in,
      marginparwidth=2pc,heightrounded
      }%
 \or % sigchi
-   \geometry{twoside=true, head=13pt,
-     paperwidth=8.5in, paperheight=11in,
+   \geometry{twoside=true, head=3pt,
+     paperwidth=10.5in, paperheight=11in,
      includeheadfoot, columnsep=2pc,
      top=66pt, bottom=73pt, inner=54pt, outer=54pt,
      marginparwidth=2pc,heightrounded
@@ -1185,7 +1185,7 @@ Computing Machinery]
 \def\acmArticleSeq#1{\def\@acmArticleSeq{#1}}
 \acmArticleSeq{\@acmArticle}
 \def\acmYear#1{\def\@acmYear{#1}}
-\acmYear{\the\year}
+\acmYear{}
 \def\acmMonth#1{\def\@acmMonth{#1}}
 \acmMonth{\the\month}
 \def\@acmPubDate{\ifcase\@acmMonth\or
@@ -1197,7 +1197,7 @@ Computing Machinery]
 \def\acmSubmissionID#1{\def\@acmSubmissionID{#1}}
 \acmSubmissionID{}
 \def\acmISBN#1{\def\@acmISBN{#1}}
-\acmISBN{978-x-xxxx-xxxx-x/YY/MM}
+\acmISBN{978-x-xxxx-xxxx-x/YY/MFM}
 \def\acmDOI#1{\def\@acmDOI{#1}}
 \acmDOI{10.1145/nnnnnnn.nnnnnnn}
 \newif\if@ACM@badge
@@ -1595,14 +1595,13 @@ Computing Machinery]
       \if@printpermission\@copyrightpermission\par\fi
     \fi
     \if@ACM@manuscript\else
-       \if@ACM@journal\else % Print the conference information
-         {\itshape \acmConference@shortname, \acmConference@date, \acmConference@venue}\par
+       \if@ACM@journal\par
        \fi
     \fi
     \if@printcopyright
       \copyright\ \@copyrightyear\ \@copyrightowner\\
     \else
-     \@copyrightyear.\
+     \@copyrightyear\
     \fi
     \if@ACM@manuscript
       Manuscript submitted to ACM\\
@@ -1617,19 +1616,18 @@ Computing Machinery]
             \emph{\@acmBooktitle}%
           \fi
           \ifx\@acmDOI\@empty
-          .
           \else
             , \@formatdoi{\@acmDOI}.
           \fi\\
         \else
           \if@ACM@journal
-            \@permissionCodeOne/\@acmYear/\@acmMonth-ART\@acmArticle
+            \@permissionCodeOne/\@acmMonth-ART\@acmArticle
             \ifx\@acmPrice\@empty\else\ \$\@acmPrice\fi\\
             \@formatdoi{\@acmDOI}%
           \else % Conference
-            \ifx\@acmISBN\@empty\else ACM~ISBN~\@acmISBN
-            \ifx\@acmPrice\@empty.\else\dots\$\@acmPrice\fi\\\fi
-            \ifx\@acmDOI\@empty\else\@formatdoi{\@acmDOI}\fi%
+            \ifx\@acmISBN\@empty
+            \ifx\@acmPrice\@empty
+            \ifx\@acmDOI\@empty
           \fi
         \fi
       \fi}
@@ -2234,10 +2232,6 @@ Computing Machinery]
     \fancyfoot[C]{\if@ACM@printfolios\footnotesize\thepage\fi}%
     \fancyhead[LO]{\ACM@linecountL\@headfootfont\shorttitle}%
     \fancyhead[RE]{\@headfootfont\@shortauthors\ACM@linecountR}%
-    \fancyhead[LE]{\ACM@linecountL\@headfootfont\acmConference@shortname,
-      \acmConference@date, \acmConference@venue}%
-    \fancyhead[RO]{\@headfootfont\acmConference@shortname,
-      \acmConference@date, \acmConference@venue\ACM@linecountR}%
   \fi
   \if@ACM@sigchiamode
      \fancyheadoffset[L]{\dimexpr(\marginparsep+\marginparwidth)}%
@@ -2348,7 +2342,7 @@ Computing Machinery]
   {-.75\baselineskip \@plus -2\p@ \@minus -.2\p@}%
   {.25\baselineskip}%
   {\@subsecfont}}
-\renewcommand\subsubsection{\@startsection{subsubsection}{3}{10pt}%
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{9pt}%
   {-.5\baselineskip \@plus -2\p@ \@minus -.2\p@}%
   {-3.5\p@}%
   {\@subsubsecfont\@adddotafter}}

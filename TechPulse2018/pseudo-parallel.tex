@@ -1,5 +1,5 @@
 
-\begin{algorithm*}[tbh]
+\begin{algorithm*}[htb]
 \small
 \begin{multicols}{2}
 \begin{algorithmic}[1]
@@ -7,7 +7,7 @@
 \State add {\sc processTerm($i$)} to job queue \label{l:par-init-job}
 %\State \TMap[i] $\leftarrow$ pointer to \DMap
 \EndFor
-\State spawn up to $m$  threads to run jobs from queue\label{l:start-threads}
+\State spawn up to $m$ execution threads to run jobs from queue\label{l:start-threads}
 \State wait until \RAStop
 %\State	
 	\Comment all candidates  are in \DMap
@@ -31,12 +31,13 @@
   % 	\Comment update term's upper bound \label{l:seq-update-ub}
 %\EndIf
 %\Statex 
-	\If{\RAStop\, $\wedge\, |\DMap | < \Phi$} %\, \wedge\ \ \ \ 
-		\Statex \Comment \DMap\  shrinking and small
-		\If{$\TMap[i]=\DMap$}  \label{l:hash-start}
-			\State {\sc initMap($i$)}
-	  	\EndIf 
-	\EndIf \label{l:hash-end}
+	\If{\RAStop\, $\wedge\, |\DMap | < \Phi\, \wedge\,  \TMap[i]=\DMap$}  \label{l:hash-start}
+%\Statex		
+	\Comment \DMap\  shrinking, small, and still in use
+%		\If{\TMap[i]=\DMap} \label{l:hash-start}
+		\State {\sc initMap($i$)}
+%  	\EndIf 
+\EndIf \label{l:hash-end}
 %    \Statex
 	\For{$j=1$ to \emph{segSize}} 
 %	\Statex \Comment evaluate documents in segment
@@ -50,9 +51,9 @@
 				\Else\ continue
 				\EndIf
     			\EndIf
-        			\State $D.score[i] \leftarrow$ score \Comment update term  score
+        			\State $D.score[i] \leftarrow$ score \Comment update $D$'s term $t_i$ score
 			\If{$\Sigma_{j=1}^{m} D.score[j] >  \Theta$}  
-		%		\Statex \Comment $D$ may belong in heap
+			\Comment $D$ belongs in heap
 				\State {\sc update\_heap}($D$)
 			\EndIf	
 	\EndFor % $id$ is last in chunk
@@ -63,14 +64,15 @@
 \Statex
 
 \Procedure{initMap}{$i$}	
-\Statex		
+%\Statex		
 	\Comment create local copy of \DMap\ %for evaluating term $i$
         			\State \TMap[i] $\leftarrow$ new hash map
-    			\ForAll{$D \in$ \DMap\ s.t. $D.score[i] = 0$} 
+    			\ForAll{$D \in$ \DMap\ where $D.score[i] = 0$} 
             			\State add $D$ to \TMap[i] \label{l:hash-chash}
             		\EndFor
 \EndProcedure
-%\Statex
+\Statex 
+\Statex
 \Procedure{update\_heap}{$D$} 
 \State lock \DHeap \label{l:lock-heap}
 \If{$D\not\in$\DHeap} 
@@ -80,10 +82,10 @@
 		\State move $d$ to correct place in heap \label{l:fix-heap}
 	\EndFor
 	\If{$|\DHeap | > k $} 
-		\State remove lowest scored doc %from \DHeap
+		\State remove doc with the lowest score from \DHeap
 	\EndIf
 	\If{$|\DHeap | = k $} 
-		\Statex \Comment set $\Theta$ to $k^{th}$ lowest score
+		\Comment set $\Theta$ to $k^{th}$ lowest score
 		\State  $\Theta \leftarrow$ lowest score in \DHeap
 	\EndIf
 	\State \emph{HeapUpdateTime} $\leftarrow$ current time 
@@ -93,12 +95,10 @@
 %
 %
 \Statex 
-\Statex
 \Procedure{cleaner}{} \label{l:clean-start}
 %\While{\DMap\ has more than $k$ entries}
 \If{$|\DMap | > \Phi $} 
- \Comment shrink \DMap 
- \State \Comment keep only docs that are still relevant
+\Statex \Comment shrink \DMap; keep only documents that are still relevant
 \State \LDMap\ $\leftarrow$ new hash map \label{l:clean-local-copy}
 %a local copy of \DMap 
 \For{every doc $D$ $\in$ \DMap} 
@@ -109,17 +109,15 @@
 \State replace \DMap\ by \LDMap \label{l:clean-replace}
 \EndIf
 \Statex
-\Statex \Comment check algorithm's stopping conditions
+\Statex \Comment check stopping conditions; in exact version $\Delta=\infty$
 \State \emph{Stop2} $\leftarrow \big( |\DMap| = |\DHeap| \big)$ \label{l:clean-stop-cond}
-\If{\emph{Stop2} $\vee\ $ \emph{HeapUpdateTime} $ + \Delta < $ now} 
-\Statex  \Comment in exact version $\Delta=\infty$
+\If{\emph{HeapUpdateTime} $ + \Delta < $ now $\vee\ $ \emph{Stop2}} 
 \State \emph{done} $\leftarrow$ true
 \Else\ add {\sc cleaner()} to job queue
 \EndIf
 \label{l:clean-end}
 %\EndWhile
 \EndProcedure 
-\Statex
 \end{algorithmic}
 \end{multicols}
 \caption{\alg\ algorithm.}

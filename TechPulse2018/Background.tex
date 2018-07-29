@@ -11,46 +11,38 @@ We focus on the fundamental primitive of top-k retrieval, commonly used by searc
 %$D$ based on an estimation of its relevance to the query $q$.
 Given a query $q$, the primitive retrieves the top $k$ scored documents in the corpus according to a scoring function $\textit{score}(D, q)$.  
 %
-More specifically, a \emph{query} is given as a list of terms (to search for). Given an $m$-term query $q = t_1, \dots t_m$ and a document $D$, the score of $D$ for query $q$ is 
-%\begin{equation} \label{eq:score}
-$\textit{score}(D, q) \triangleq \sum_{i=1}^m ts(D, t_i)$ 
-%\nonumber
-%\end{equation}
-%\[ \textit{score}(D, q) \triangleq \sum_{i=1}^m ts(D, t_i).\]  
+More specifically, a \emph{query} is given as a list of terms (to search for). Given an $m$-term query $q = t_1, \dots t_m$ and a document $D$, the score of $D$ for query $q$ is $\textit{score}(D, q) \triangleq \sum_{i=1}^m ts(D, t_i)$, 
 where $ts(D, t_i)$ is the term score of term $t_i$ to document $D$. 
 
 An \emph{exact} top-k retrieval primitive returns a list of the $k$ documents with the highest scores for the query.
 An \emph{approximate} solution returns a list of $k$ results that approximates the top $k$. 
 Let $L$ be the exact list of top-k documents sorted in decreasing order of document scores,  
 and let $A$ be the list returned by an approximate solution. 
-The quality (or accuracy) of  $A$ is measured by its
-%two metrics. First, 
-\emph{recall}, which is  the fraction of the actual top-k included in $A$.
+The quality (or accuracy) of the approximation is measured by two metrics. 
+First, \emph{recall} is  the fraction of the actual top-k included in $A$.
 %\begin{equation} \label{eq:recall}
 %\dfrac{\mid L \cap A \mid}{k}
 %\nonumber
 %\end{equation}
-\remove{
-Second, the
-MRR-distance captures the proximity between two ordered sequences, where the topmost documents matter the most.  
-Specifically, 
-the \emph{MRR weight} of the $i$-th item in the list is $1/i$, and the \emph{MRR-distance}~\cite{Broder:2003}  is the sum of MRR weights of all documents missing in $A$, normalized by the list's MRR weight:
-\begin{equation} \label{eq:mrr}
-\textit{MRR-distance}(L,A) \triangleq \dfrac{\sum_{i=1,d_i \in L \setminus A}^k 1/i}{\sum_{i=1}^k 1/i}.
-\nonumber
-\end{equation}
-}
+Second, the \emph{MRR weight} of the $i$-th item in the list is $1/i$, and the \emph{MRR-distance}~\cite{Broder:2003} of the approximate solution is the sum of MRR weights of all documents that are in $L$ and not in $A$, normalized by the MRR weight of the entire list.
+%\begin{equation} \label{eq:mrr}
+%\textit{MRR-distance}(L,A) \triangleq \dfrac{\sum_{i=1,d_i \in L \setminus A}^k 1/i}{\sum_{i=1}^k 1/i}
+%\nonumber
+%\end{equation}
 
+%\noindent
+%Intuitively, MRR-distance captures the proximity between two ordered sequences, %i.e., how far the algorithm's result deviates from the exact top-k order, 
+%where the topmost documents matter the most.  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Algorithm 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Background}
-\label{sec:background}
+%\section{Background}
+%\label{sec:background}
 
 %\alg\ belongs to the family of \emph{dynamic pruning algorithms}, and is closely based on Fagin et al.'s Threshold Algorithm~\cite{Fagin:2003}. In this section, 
-We  provide background on  state-of-the-art top-k algorithms and Fagin et al.'s TA~\cite{Fagin:2003}.
+%We now provide background on  state-of-the-art top-k algorithms and Fagin et al.'s Threshold Algorithm~\cite{Fagin:2003}.
 %that we compare our work to. 
 
 \subsection{State-of-the-art Top-k Algorithms}
@@ -74,36 +66,6 @@ TA uses  term posting lists sorted in decreasing order of term score.
 To evaluate a query $q = t_1, \dots t_m$, it dynamically traverses the $m$ corresponding posting lists of the query terms in an interleaved manner. 
 An \emph{upper bound} vector, $UB$[$m$], 
 bounds the term scores of documents that were not yet visited in each term's posting list. 
-%Table~\ref{table:threshold-ds} lists the data structures used by TA, and 
-%
-Figure~\ref{fig:lists} shows
-an example posting list traversal and the corresponding values in UB. Here, $m=3$ and the scores of the last traversed items in each list are $UB$[1] = 38, $UB$[2] = 32, and $UB$[3] = 41. 
-
-\remove{
-
-\begin{table}[t]
-%\centering
-\begin{tabular}{ l l }
-\hline
-$\DHeap$   	& current top-k documents \\
-$\Theta$  & threshold -- $k^{th}$ score in $\DHeap$ \\
-$UB[m]$  & upper bounds on non-traversed postings\\ 
-%\RAStop  & UB stopping condition, $\sum_{i=1}^m UB[i] \le \Theta$ \\ 
-\hline
-\end{tabular}
-\caption{TA's data structures for an $m$-term query.\vspace{-5mm}}
-\label{table:threshold-ds}
-\end{table}
-
-} % remove
-
-
-\begin{figure*}[tbh]
-\centering
-\includegraphics[width=\linewidth]{figures/postingsLists}
-\caption{Traversal example in  RA and NRA variants of the Threshold Algorithm (TA). Posting lists are sorted by decreasing term score. Vertical arrows depict  iterator positions.  UB  holds upper bounds on the terms' contributions to scores of untraversed documents. The RA document heap is ordered by full document score, and the NRA heap  by partial score (lower bound).}
-\label{fig:lists}
-\end{figure*}
 
 %Additionally, and similarly to DAAT-based algorithms, 
 TA also maintains a threshold $\Theta$, i.e., the score of the $k$-th document in the heap.
@@ -114,10 +76,7 @@ Fagin et al.\ present two flavors of the algorithm, which we now describe.
 
 \subsubsection{Random Access (RA)} 
 The RA variant assumes that given a document id, we can use random access in order to obtain all its term scores in order to compute its total score. It thus computes the full score for every document it encounters. If the score is higher than the threshold, it is inserted into the heap. Then, $\Theta$ and the corresponding term's UB are updated. The algorithm stops when 
-the following \emph{upper bound stopping condition} holds:
-\begin{equation} \label{eq:stop}
-\RAStop \triangleq \sum_{i=1}^m UB[i] \le \Theta.
-\end{equation}
+the following \emph{upper bound stopping condition} holds: $\sum_{i=1}^m UB[i] \le \Theta$
 
 At this point, no non-traversed document can achieve a high enough score to be included in the heap. RA's output is the set of documents in the heap, ordered by their scores.
 
@@ -140,17 +99,11 @@ maintains lower and upper bounds for candidate documents based on {\em partially
 %DC It stops when the lower bound $\Theta$ on all candidates in the top-k heap is larger than the upper bounds of all other potential candidates. 
 %In more detail, 
 %NRA tracks the partial scores of the documents it encounters in the course of its traversal. 
-For a document $D$ and a term $t_i$, we define the upper bound $UB(D, t_i)$ to be the term score $ts(D, t_i)$ if it has already been encountered, and otherwise $UB[i]$, which provides an upper bound on $t_i$'s term score. We similarly define its lower bound $LB(D, t_i)$ to be the term score if it is known, and zero otherwise. We then aggregate these scores to compute the document's upper and lower bounds:
-\[
-UB(D) \triangleq \sum_{i=1}^m UB(D, t_i) \ ; \  
-LB(D) \triangleq \sum_{i=1}^m LB(D, t_i).
-\] 
-E.g., in Figure~\ref{fig:lists}, $UB(D_{57}) = 38+40+41 = 119$ and $LB(D_{57}) = 40+41 = 81$, whereas its actual score  is $11+ 40+41 = 92$.
-
+For a document $D$ and a term $t_i$, we define the upper bound $UB(D, t_i)$ to be the term score $ts(D, t_i)$ if it has already been encountered, and otherwise $UB[i]$, which provides an upper bound on $t_i$'s term score. We similarly define its lower bound $LB(D, t_i)$ to be the term score if it is known, and zero otherwise. We then aggregate these scores to compute the document's upper and lower bounds.
 NRA maintains the top-k heap according to the document \emph{lower bounds}, and $\Theta$ holds the smallest value among them. 
 Its output is the set of documents in the heap, sorted by LB.
 
-NRA's safe variant stops when (1) the \RAStop\ stopping condition of RA holds, 
+NRA's safe variant stops when (1) the stopping condition of RA holds, 
 and (2) all the  visited documents that are not in the heap have \emph{upper bounds} lower than or equal to $\Theta$. These two conditions are complementary: (1) ensures that no non-traversed documents are among the final top-k, whereas (2) ensures the same for  traversed documents that are not among the current top-k. 
 While NRA does return the exact top-k results, unlike RA, it does not necessarily preserve the order among them, since some returned documents may be partially scored. As in RA, the approximate variant  stops after the heap has not changed for $\Delta$ ms.
 
