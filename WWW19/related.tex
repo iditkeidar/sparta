@@ -4,8 +4,16 @@
 Verbose queries challenge standard top-k processing techniques in terms of runtime latency. Huston and Croft \cite{Huston:2010} evaluated several sequential query processing techniques for verbose queries, concluding that the most effective one is to simply reduce the length of the query by omitting stop-words or ``stop-structure'' expressions. 
 In this work we ignore the query pre-processing phase and consider the query as a bag of words given after textual analysis.
 
-Crane et al.~\cite{Crane:2017} showed that  algorithms that traverse documents in order of id 
-are susceptible to tail queries that may take orders of magnitude longer than the median query; approximate query evaluation in WAND and BMW does not significantly reduce the variance. Moreover, in agreement with our findings, they showed that algorithms that access  posting lists in decreasing score order are less sensitive to tail queries due to their effective early termination capability. 
+Crane et al.~\cite{Crane:2017} showed that  document-order algorithms 
+are susceptible to tail queries that may take orders of magnitude longer than the median query; approximate query evaluation in WAND and BMW does not significantly reduce the variance. Moreover, in agreement with our findings, they showed that score-order algorithms  are less sensitive to tail queries due to their effective early termination capability. 
+
+\inred{
+Mackenzie et al.~\cite{parallel-jass} have parallelized JASS, a score-order algorithm, and use different heuristics to determine when to stop traversing term lists and return the results. 
+Like \alg, they consider approximate computaions. We show that \alg\ achieves better performance and better recall than this approach. This is thanks to a number of features we employ in \alg, 
+including reducing the document map for better locality,  a fine-tuned stopping condition, and 
+storing the top scores in a document heap instead of discovering them from the document map at the end of the traversal. 
+}
+
 
 %With the rapid development in multiprocessor hardware, a new line of research has emerged on exploiting multi-threaded programing for top-k retrieval. 
 Some previous works,  e.g.,~\cite{Tatikonda:2011,Liu:2018:GUC:3178487.3178512}, studied parallel computation  of conjunctive queries  via posting list intersection. 
@@ -25,7 +33,7 @@ Other works~\cite{Ao:2011,Liu:2018:GUC:3178487.3178512} have explored using GPU 
 focused on adaptively choosing whether to use a CPU or a GPU based on the query's difficulty, and~\cite{Ao:2011} focused on optimizing throughput rather than latency. 
 In contrast, our work leverages standard server-grade multi-threaded CPUs. 
 
-The Threshold Algorithm and its variants \cite{Fagin:2001,Fagin:2003,Akbarinia:2007} have been extensively studied by the database community, and have been applied in many relational database systems (for a comprehensive survey see \cite{ilyas2008survey}). 
+The Threshold Algorithm and its variants \cite{Fagin:2003,Akbarinia:2007} have been extensively studied by the database community, and have been applied in many relational database systems (for a comprehensive survey see \cite{ilyas2008survey}). 
 Mamoulis et al.~\cite{Mamoulis:2007} observed two main phases during NRA processing -- the ``growing phase'', where the candidate list grows, and the ``shrinking phase'' where no new documents can end up in the top-k results, after the first stopping condition is met. They used different data structures for the two phases in order to minimize the number of accesses and the memory requirements. 
 Gursky et al.~\cite{Gursky:2008} also noticed the bottleneck in NRA computation derived from NRA's needs to maintain an extremely large number of partially scored candidates. They proposed several optimization methods for candidate list maintenance to speed up the search. One of their suggested approaches is to periodically remove irrelevant candidates from the candidate list, which we also do in \alg.
 %In contrast, \alg{} handles this bottleneck by dedicating a specific cleaning thread that keeps removing irrelevant candidates during the search process. 

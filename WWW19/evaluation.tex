@@ -1,8 +1,18 @@
 \section{Evaluation} \label{sec:eval}
 
-We compare the performance of \alg\ to the following algorithms: parallel BMW (\pBMW)~\cite{rojas2013efficient}, 
-the best-in-class multiprocessor implementation we are aware of, a parallel implementation of RA (\pRA),  a shared-nothing (partitioned) parallelization of NRA (\sNRA), and a
-na\"{\i}ve shared-state parallel implementation of NRA (\pNRA). 
+
+We compare the performance of \alg\ to the following multiprocessor algorithms: 
+\inred{
+\begin{description}
+\item[\pBMW]\cite{rojas2013efficient} -- parallel BMW,  
+the best-in-class parallelization of a document-order top-k algorithm; 
+\item[pJASS]\cite{parallel-jass} -- a recent parallelization of the JASS~\cite{Lin:2015} score-order retrieval algorithm; 
+\item[\pRA]-- a parallel implementation of RA;
+\item[\sNRA]--  a shared-nothing  parallelization of NRA; and 
+\item [\pNRA]-- a
+na\"{\i}ve shared-state parallel implementation of NRA. 
+\end{description}
+}
 Although our primary focus is on  approximate 
 algorithms, for completeness, we also experiment with their exact counterparts.
 %
@@ -45,6 +55,7 @@ Prior to each experiment, we flush the file system's page cache so all pages are
 %\subsubsection{Datasets}
 We  experiment with two document corpora. The first  is the TREC {\cw\/} dataset, 
 Category B ({\cw}09B)~\cite{ClueWeb09}, which is widely used for information retrieval research. This dataset includes approximately 50M web documents and takes up roughly 30GB of original content, uncompressed.
+\inred{
 The second corpus is a synthetic 10x scale-up of \cw, named \cwten, which we created to explore the algorithms' scalability 
 with the dataset size. 
 % \cwten\ is a superset of {\cw}09B.
@@ -54,6 +65,7 @@ The 450M synthetic documents in {\cwten\/} are generated as follows. Each docume
 so that the number of occurrences of a term $t_i$ with an original 
 global frequency rate of $F(t_i)$ is drawn from a geometric distribution with a stopping probability of $1-F(t_i)$. This  process preserves 
 the  term frequency distribution of {\cw\/} in \cwten.
+ }
  
 We use the popular Lucene open-source search engine~\cite{lucene} for text tokenization, posting list maintenance, 
 and term statistics retrieval.
@@ -89,7 +101,9 @@ Using integer arithmetics instead of floating-point significantly speeds up docu
 
 The specific algorithm implementations are as follows.
 
-\subsubsection{\pBMW}
+\subsubsection{Previously-suggested parallel search algorithms}
+
+\paragraph{\pBMW}
 Our implementation of {\pBMW} closely follows the description in~\cite{rojas2013distributing}. The algorithm partitions the execution of the 
 sequential BMW~\cite{Ding:2011} among multiple threads. Each thread handles a distinct subset of documents, and computes a local top-k 
 result. The algorithm then merges the partial results to obtain the final top-k. 
@@ -117,6 +131,12 @@ which yielded the best performance.
 The approximate version's pruning aggressiveness is  controlled by  a parameter 
 $f \geq 1$, which multiplies $\Theta$ to obtain a higher threshold for document score upper bounds~\cite{Broder:2003}. For $f=1$, the algorithm is exact.
 
+\inred{
+\paragraph{pJASS}
+Our implementation of pJASS  follows the description in~\cite{parallel-jass}. It traverses all posting lists in parallel, in score order, and accumulates the encountered scores 
+per-document in  \emph{docMap}. Each document is protected by a lock, and a thread that encounters a document locks it, adds the partial score from the term it traversed, and then unlocks it.
+The algorithm stops after a predefined number of posting-list entries are scanned.
+}
 
 \subsubsection{Parallel TA variants}
 
