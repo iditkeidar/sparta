@@ -33,29 +33,27 @@ name & value \\
  \RAStop&  $\sum_{i=1}^m UB[i] \le \Theta$ \\
 
  $UB(D)$ & $\sum_{i=1}^m \big( D.score[i] > 0$ $?$ $D.score[i] : UB[i] \big)$  \\
-   \hline
-  
-\end{tabular}
-\begin{tabular}{l l }
-\hline
-name & value \\
-\hline
+   %\hline
+  %\end{tabular}
+%\begin{tabular}{l l }
+%\hline
+%name & value \\
+%\hline
  \DMap & init empty  \\
  \HeapUpdateTime & init now \\
  \Done & init false \\
  \TMap[m] & init pointer to \DMap \\ 
   \LDMap & init empty \\ 
-  \\
-    \hline
+     \hline
 \end{tabular}
 \end{multicols}
-\caption{\alg's data structures and  initial values.\vspace{-5mm}}
+\caption{\alg's data structures and  initial values.}
 \label{alg:sparta-ds}
 \end{table}
 
 \begin{figure}[tbh]
 \centering
-\includegraphics[width=0.7\columnwidth]{figures/localData}
+\includegraphics[width=0.95\columnwidth]{figures/localData}
 \caption{\alg\/ data structures. The \DMap\ keeps track of partially scored documents; \LDMap\ and \TMap\ are local partial copies of \DMap.}
 \label{fig:sparta_ds}
 \end{figure}

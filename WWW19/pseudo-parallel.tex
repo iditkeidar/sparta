@@ -31,11 +31,15 @@
   % 	\Comment update term's upper bound \label{l:seq-update-ub}
 %\EndIf
 %\Statex 
-	\If{\RAStop\, $\wedge\, |\DMap | < \Phi$} %\, \wedge\ \ \ \ 
-		\Statex \Comment \DMap\  shrinking and small
-		\If{$\TMap[i]=\DMap$}  \label{l:hash-start}
-			\State {\sc initMap($i$)}
-	  	\EndIf 
+	\If{\RAStop\, $\wedge\, |\DMap | < \Phi \, \wedge\  \TMap[i]=\DMap$} \label{l:hash-start}
+%		\Statex \Comment \DMap\  shrinking and small
+%		\If{$\TMap[i]=\DMap$}  
+			\Statex \Comment  \DMap\  is shrinking and small -- create a local copy for term $i$
+			\State \TMap[i] $\leftarrow$ new hash map
+    			\ForAll{$D \in$ \DMap\ s.t. $D.score[i] = 0$} 
+            			\State add $D$ to \TMap[i] \label{l:hash-chash}
+            		\EndFor
+%	  	\EndIf 
 	\EndIf \label{l:hash-end}
 %    \Statex
 	\For{$j=1$ to \emph{segSize}} 
@@ -62,14 +66,10 @@
 
 \Statex
 
-\Procedure{initMap}{$i$}	
-\Statex		
-	\Comment create local copy of \DMap\ %for evaluating term $i$
-        			\State \TMap[i] $\leftarrow$ new hash map
-    			\ForAll{$D \in$ \DMap\ s.t. $D.score[i] = 0$} 
-            			\State add $D$ to \TMap[i] \label{l:hash-chash}
-            		\EndFor
-\EndProcedure
+%\Procedure{initMap}{$i$}	
+%	\Comment create local copy of \DMap\ %for evaluating term $i$
+
+%\EndProcedure
 %\Statex
 \Procedure{update\_heap}{$D$} 
 \State lock \DHeap \label{l:lock-heap}
@@ -83,7 +83,7 @@
 		\State remove lowest scored doc %from \DHeap
 	\EndIf
 	\If{$|\DHeap | = k $} 
-		\Statex \Comment set $\Theta$ to $k^{th}$ lowest score
+		 \Comment set $\Theta$ to $k^{th}$ lowest score
 		\State  $\Theta \leftarrow$ lowest score in \DHeap
 	\EndIf
 	\State \emph{HeapUpdateTime} $\leftarrow$ current time 
@@ -98,21 +98,19 @@
 %\While{\DMap\ has more than $k$ entries}
 \If{$|\DMap | > \Phi $} 
  \Comment shrink \DMap 
- \State \Comment keep only docs that are still relevant
+% \State \Comment keep only docs that are still relevant
 \State \LDMap\ $\leftarrow$ new hash map \label{l:clean-local-copy}
 %a local copy of \DMap 
 \For{every doc $D$ $\in$ \DMap} 
 \If{$UB(D) > \Theta \vee D \in$ \DHeap}
-	\State add   $D$ to \LDMap
+	\State add   $D$ to \LDMap \Comment $D$ is still relevant
 \EndIf
 \EndFor
 \State replace \DMap\ by \LDMap \label{l:clean-replace}
 \EndIf
 \Statex
-\Statex \Comment check algorithm's stopping conditions
-\State \emph{Stop2} $\leftarrow \big( |\DMap| = |\DHeap| \big)$ \label{l:clean-stop-cond}
-\If{\emph{Stop2} $\vee\ $ \emph{HeapUpdateTime} $ + \Delta < $ now} 
-\Statex  \Comment in exact version $\Delta=\infty$
+\Statex \Comment check algorithm's stopping conditions; in exact version $\Delta=\infty$
+\If{$ \big( |\DMap| = |\DHeap| \big)\; \vee\ $ \emph{HeapUpdateTime} $ + \Delta < $ now} 
 \State \emph{done} $\leftarrow$ true
 \Else\ add {\sc cleaner()} to job queue
 \EndIf
