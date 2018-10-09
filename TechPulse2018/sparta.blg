@@ -1,0 +1,54 @@
+This is BibTeX, Version 0.99d (TeX Live 2017)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: sparta.aux
+The style file: plainurl.bst
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=20001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: references.bib
+Warning--to sort, need author or key in java-hashmap
+Warning--to sort, need author or key in lucene
+Warning--to sort, need author or key in aol
+You've used 34 entries,
+            2849 wiz_defined-function locations,
+            852 strings with 11459 characters,
+and the built_in function-call counts, 18836 in all, are:
+= -- 2057
+> -- 680
+< -- 20
++ -- 255
+- -- 218
+* -- 1079
+:= -- 2550
+add.period$ -- 125
+call.type$ -- 34
+change.case$ -- 207
+chr.to.int$ -- 0
+cite$ -- 37
+duplicate$ -- 620
+empty$ -- 1717
+format.name$ -- 218
+if$ -- 4877
+int.to.chr$ -- 0
+int.to.str$ -- 34
+missing$ -- 31
+newline$ -- 177
+num.names$ -- 62
+pop$ -- 389
+preamble$ -- 1
+purify$ -- 177
+quote$ -- 0
+skip$ -- 1286
+stack$ -- 0
+substring$ -- 994
+swap$ -- 249
+text.length$ -- 20
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 134
+warning$ -- 3
+while$ -- 137
+width$ -- 36
+write$ -- 412
+(There were 3 warnings)

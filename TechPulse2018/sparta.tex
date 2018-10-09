@@ -1,0 +1,96 @@
+\documentclass[sigconf]{acmart}
+\settopmatter{printfolios=true,printccs=false,printacmref=false,authorsperrow=5}
+%\usepackage{balance}  % for  \balance command ON LAST PAGE  (only there!)
+\usepackage{color}
+\usepackage{subcaption}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{url}
+\usepackage{multicol}
+\usepackage{booktabs} % For formal tables
+\usepackage{times}
+
+\setcopyright{none}
+
+
+%\acmConference{Submitted to SIGIR}{2018}{} 
+%\acmYear{2018}
+
+
+\begin{document}
+
+\newcommand{\alg}{Sparta}  
+\newcommand{\inred}[1]{{\color{red}{#1}}}
+\newcommand{\inblue}[1]{{\color{blue}{#1}}}
+\newcommand{\remove}[1]{}
+
+% ****************** TITLE ****************************************
+
+\title{Fast Parallel Top-K Retrieval of Verbose Queries}
+
+
+\author{Gali Sheffi}
+\affiliation{Yahoo! Research}
+
+\author{Dmitry Basin}
+\affiliation{Yahoo! Research}
+
+\author{Edward Bortnikov}
+\affiliation{Yahoo! Research\thanks{*Work done while at Yahoo! Research}}
+
+\author{David Carmel}
+\affiliation{Amazon\footnote{Work done while at Yahoo! Research}}
+
+\author{Idit Keidar}
+\affiliation{Yahoo! Research \\ and Technion}
+
+
+% Gali Sheffi\\
+%        \affaddr{Yahoo! Research}\\
+%        \email{gsheffi@yahoo-inc.com}
+% Dmitry Basin\\
+%        \affaddr{Yahoo! Research}\\
+%        \email{dbasin@yahoo-inc.com}
+% Edward Bortnikov\\
+%        \affaddr{Yahoo! Research}\\
+%        \email{ebortnik@yahoo-inc.com}\\
+% David Carmel\\
+%        \affaddr{Yahoo! Research}\\
+%        \email{dcarmel@yahoo-inc.com}
+% Idit Keidar\\
+%        \affaddr{Technion and Yahoo! Research}\\
+%       \email{idish@yahoo-inc.com}
+
+
+
+\begin{abstract}
+Top-k document retrieval is emerging as a performance bottleneck in query processing as verbose queries are becoming 
+mainstream, while state-of-the-art algorithms fail to process such long queries in real time. To date, attempts to
+accelerate top-k evaluation 
+via approximate result computation and intra-query parallelism have produced limited results. 
+
+We present \alg\ -- a practical parallel algorithm that exploits multi-core hardware to run approximate top-k retrieval 
+within interactive latency bounds. Its design is inspired by  Fagin et al.'s seminal Threshold Algorithm for  aggregation in databases. 
+\alg\ scales through lightweight coordination and context sharing among concurrent threads. The resulting algorithm 
+is highly scalable in the number of query terms. For example, when applied to the 50M-document public ClueWeb09B 
+dataset, \alg\  processes $12$-term queries $3.6$ times faster than the state-of-the-art. 
+\end{abstract}
+
+\maketitle
+\input{macros}
+
+\input{intro}
+\input{Background}
+\input{algorithm}
+\input{evaluation}
+\input{related}
+%\input{conclusions}
+
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{references}  
+
+
+\end{document}

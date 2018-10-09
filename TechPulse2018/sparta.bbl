@@ -1,0 +1,213 @@
+\begin{thebibliography}{10}
+
+\bibitem{java-hashmap}
+\url{https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ConcurrentHashMap.html}.
+
+\bibitem{lucene}
+https://lucene.apache.org.
+
+\bibitem{aol}
+http://www.cim.mcgill.ca/~dudek/206/Logs/AOL-user-ct-collection.
+
+\bibitem{Akbarinia:2007}
+Reza Akbarinia, Esther Pacitti, and Patrick Valduriez.
+\newblock Best position algorithms for top-k queries.
+\newblock In {\em Proceedings of VLDB}, pages 495--506. VLDB Endowment, 2007.
+\newblock URL: \url{http://dl.acm.org/citation.cfm?id=1325851.1325909}.
+
+\bibitem{Ao:2011}
+Naiyong Ao, Fan Zhang, Di~Wu, Douglas~S. Stones, Gang Wang, Xiaoguang Liu, Jing
+  Liu, and Sheng Lin.
+\newblock Efficient parallel lists intersection and index compression
+  algorithms using graphics processing units.
+\newblock {\em Proc. VLDB Endow.}, 4(8):470--481, May 2011.
+\newblock URL: \url{http://dx.doi.org/10.14778/2002974.2002975}, \href
+  {http://dx.doi.org/10.14778/2002974.2002975}
+  {\path{doi:10.14778/2002974.2002975}}.
+
+\bibitem{Arapakis:2014:IRL:2600428.2609627}
+Ioannis Arapakis, Xiao Bai, and B.~Barla Cambazoglu.
+\newblock Impact of response latency on user behavior in web search.
+\newblock In {\em Proceedings of SIGIR}, pages 103--112. ACM, 2014.
+
+\bibitem{Baeza-Yates:1999:MIR:553876}
+Ricardo~A. Baeza-Yates and Berthier Ribeiro-Neto.
+\newblock {\em Modern Information Retrieval}.
+\newblock Addison-Wesley Longman Publishing Co., Inc., Boston, MA, USA, 1999.
+
+\bibitem{Bast:2006}
+Holger Bast, Debapriyo Majumdar, Ralf Schenkel, Martin Theobald, and Gerhard
+  Weikum.
+\newblock Io-top-k: Index-access optimized top-k query processing.
+\newblock In {\em Proceedings of VLDB}, pages 475--486. VLDB Endowment, 2006.
+
+\bibitem{Bonacic:2010}
+Carolina Bonacic, Carlos Garc\'{\i}a, Mauricio Marin, Manuel Prieto-Matias, and
+  Francisco Tirado.
+\newblock Building efficient multi-threaded search nodes.
+\newblock In {\em Proceedings of CIKM}, pages 1249--1258. ACM, 2010.
+
+\bibitem{Bortnikov:2017}
+Edward Bortnikov, David Carmel, and Guy Golan-Gueta.
+\newblock Top-k query processing with conditional skips.
+\newblock In {\em Proceedings of WWW Companion}, pages 653--661, 2017.
+
+\bibitem{Broder:2003}
+Andrei~Z. Broder, David Carmel, Michael Herscovici, Aya Soffer, and Jason Zien.
+\newblock Efficient query evaluation using a two-level retrieval process.
+\newblock In {\em Proceedings of CIKM}, pages 426--434. ACM, 2003.
+
+\bibitem{ClueWeb09}
+Jamie Callan, Mark Hoy, Changkuk Yoo, and Le~Zhao.
+\newblock Clueweb09 data set, 2009.
+
+\bibitem{Crane:2017}
+Matt Crane, J.~Shane Culpepper, Jimmy Lin, Joel Mackenzie, and Andrew Trotman.
+\newblock A comparison of document-at-a-time and score-at-a-time query
+  evaluation.
+\newblock In {\em Proceedings of the Tenth ACM International Conference on Web
+  Search and Data Mining}, WSDM '17, pages 201--210, New York, NY, USA, 2017.
+  ACM.
+\newblock URL: \url{http://doi.acm.org/10.1145/3018661.3018726}, \href
+  {http://dx.doi.org/10.1145/3018661.3018726}
+  {\path{doi:10.1145/3018661.3018726}}.
+
+\bibitem{Ding:2011}
+Shuai Ding and Torsten Suel.
+\newblock Faster top-k document retrieval using block-max indexes.
+\newblock In {\em Proceedings of SIGIR}, pages 993--1002. ACM, 2011.
+
+\bibitem{Fagin:2001}
+Ronald Fagin, Amnon Lotem, and Moni Naor.
+\newblock Optimal aggregation algorithms for middleware.
+\newblock In {\em Proceedings of PODS}, pages 102--113, New York, NY, USA,
+  2001. ACM.
+\newblock URL: \url{http://doi.acm.org/10.1145/375551.375567}, \href
+  {http://dx.doi.org/10.1145/375551.375567} {\path{doi:10.1145/375551.375567}}.
+
+\bibitem{Fagin:2003}
+Ronald Fagin, Amnon Lotem, and Moni Naor.
+\newblock Optimal aggregation algorithms for middleware.
+\newblock {\em Journal of computer and system sciences}, 66(4):614--656, 2003.
+
+\bibitem{Gursky:2008}
+Peter Gursk\'{y} and Peter Vojt\'{a}\v{s}.
+\newblock Speeding up the nra algorithm.
+\newblock In {\em Proceedings of the 2Nd International Conference on Scalable
+  Uncertainty Management}, SUM '08, pages 243--255. Springer-Verlag, 2008.
+\newblock URL: \url{http://dx.doi.org/10.1007/978-3-540-87993-0_20}, \href
+  {http://dx.doi.org/10.1007/978-3-540-87993-0_20}
+  {\path{doi:10.1007/978-3-540-87993-0_20}}.
+
+\bibitem{sigir/Guy16}
+Ido Guy.
+\newblock Searching by talking: Analysis of voice queries on mobile web search.
+\newblock In {\em Proceedings of SIGIR}, pages 35--44. ACM, 2016.
+
+\bibitem{Huston:2010}
+Samuel Huston and W.~Bruce Croft.
+\newblock Evaluating verbose query processing techniques.
+\newblock In {\em Proceedings of SIGIR '10}, pages 291--298. ACM, 2010.
+\newblock URL: \url{http://doi.acm.org/10.1145/1835449.1835499}, \href
+  {http://dx.doi.org/10.1145/1835449.1835499}
+  {\path{doi:10.1145/1835449.1835499}}.
+
+\bibitem{ilyas2008survey}
+Ihab~F Ilyas, George Beskales, and Mohamed~A Soliman.
+\newblock A survey of top-k query processing techniques in relational database
+  systems.
+\newblock {\em ACM Computing Surveys (CSUR)}, 40(4):11, 2008.
+
+\bibitem{Jeon:2014}
+Myeongjae Jeon, Saehoon Kim, Seung-won Hwang, Yuxiong He, Sameh Elnikety,
+  Alan~L. Cox, and Scott Rixner.
+\newblock Predictive parallelization: Taming tail latencies in web search.
+\newblock In {\em Proceedings of SIGIR}, pages 253--262. ACM, 2014.
+\newblock URL: \url{http://doi.acm.org/10.1145/2600428.2609572}, \href
+  {http://dx.doi.org/10.1145/2600428.2609572}
+  {\path{doi:10.1145/2600428.2609572}}.
+
+\bibitem{Lin:2015}
+Jimmy Lin and Andrew Trotman.
+\newblock Anytime ranking for impact-ordered indexes.
+\newblock In {\em Proceedings ICTIR}, pages 301--304. ACM, 2015.
+
+\bibitem{Liu:2018:GUC:3178487.3178512}
+Yang Liu, Jianguo Wang, and Steven Swanson.
+\newblock Griffin: Uniting cpu and gpu in information retrieval systems for
+  intra-query parallelism.
+\newblock In {\em Proceedings of the 23rd ACM SIGPLAN Symposium on Principles
+  and Practice of Parallel Programming}, PPoPP '18, pages 327--337, New York,
+  NY, USA, 2018. ACM.
+\newblock URL: \url{http://doi.acm.org/10.1145/3178487.3178512}, \href
+  {http://dx.doi.org/10.1145/3178487.3178512}
+  {\path{doi:10.1145/3178487.3178512}}.
+
+\bibitem{Mamoulis:2007}
+Nikos Mamoulis, Man~Lung Yiu, Kit~Hung Cheng, and David~W. Cheung.
+\newblock Efficient top-k aggregation of ranked inputs.
+\newblock {\em ACM Trans. Database Syst.}, 32(3), August 2007.
+\newblock URL: \url{http://doi.acm.org/10.1145/1272743.1272749}, \href
+  {http://dx.doi.org/10.1145/1272743.1272749}
+  {\path{doi:10.1145/1272743.1272749}}.
+
+\bibitem{rojas2013distributing}
+Oscar Rojas, Veronica Gil-Costa, and Mauricio Marin.
+\newblock Distributing efficiently the block-max wand algorithm.
+\newblock {\em Procedia Computer Science}, 18:120--129, 2013.
+
+\bibitem{rojas2013efficient}
+Oscar Rojas, Veronica Gil-Costa, and Mauricio Marin.
+\newblock Efficient parallel block-max wand algorithm.
+\newblock In {\em European Conference on Parallel Processing}, pages 394--405.
+  Springer, 2013.
+
+\bibitem{Spink:2001:SWP:362968.362979}
+Amanda Spink, Dietmar Wolfram, Major B.~J. Jansen, and Tefko Saracevic.
+\newblock Searching the web: The public and their queries.
+\newblock {\em J. Am. Soc. Inf. Sci. Technol.}, 52(3):226--234, February 2001.
+
+\bibitem{Strohman:2005}
+Trevor Strohman, Howard Turtle, and W.~Bruce Croft.
+\newblock Optimization strategies for complex queries.
+\newblock In {\em Proceedings of SIGIR}, pages 219--225. ACM, 2005.
+
+\bibitem{Tatikonda:2011}
+Shirish Tatikonda, B.~Barla Cambazoglu, and Flavio~P. Junqueira.
+\newblock Posting list intersection on multicore architectures.
+\newblock In {\em Proceedings of SIGIR}, pages 963--972. ACM, 2011.
+
+\bibitem{Theobald:2008}
+Martin Theobald, Holger Bast, Debapriyo Majumdar, Ralf Schenkel, and Gerhard
+  Weikum.
+\newblock Topx: Efficient and versatile top-k query processing for
+  semistructured data.
+\newblock {\em The VLDB Journal}, 17(1):81--115, January 2008.
+\newblock URL: \url{http://dx.doi.org/10.1007/s00778-007-0072-z}, \href
+  {http://dx.doi.org/10.1007/s00778-007-0072-z}
+  {\path{doi:10.1007/s00778-007-0072-z}}.
+
+\bibitem{Theobald:2004}
+Martin Theobald, Gerhard Weikum, and Ralf Schenkel.
+\newblock Top-k query evaluation with probabilistic guarantees.
+\newblock In {\em Proceedings of VLDB}, VLDB '04, pages 648--659. VLDB
+  Endowment, 2004.
+\newblock URL: \url{http://dl.acm.org/citation.cfm?id=1316689.1316746}.
+
+\bibitem{Turtle:1995}
+Howard Turtle and James Flood.
+\newblock Query evaluation: Strategies and optimizations.
+\newblock {\em Inf. Process. Manage.}, 31(6):831--850, November 1995.
+
+\bibitem{Wang:2011}
+Lidan Wang, Jimmy Lin, and Donald Metzler.
+\newblock A cascade ranking model for efficient ranked retrieval.
+\newblock In {\em Proceedings of SIGIR}, pages 105--114. ACM, 2011.
+
+\bibitem{yuan:2012}
+Jing Yuan, Guangzhong Sun, Tao Luo, Defu Lian, and Guoliang Chen.
+\newblock Efficient processing of top-k queries: selective nra algorithms.
+\newblock {\em Journal of Intelligent Information Systems}, 39(3):687--710,
+  2012.
+
+\end{thebibliography}

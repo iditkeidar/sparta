@@ -1,0 +1,80 @@
+\section{Introduction}
+\label{sec:intro}
+
+% Problem: long queries
+% The reliance of Internet users on search engines became enormous during the past two decades. 
+Internet users are changing the ways in which they interact with search engines. 
+While  early days web queries were short (2.4 terms on average~\cite{Spink:2001:SWP:362968.362979}), 
+modern search experiences (query suggestion, reformulation, conversational interfaces, etc.) stimulate their users to submit much longer queries. 
+For example, more than 5\% of queries submitted via voice search on mobile devices exceed 10 terms~\cite{sigir/Guy16}. 
+At the same time, usability studies
+(e.g.,~\cite{Arapakis:2014:IRL:2600428.2609627}) show that users are extremely sensitive to end-to-end delays beyond 500 ms, 
+and any excess delay beyond 250 ms leads to material degradation in their experience. Maintaining this \emph{service-level agreement} ({\em SLA}) 
+is becoming a major challenge as more queries become longer.
+
+ Most search systems today evaluate queries via a two-stage process~\cite{Wang:2011}. 
+The first stage is {\emph top-k retrieval}: it 
+ roughly matches the top-k documents most relevant to the query (typically, hundreds to thousands) based on some simple relevance scoring function like TF-IDF or BM25~\cite{Baeza-Yates:1999:MIR:553876}. The second  re-ranks the  documents via some sophisticated (e.g., machine-learned) function, to produce the final result list (typically, a few tens of documents). 
+The first stage  sifts through huge volumes of data and dominates the execution time. 
+We therefore focus on the latency induced by this backend search tier at a given search node that serves an index shard.
+
+% Approximate is the only option
+Obtaining the exact top-k matches out of a large corpus is often too slow to meet stringent SLA requirements. 
+Given that the top-k selection is only the first query  processing step, perfect results are often not essential, as later query processing 
+stages can be satisfied by approximate results~\cite{Lin:2015}. We leverage this observation and focus on \emph{approximate} 
+(sometimes called \emph{non-safe}) query evaluation, tuned to achieve a certain high recall (e.g., $97\%$ or more of the top-k results). 
+State-of-the-art sequential top-k  algorithms, 
+%which have both exact (safe) and approximate versions, 
+e.g., \emph{Block-Max WAND} ({\em BMW}) \cite{Ding:2011}, serve traditional (short) web queries with impressive speed. 
+However, these algorithms do not scale well when applied to verbose queries (as pointed out in~\cite{Bortnikov:2017} and confirmed by our experiments). 
+
+A promising approach to address this challenge is to reduce latency by
+parallelizing query evaluation on multiprocessor hardware. 
+The current trend in server architecture, which favors parallelism over sequential speed, makes this approach particularly attractive. 
+For example, Rojas et al.~\cite{rojas2013efficient} parallelize BMW -- we refer 
+to their  algorithm as \emph{pBMW} -- with a considerable performance improvement.
+Nevertheless, our experiments show that pBMW has limited scalability in the number of query terms,
+and cannot meet expected SLAs on long queries. 
+%(e.g., 1 second for 
+%12-term query over ClueWeb with eight threads, in our experiments). 
+%The algorithm does not achieve high recall when stopped early. 
+
+We present \emph{\alg} (Scalable PARallel Threshold Algorithm) -- a novel 
+concurrent algorithm that substantially improves search time for verbose queries. Its
+%the tail
+ query latencies fit well within the real-time SLA on standard  server hardware. 
+
+\alg's design is inspired by the seminal \emph{Threshold Algorithm (TA)} by Fagin et al.~\cite{Fagin:2003} for retrieving the top-k objects from a database based on an aggregation of attributes that may reside in multiple nodes. Perhaps surprisingly, this algorithm was largely ignored in the web search literature.
+%, despite its relevance. 
+In the web setting, term posting lists represent attributes, and the ranking function is a linear aggregation of term scores. TA has two variants~\cite{Fagin:2003}: (1) \emph{Random Access} ({\em RA}), which  
+ relies on random access to  posting lists; 
+%\inred{Gali: shouldn't we mention that TA's "regular" posting lists are sorted by term scores?} 
+and (2) \emph{No Random Access} ({\em NRA}), which 
+ only traverses them sequentially. The former is ineffective in the context of real-time search 
+because it requires (1)  a secondary random-access index (which doubles the required index space), 
+and (2) random I/O to the on-disk secondary index, which incurs high overhead when the index  is too big to be 
+kept entirely in RAM. We therefore base our algorithm on  NRA. 
+
+
+
+Transforming NRA into an efficient concurrent algorithm is challenging because coordination around 
+shared state can become a major bottleneck unless carefully designed. On the one hand,
+sharing state among threads is essential in order to benefit from TA's early stopping feature.
+Indeed, a shared-nothing (partitioned) parallelization of NRA performs two times 
+worse than a single-threaded implementation. On the other hand, 
+a na\"ive attempt to parallelize NRA using shared memory also results in 
+worse performance than the sequential algorithm. \alg\ judiciously shares 
+information among threads while significantly reducing the synchronization 
+overhead and memory overlap among them, 
+%which results in efficient use of hardware resources, 
+leading to major performance gains. 
+
+Our results show that \alg\ scales well with query length.
+E.g., on the 50M-document TREC ClueWeb09B dataset~\cite{ClueWeb09}, %\footnote{\url{https://lemurproject.org/clueweb09}}, 
+\alg\ can serve verbose 12-term queries within less than 200 ms, 
+whereas a parallel execution of RA (denoted, \pRA) processes them in 400 ms, and pBMW takes more than 600 ms. 
+\alg's throughput on a production-grade query mix (with the query length distribution measured in~\cite{sigir/Guy16}) is twice that of pBMW.
+
+
+%Summing up, we present a practical scalable parallel algorithm that significantly improves the state-of-the-art latency  of long query processing.
+%The remainder of this paper is organized as follows. Section~\ref{sec:problem} defines the top-k retrieval problem and associated metrics. Section~\ref{sec:background} gives background on existing algorithms. Section~\ref{sec:alg} presents \alg, and Section~\ref{sec:eval}  evaluates it. Finally, Section~\ref{sec:related} discusses related work.

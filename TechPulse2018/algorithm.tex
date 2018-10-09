@@ -1,0 +1,115 @@
+\section{\alg\ }
+\label{sec:alg}
+
+\alg\/ is a parallel algorithm that applies the NRA design principles to shared-memory multiprocessor hardware platforms. 
+Like our implementation of RA and NRA described above, 
+it can be configured to provide approximate results by stopping after the heap does not change for some $\Delta$ time. 
+
+As in NRA, the algorithm maintains the current top-k results in a heap, \DHeap, and its lowest value in $\Theta$. It keeps $m$ pointers to the next elements to traverse in all posting lists
+and an array $UB$ of upper bounds on non-traversed term scores. 
+$UB$ is used for computing the documents' upper bounds 
+as well as for checking NRA's  stopping conditions.   
+
+The hash map 
+\DMap\ maps  document ids encountered thus far to document \Docobj\ objects. A \Docobj\ holds a vector of term scores observed thus far for this document as well as a lower bound on the document score computed as their sum.
+NRA's second stopping condition holds when, for each \DMap\ document $D$, which is not in \DHeap, $UB(D) \le \Theta$, and thus is checked accordingly.
+
+
+
+
+
+
+\begin{figure}[tbh]
+\centering
+\includegraphics[width=9cm]{figures/localData}
+\caption{\alg\/ data structures. The \DMap\ keeps track of partially scored documents; \LDMap\ and \TMap\ are local partial copies.}
+\label{fig:sparta_ds}
+\end{figure}
+
+
+In addition, to reduce the synchronization overhead and improve cache locality, \alg\ uses 
+two local data structures that hold partial copies of the global \DMap, namely the \TMap\ array with a (local) hash map per term, 
+and the \LDMap\ used by a dedicated maintenance thread. The role of these will become evident 
+when we discuss synchronization and locality below.
+
+\subsection{Splitting the Work}
+\label{sssec:tasks}
+
+A na\"ive attempt to parallelize NRA would be to 
+%assign a thread per term and 
+share the data structures among all threads. (Note that sharing state is essential because the partial document scores, and consequently the lower bounds, are affected by multiple threads that generate term scores). This approach 
+leads to high contention, primarily around $\DMap$.
+
+%Instead, we redesign the algorithm flow in a way that reduces contention. 
+To reduce contention, we 
+consider the point in time when the first stopping condition holds. From this time on, no new document's score can surpass the lower bound of any document in the shared \DHeap. Therefore, adding new documents to \DMap\ is no longer helpful (a similar observation was made  in~\cite{Mamoulis:2007}). 
+On the other hand, it is possible to shrink \DMap\ by removing documents whose upper bounds are smaller than $\Theta$.
+This is cardinal for the concurrent implementation, which can stop sharing \DMap\ among the threads once it is sufficiently small, thereby eliminating the synchronization overhead. 
+
+
+
+%\input{pseudo-parallel}
+
+The algorithm exploits up to $m$ {\em worker\/} threads per query, but can run with fewer threads if less are available. 
+We divide posting list traversals to segments, and use a job queue to allocate posting list segments to threads. 
+A  thread that finishes its assigned segment inserts into the queue a new task for scanning the next segment in the same term's posting list. Thus, we  progress on all posting lists. 
+In case $m$ threads are available, a large segment size can be used.
+
+In addition to  posting list-traversing tasks, a \emph{cleaner} task performs maintenance on the \DMap\ (invoked once the 1st stopping condition holds and so \DMap\ no longer grows). 
+It removes entries that ceased to be top-k candidates from \DMap\ (since \alg\/ is memory-intensive, a smaller \DMap\ allows it to run much faster).
+The \emph{cleaner} task is also the one that evaluates the second stopping condition.
+In addition, in the approximate version, it checks whether the heap has not changed for $\Delta$ time 
+(the exact version is obtained by setting $\Delta=\infty$). In all of the versions, it sets a flag once the algorithm can stop, and the main thread returns the heap's contents. 
+
+\subsection{Synchronization} 
+\label{sec:synch}
+
+Note that, \DHeap, $UB$, \DMap, and \Docobj\ objects referenced by them are accessed concurrently by multiple threads. We need to protect such access to avoid inconsistencies. On the other hand, reducing contention is crucial for performance. Moreover, 
+\alg\ is a memory-intensive algorithm, and 
+in order to keep the memory access latencies low, it is paramount to exploit the CPU hardware cache, in particular the core-private L1 caches. 
+We now explain how we synchronize access to each of the shared variables
+in a way that reduces contention and improves cache utilization. 
+
+
+
+Since at most one thread processes each term, no races arise around updating $UB$ entries, and no lock is needed. However, 
+all threads read all $UB$ entries, and therefore frequent updates can lead to frequent cache misses, and in turn, poor performance. 
+In order to reduce the number of cache misses, instead of updating $UB$ after each document evaluation, the workers update it lazily, at the end of a segment traversal. Since upper bounds can only decrease whereas $\Theta$ can only increase, such lazy updates do not affect correctness.
+
+%while speeding up the execution.
+Updates of \DHeap\ and $\Theta$ are protected by a shared lock, which  serializes all updates. 
+To avoid races around evaluating a \Docobj's
+lower bound and inserting it into \DHeap, we update the lower bound in a lazy manner while holding the global lock on \DHeap: Every thread that adds a document to the heap updates the lower bounds of all heap documents.
+
+Before the first stopping condition holds, multiple workers update \DMap\/ concurrently. 
+We therefore protected each hash bucket by a granular lock, which  
+performed better than the generic Java concurrent hashmap.
+%\footnote{\small{\url{https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ConcurrentHashMap.html}}}.
+
+The cleaner task starts removing elements from  \DMap\/ after it is guaranteed that 
+no new entries are added to  it; such removals substantially improve the term processing performance. 
+Nevertheless, allowing the cleaner to constantly update \DMap\ would lead to frequent cache invalidations at the
+tasks that read the map. 
+To avoid frequent cache misses, 
+%such frequent synchronization between the cleaner and term-processing tasks, 
+the global map is kept read-only most of the time, while the cleaner works on a local copy: 
+it  
+%Specifically, as long as its stopping condition is not satisfied, 
+%the cleaner 
+repeatedly builds a new map \LDMap, holding \DMap\ entries whose upper bounds 
+are higher than $\Theta$ as well as ones that are included in \DHeap\ (whose upper bounds may be exactly $\Theta$); recall that other \DMap\ entries no longer need to be kept. 
+Once \LDMap\ is ready, the cleaner replaces \DMap\ with it via a single pointer swing 
+(flipping the global reference). 
+
+Access to \DMap\ is a principal performance bottleneck, since it is frequently read by all worker threads. Initially, it is too large to fit into local caches, and so the parallel execution inherently requires global memory accesses. But thanks to the cleaner's work, \DMap\ shrinks in the course of the execution. 
+Moreover, not all  \DMap\ entries are relevant for all terms -- if $D$'s term score for $t_i$ has already been computed, then a  thread handling term $t_i$ does not need to access $D$.
+Thus, the relevant subset of  \DMap\ for each term eventually becomes small enough to fit in its local cache. As long as the thread continues to access the global \DMap,  it  experiences massive cache misses every time the cleaner replaces the global \DMap. 
+%As long as $\DMap$ is big, it is more important to shrink it fast than avoid those misses. However, 
+But 
+once it becomes small enough to fully fit in the local cache, there is no need to keep using the global copy. 
+
+To this end, \alg\/ associates a local map replica, \TMap, with each posting list. \TMap\ is created by the worker that currently owns that posting list once \DMap's size drops below a threshold $\Phi$,
+in our implementation, $\Phi=10$K entries. The \DMap is scanned, and its relevant entries are copied  into \TMap\ (only references to those \Docobj{} objects that do not contain the score for the worker's term yet).  Once a \TMap\ has been created, every worker that handles its posting list uses it.
+Note that since every posting list is accessed by a single worker at any given time, no synchronization is required.
+
+
