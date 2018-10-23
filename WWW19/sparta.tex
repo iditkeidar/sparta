@@ -38,7 +38,7 @@
 \newcommand{\inred}[1]{{\color{red}{#1}}}
 \newcommand{\inblue}[1]{{\color{blue}{#1}}}
 \newcommand{\remove}[1]{}
-
+\newcommand{\bigdataset}[1]{} % remove for now, add later
 
 
 % ****************** TITLE ****************************************
@@ -66,10 +66,14 @@ via approximate result computation and intra-query parallelism have produced lim
 We present \alg\ -- a practical parallel algorithm that exploits multi-core hardware to run approximate top-k retrieval 
 within interactive latency bounds. Its design is inspired by  Fagin et al.'s seminal Threshold Algorithm for  aggregation in databases. 
 \alg\ scales through lightweight coordination and context sharing among concurrent threads. The resulting algorithm 
-is highly scalable, 
-both in the number of query terms and in the searched index size. For example, when applied to the 50M-document public ClueWeb09B 
+is highly scalable.
+\bigdataset{ 
+both in the number of query terms and in the searched index size. 
+}
+%For example, 
+When applied to the 50M-document public ClueWeb09B 
 dataset, \alg\  processes $12$-term queries $3.6$ times faster than the state-of-the-art. 
-\inred{
+\bigdataset{
 On a tenfold  bigger index, 
 \alg\ continues to process queries at the same speed, whereas today's best-in-class algorithm is more than 60 times slower. 
 }
