@@ -1,6 +1,5 @@
 \section{Evaluation} \label{sec:eval}
 
-
 We compare the performance of \alg\ to the following multiprocessor algorithms: 
 \inred{
 \begin{description}
@@ -18,6 +17,16 @@ algorithms, for completeness, we also experiment with their exact counterparts.
 %
 % We study all these algorithms in both exact and approximate variants -- the latter over a spectrum of heuristic parameters that strike different performance-vs-recall tradeoffs.  
 
+{\inred{In order to crystallize the comparison among  the core algorithms, 
+we abstract away other contributors to the wall-clock  latency, e.g., index compression. 
+As recent studies show, with the state-of-the-art compression techniques the impact 
+of decompression on the end-to-end performance is marginal (e.g., up to $6\%$ surplus with the QMX-D4 compression~\cite{Lin:2017}).  Compression effectiveness of document-order vs score-order indexes is beyond the context of this paper.
+
+We focus on disk-resident search indexes (most of the algorithms under study are of 
+streaming nature, and hence CPU-bound; fitting the index in RAM does not affect 
+their performance significantly). 
+}
+
 In what follows, Section~\ref{ssec:setup} describes the experiment setup, 
 Section~\ref{ssec:implementation} explains how the algorithms are 
 implemented, and Section~\ref{ssec:results} presents our results.
@@ -28,8 +37,6 @@ implemented, and Section~\ref{ssec:results} presents our results.
 
 We study the algorithms in terms of query latency and throughput attainable at a single multi-core server. 
 We use mid-tier industry-standard hardware -- a 12-core Intel Xeon E5620 with 24GB RAM and 1TB SSD drive. 
-
-%\subsubsection{Evaluation Framework}
 
 The benchmarking environment and the algorithms  are implemented in Java. 
 A  \emph{benchmark driver} draws queries from an input queue and submits them to the algorithm being tested, which
@@ -44,21 +51,22 @@ once  there are idle threads with no outstanding work from currently executing q
 All queries scheduled for execution equally share the thread pool.
 
 In all experiments, the appropriate index (either in id order or in score order)
-is pre-built offline and stored uncompressed on disk as a collection of binary files, 
+is pre-built offline and stored on disk uncompressed as a collection of binary files, 
 each storing a shard of data partitioned by term.  The benchmark environment memory-maps the content 
-of these files via the MappedByteBuffer API~\cite{java-hashmap}.
+of these files via the MappedByteBuffer API~\cite{java-bytebuffer}.
 Prior to each experiment, we flush the file system's page cache so all pages are physically read from disk during the experiment.
+
+
 %such that the algorithm code can access the data identically to RAM. 
 %The application code makes no attempt to optimize the disk access beyond the standard filesystem mechanisms 
 %(e.g., caching of popular blocks). 
 
 %\subsubsection{Datasets}
-We  experiment with 
+We  experiment with the TREC dataset, Category B ({\cw}09B), which is widely used for information retrieval research~\cite{ClueWeb09}. This dataset includes approximately 50M web documents and takes up roughly 30GB of original content, uncompressed.
+
 \bigdataset{
 two document corpora. The first  is 
 }
-the TREC {\\/} dataset, 
-Category B ({\cw}09B)~\cite{ClueWeb09}, which is widely used for information retrieval research. This dataset includes approximately 50M web documents and takes up roughly 30GB of original content, uncompressed.
 \bigdataset{
 The second corpus is a synthetic 10x scale-up of \cw, named \cwten, which we created to explore the algorithms' scalability 
 with the dataset size. 
@@ -74,16 +82,17 @@ the  term frequency distribution of {\cw\/} in \cwten.
  \inred{
 We use the popular Lucene open-source search engine~\cite{lucene} for preprocessing the index to generate posting lists; this  includes text tokenization, posting list maintenance, 
 and term statistics retrieval.}
-We score documents using 
-a standard tf-idf score function with document length normalization~\cite{Baeza-Yates:1999:MIR:553876}. 
+We score documents using a standard tf-idf score function with document length normalization~\cite{Baeza-Yates:1999:MIR:553876}. 
 
 We draw queries from the public AOL search log~\cite{aol}.
 For each number of terms from $1$ to $12$, we independently sample $100$ queries of this length uniformly at random from the AOL log.
 We also  experimented with a query log of another commercial web search engine; this experiment  
 produced statistically similar results, and so we omit them here.  
 
-We use  $k=1000$. 
-(Experiments with $k=100$ produced qualitatively similar results).
+We use  $k=1000$, {\inred{based on the assumption that simple tf-idf retrieval is the first phase of multi-stage ranking, 
+which may require large values of $k$ for effectiveness~\cite{Wang:2011}. (Indeed, Crane et. al.~\cite{Crane:2017} report
+that the classical AP and RBP quality metrics are close to optimal with this choice of $k$, for multiple datasets.)}}  
+Experiments with $k=100$ produced qualitatively similar results.% {\inred{which we omit for lack of space}}.
 
 \remove{
 \subsubsection{Document Scoring}
@@ -106,7 +115,7 @@ Using integer arithmetics instead of floating-point significantly speeds up docu
 
 The specific algorithm implementations are as follows.
 
-\subsubsection{Previously-suggested parallel search algorithms}
+\subsubsection{State-of-the-art parallel search algorithms}
 
 \paragraph{\pBMW}
 Our implementation of {\pBMW} closely follows the description in~\cite{rojas2013distributing}. The algorithm partitions the execution of the 
@@ -140,7 +149,7 @@ $f \geq 1$, which multiplies $\Theta$ to obtain a higher threshold for document 
 \paragraph{pJASS}
 Our implementation of pJASS  follows the description in~\cite{parallel-jass}. It traverses all posting lists in parallel, in score order, and accumulates the encountered scores 
 per-document in  \emph{docMap}. Each document is protected by a lock, and a thread that encounters a document locks it, adds the partial score from the term it traversed, and then unlocks it.
-The algorithm stops after a predefined number of posting-list entries are scanned.
+The algorithm stops after a predefined fraction of postings (denoted $p$) are scanned.
 }
 
 \subsubsection{Parallel TA variants}
