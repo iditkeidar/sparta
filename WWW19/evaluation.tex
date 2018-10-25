@@ -210,7 +210,7 @@ for $k=1000$.
 \begin{tabular}{| c | c | c | c | c | c|}
 \hline
   Sparta & \pNRA & \sNRA & \pRA & \pBMW & pJASS \\ \hline
-  860 & 13\!,291 & 5\!,553 & 480 & 750 & \inred{TBD} \\ \hline
+  860 & 13\!,291 & 5\!,553 & 480 & 750 & 54\!,343 \\ \hline
 \bigdataset{
  ClueWebX10 & 12\!,010 & $90\!,000+$ & 56\!,223 & $7\!,410$ & $10\!,210$ \\
 }
@@ -263,11 +263,11 @@ Summing up, under certain parameter choices the approximate algorithms achieve v
   
 \begin{table*}[htbp]
 \centering
-\begin{tabular}{| c | c | c | c | c | c | c |}
+\begin{tabular}{| c | c | c | c | c | c | c | c |}
 \hline
-   \alg\hi &  \pRA\hi & \pNRA\hi & \sNRA\hi & \pBMW\hi & \pBMW\lo & \pJASS \\ \hline
+   \alg\hi &  \pRA\hi & \pNRA\hi & \sNRA\hi & \pBMW\hi & \pBMW\lo & \pJASS\hi & \pJASS\lo \\ \hline
 \bigdataset{  \cw & }
-   97.5\%  &  98.5\%  & 98.5\%  & 99\%   & 97.5\% & 80\%  & \inred{TBD}
+   97.5\%  &  98.5\%  & 98.5\%  & 99\%   & 97.5\% & 80\%  & 96\% & 93\%
   % 97.5\% / 0.004 &  98.5\% / 0.002 & 98.5\% / 0.002 & 99\% / 0.001  & 97.5\% / 0.009 & 80\% / 0.048 
   \\ \hline
 \bigdataset{
@@ -310,15 +310,25 @@ Its  $95\%$ latency is below $500$ ms.
 \begin{figure*}[tbh]
 \centering
 \begin{tabular}{ccc}
-      \begin{subfigure}[t]{0.3\textwidth}
+      \begin{subfigure}[t]{0.25\textwidth}
          \includegraphics[width=\textwidth]{figures/latency_12threads_clueweb.pdf}
         \caption[]{Average\bigdataset{, \cw}}
       \end{subfigure}     
 
-	\begin{subfigure}[t]{0.3\textwidth}
+	\begin{subfigure}[t]{0.25\textwidth}
     	\includegraphics[width=\textwidth]{figures/latency_95th_percentile_clueweb.pdf}
 	\caption{95\%\bigdataset{, \cw}}
     \end{subfigure}  
+    
+          \begin{subfigure}[t]{0.25\textwidth}
+         \includegraphics[width=\textwidth]{figures/latency_high_low_12threads_clueweb.pdf}
+        \caption[]{Average\bigdataset{, \cw}}
+      \end{subfigure}     
+
+	\begin{subfigure}[t]{0.25\textwidth}
+    	\includegraphics[width=\textwidth]{figures/latency_95th_percentile_high_low_clueweb.pdf}
+	\caption{95\%\bigdataset{, \cw}}
+    \end{subfigure} 
 
 \bigdataset{
     \begin{subfigure}[t]{0.3\textwidth}
