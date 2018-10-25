@@ -9,7 +9,9 @@ are susceptible to tail queries that may take orders of magnitude longer than th
 
 \inred{
 Mackenzie et al.~\cite{parallel-jass} suggest \pJASS -- a parallel version of an earlier score-order algorithm named JASS~\cite{Lin:2015}. JASS's virtue is its simplicity -- 
-it performs very little processing per-posting. In order to achieve early termination, JASS applies different heuristics that limit the fraction of processed terms. On the theoretical side, unlike TA, it provides no instance-optimality guarantee, and therefore, its exact variant is inefficient. Similarly to \alg, \pJASS\/ focuses on approximate top-k retrieval. We show that \alg\ achieves better performance and better recall, thanks to multiple optimizations -- e.g., continuous result-set pruning that leads to better locality, and a fine-tuned stopping condition.
+it performs very little processing per-posting. In order to achieve early termination, JASS applies different heuristics that limit the fraction of processed terms. 
+%On the theoretical side, unlike TA, it provides no instance-optimality guarantee, and therefore, its exact variant is inefficient. 
+Similarly to \alg, \pJASS\/ focuses on approximate top-k retrieval (its exact variant is inefficient). We show that \alg\ achieves better performance and better recall, thanks to multiple optimizations -- e.g., continuous result-set pruning that leads to better locality, fine-tuned termination, and careful synchronization. \alg's additional advantage is its small RAM footprint, contrast to \pJASS\/ that intentionally avoids pruning, and ends up maintaining a huge in-memory document map throughout the query evaluation. 
 %and maintenance of a top-k heap instead of discovering the top documents at the end of the traversal. 
 }
 
