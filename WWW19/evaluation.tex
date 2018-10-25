@@ -5,7 +5,7 @@ We compare the performance of \alg\ to the following multiprocessor algorithms:
 \begin{description}
 \item[\pBMW]\cite{rojas2013efficient} -- parallel BMW,  
 the best-in-class parallelization of a document-order top-k algorithm; 
-\item[pJASS]\cite{parallel-jass} -- a recent parallelization of the JASS~\cite{Lin:2015} score-order retrieval algorithm; 
+\item[\pJASS]\cite{parallel-jass} -- a recent parallelization of the JASS~\cite{Lin:2015} score-order retrieval algorithm; 
 \item[\pRA]-- a parallel implementation of RA;
 \item[\sNRA]--  a shared-nothing  parallelization of NRA; and 
 \item [\pNRA]-- a
@@ -143,7 +143,7 @@ statistics to prune the search~\cite{Ding:2011}. We experimented with multiple b
 which yielded the best performance.
 % In 
 The approximate version's pruning aggressiveness is  controlled by  a parameter 
-$f \geq 1$, which multiplies $\Theta$ to obtain a higher threshold for document score upper bounds~\cite{Broder:2003}. For $f=1$, the algorithm is exact.
+$f \geq 1$, which multiplies $\Theta$ to relax the threshold for score upper bounds~\cite{Broder:2003}. For $f=1$, the algorithm is exact.
 
 \inred{
 \paragraph{pJASS}
@@ -240,10 +240,11 @@ as we study approximate algorithms in the sequel.
 \subsubsection{Approximate Algorithms}
  
 With  exact instances of all  algorithms failing to match  real-time requirements, we turn to focus on the approximate instances. 
-%Namely, 
 We parameterize \alg, \pRA, \pNRA, and \sNRA\/ with $\Delta=10$ ms. 
 This yields high recall in all four algorithms,  and satisfactory performance (meeting SLA requirements) in \alg. 
 We instantiate \pBMW\/ with $f=5$ for high recall and $f=10$ for low recall.  
+{\inred{Finally, \pJASS\/ is instantiated with $p=0.01$ for low recall and $p=0.02$ for high recall (using $p=0.1$, as suggested, e.g., 
+in~\cite{Crane:2017}, produced unacceptably high latencies).}
 
 {\bf Accuracy.\ } Table~\ref{tab:recall-mrr-distance} depicts the empirical accuracy results for 12-term queries. 
 %We see that the MRR-distance is high for the high-recall algorithms, 
@@ -264,7 +265,7 @@ Summing up, under certain parameter choices the approximate algorithms achieve v
 \centering
 \begin{tabular}{| c | c | c | c | c | c | c |}
 \hline
-   \alg\hi &  \pRA\hi & \pNRA\hi & \sNRA\hi & \pBMW\hi & \pBMW\lo & pJASS \\ \hline
+   \alg\hi &  \pRA\hi & \pNRA\hi & \sNRA\hi & \pBMW\hi & \pBMW\lo & \pJASS \\ \hline
 \bigdataset{  \cw & }
    97.5\%  &  98.5\%  & 98.5\%  & 99\%   & 97.5\% & 80\%  & \inred{TBD}
   % 97.5\% / 0.004 &  98.5\% / 0.002 & 98.5\% / 0.002 & 99\% / 0.001  & 97.5\% / 0.009 & 80\% / 0.048 

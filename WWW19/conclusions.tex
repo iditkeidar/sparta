@@ -1,7 +1,8 @@
 \section{Conclusions}
 \label{sec:conclusions}
 
-We presented \alg\/ -- the first practical algorithm to provide 
+\inred{
+We presented \alg\/ -- a practical algorithm to provide 
 approximate top-k retrieval of verbose queries within interactive latency bounds.
 \remove{
 exploits multi-core hardware for  
@@ -9,23 +10,23 @@ exploits multi-core hardware for
 While being fast in general, it is tailored for very long queries ($10$ or more terms), which  
 are becoming prevalent in modern conversational products.  It  also scales almost perfectly with the corpus size.
 }
-\alg\ leverages the efficiency and early-stopping properties of the Threshold Algorithm; it forgoes the need for random access
-and duplicate indices by using the ``lazy'' scoring approach of TA's NRA variant. We
-parallelized the algorithm on shared-memory multi-core hardware while 
+\alg\ leverages the efficiency and early-stopping properties of the seminal Threshold Algorithm (TA). 
+It forgoes the need for random access and duplicate indices by using the ``lazy'' scoring approach of TA's 
+NRA variant. We parallelized the algorithm on shared-memory multi-core hardware while 
 optimizing memory footprints, memory access 
 patterns, inter-thread data sharing, and synchronization.  
 %in order  to obtain high performance.
 % on  multi-core hardware.
 
-Unlike previously suggested algorithms, \alg\/ yields sub-$180$ ms average latencies on standard hardware
-for queries of up to $12$ terms when applied to datasets of up to $500$M documents, and 
-can therefore support modern search experiences -- which induce long queries --
-within real-time SLA requirements.  
-\alg\ also produces a highly accurate approximation of the exact results (a recall of above 
-$97.5\%$). % and an MRR-distance of below $0.004$). 
-For comparison, 
-a state-of-the-art parallel algorithm (\pBMW) providing similar accuracy required $640$ ms on a $50$M-document dataset, 
-and  $9.9$ seconds on a $500$M-document corpus in our experiments. 
+\alg\/ yields sub-$180$ ms average latencies on standard hardware for queries of up to $12$ terms when applied 
+to a $50$M-document dataset, %\bigdataset{of up to $500$M documents}, 
+and can therefore support modern search experiences -- which induce long queries --
+within real-time SLA requirements.  It does so while producing a highly accurate approximation of the exact results 
+(a recall of above $97.5\%$). % and an MRR-distance of below $0.004$). 
+For comparison, its state-of-the-art parallel competitors, \pBMW\/ and \pJASS,  
+required $640$ ms and above 1 second, respectively, to provide similar accuracy.
+}
+%and  $9.9$ seconds on a $500$M-document corpus in our experiments. 
 %\alg\/ also achieved 25x higher throughput than \pBMW\ 
 %on the large corpus, for a query mix with the 
 %length distribution measured for voice queries in production. 
