@@ -63,20 +63,20 @@ In order to avoid scoring a huge number of documents per query, state-of-the-art
 {\em MaxScore}~\cite{Strohman:2005,Turtle:1995}, {\em WAND}~\cite{Broder:2003}, and {\em Block-Max WAND (BMW)}~\cite{Ding:2011} are popular examples of such algorithms, 
 widely used in production systems. 
 They  simultaneously scan all relevant posting lists in order of document id, evaluating the full score of each document before moving to the next one. 
-\inred{
+%\inred{
 We therefore refer to these as \emph{document-order} algorithms. 
-}
+%}
 Such algorithms track the top-k documents among those scored so far (typically, in a heap). A variable $\Theta$ -- called the \emph{threshold} -- holds the score of the $k$-th (lowest-ranked) document in the heap;  any document whose  score is below this threshold is not a candidate for the final top-k list. As long as the heap contains fewer than $k$ documents, $\Theta$ remains zero.
 % and can be safely pruned.
 % For DAAT-based methods, all posting lists must be sorted by the same unique key, typically by increasing document id. 
 
-\inred{
+%\inred{
 The disadvantage of  document-order algorithms is that high-scoring documents may  be discovered late in the traversal, because document ids  are not correlated with query relevance,
 and so the algorithm does not produce useful partial results before it completes.
 This is mitigated by \emph{score-order} algorithms (sometimes called \emph{impact-order}), e.g.,  JASS~\cite{Lin:2015}, which traverse posting lists in decreasing order of term score. 
 These algorithms accumulate the score of each document throughout the traversal, and thus document scores may be inaccurate at first and improve over time. 
 Score-order algorithms have shown to be slower but  have more predictable performance than document-based ones~\cite{Crane:2017}.
-}
+%}
 
 \subsection{The Threshold Algorithm}
 
@@ -85,9 +85,9 @@ TA~\cite{Fagin:2003} was originally presented in a database setting, where the p
 %;  to the best of our knowledge, TA has not been directly compared with other dynamic pruning algorithms for the top-k retrieval task.
 
 %TA uses  term posting lists sorted in decreasing order of term score. 
-\inred{
+%\inred{
 TA is a score-order algorithm.
-}
+%}
 To evaluate a query $q = t_1, \dots t_m$, it dynamically traverses the $m$ corresponding posting lists of the query terms in an interleaved manner. 
 An \emph{upper bound} vector, $UB$[$m$], 
 bounds the term scores of documents that were not yet visited in each term's posting list. 

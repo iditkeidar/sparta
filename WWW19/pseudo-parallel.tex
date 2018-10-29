@@ -110,7 +110,7 @@
 \EndIf
 \Statex
 \Statex \Comment check algorithm's stopping conditions; in exact version $\Delta=\infty$
-\If{$ \big( |\DMap| = |\DHeap| \big)\; \vee\ $ \emph{HeapUpdateTime} $ + \Delta < $ now} 
+\If{$ \big( |\DMap| = |\DHeap| \big)\; \vee\ $ \emph{HeapUpdateTime} $ + \Delta < $ now} \label{l:clean-stop-cond}
 \State \emph{done} $\leftarrow$ true
 \Else\ add {\sc cleaner()} to job queue
 \EndIf

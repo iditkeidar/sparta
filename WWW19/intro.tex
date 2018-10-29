@@ -18,13 +18,13 @@ The first stage is \emph{top-k retrieval}: it
 The first stage  sifts through huge volumes of data and dominates the execution time. 
 We therefore focus on the latency induced by this stage. 
 
-\inred{
+%\inred{
 The retrieval stage is typically executed in a backend  tier on dedicated search nodes, each of which retrieves the top-k results from a local index shard. 
 With the advance of storage and memory technologies, the size of index shards increases, thus increasing the load on each search node. 
 A promising approach to handle this load is to  parallelize query evaluation on multiprocessor hardware. 
 The current trend in server architecture, which favors parallelism over sequential speed, makes this approach particularly attractive. 
 We explore this approach in this paper.
-}
+%}
 
 
 % Approximate is the only option

@@ -1,7 +1,7 @@
 \section{Evaluation} \label{sec:eval}
 
 We compare the performance of \alg\ to the following multiprocessor algorithms: 
-\inred{
+%\inred{
 \begin{description}
 \item[\pBMW]\cite{rojas2013efficient} -- parallel BMW,  
 the best-in-class parallelization of a document-order top-k algorithm; 
@@ -11,13 +11,15 @@ the best-in-class parallelization of a document-order top-k algorithm;
 \item [\pNRA]-- a
 na\"{\i}ve shared-state parallel implementation of NRA. 
 \end{description}
-}
+%}
 Although our primary focus is on  approximate 
 algorithms, for completeness, we also experiment with their exact counterparts.
 %
 % We study all these algorithms in both exact and approximate variants -- the latter over a spectrum of heuristic parameters that strike different performance-vs-recall tradeoffs.  
 
-{\inred{In order to crystallize the comparison among  the core algorithms, 
+{
+%\inred{
+In order to crystallize the comparison among  the core algorithms, 
 we abstract away other contributors to the wall-clock  latency, e.g., index compression. 
 As recent studies show, with the state-of-the-art compression techniques the impact 
 of decompression on the end-to-end performance is marginal (e.g., up to $6\%$ surplus with the QMX-D4 compression~\cite{Lin:2017}).  Compression effectiveness of document-order vs score-order indexes is beyond the context of this paper.
@@ -25,7 +27,7 @@ of decompression on the end-to-end performance is marginal (e.g., up to $6\%$ su
 We focus on disk-resident search indexes (most of the algorithms under study are of 
 streaming nature, and hence CPU-bound; fitting the index in RAM does not affect 
 their performance significantly). 
-}
+%}
 
 In what follows, Section~\ref{ssec:setup} describes the experiment setup, 
 Section~\ref{ssec:implementation} explains how the algorithms are 
@@ -79,9 +81,10 @@ global frequency rate of $F(t_i)$ is drawn from a geometric distribution with a 
 the  term frequency distribution of {\cw\/} in \cwten.
  }
  
- \inred{
+% \inred{
 We use the popular Lucene open-source search engine~\cite{lucene} for preprocessing the index to generate posting lists; this  includes text tokenization, posting list maintenance, 
-and term statistics retrieval.}
+and term statistics retrieval.
+%}
 We score documents using a standard tf-idf score function with document length normalization~\cite{Baeza-Yates:1999:MIR:553876}. 
 
 We draw queries from the public AOL search log~\cite{aol}.
@@ -89,9 +92,9 @@ For each number of terms from $1$ to $12$, we independently sample $100$ queries
 We also  experimented with a query log of another commercial web search engine; this experiment  
 produced statistically similar results, and so we omit them here.  
 
-We use  $k=1000$, {\inred{based on the assumption that simple tf-idf retrieval is the first phase of multi-stage ranking, 
+We use  $k=1000$, {based on the assumption that simple tf-idf retrieval is the first phase of multi-stage ranking, 
 which may require large values of $k$ for effectiveness~\cite{Wang:2011}. (Indeed, Crane et. al.~\cite{Crane:2017} report
-that the classical AP and RBP quality metrics are close to optimal with this choice of $k$, for multiple datasets.)}}  
+that the classical AP and RBP quality metrics are close to optimal with this choice of $k$, for multiple datasets.)}  
 Experiments with $k=100$ produced qualitatively similar results.% {\inred{which we omit for lack of space}}.
 
 \remove{
@@ -145,12 +148,12 @@ which yielded the best performance.
 The approximate version's pruning aggressiveness is  controlled by  a parameter 
 $f \geq 1$, which multiplies $\Theta$ to relax the threshold for score upper bounds~\cite{Broder:2003}. For $f=1$, the algorithm is exact.
 
-\inred{
+%\inred{
 \paragraph{pJASS}
 Our implementation of pJASS  follows the description in~\cite{parallel-jass}. It traverses all posting lists in parallel, in score order, and accumulates the encountered scores 
 per-document in  \emph{docMap}. Each document is protected by a lock, and a thread that encounters a document locks it, adds the partial score from the term it traversed, and then unlocks it.
 The algorithm stops after a predefined fraction of postings (denoted $p$) are scanned.
-}
+%}
 
 \subsubsection{Parallel TA variants}
 
@@ -243,8 +246,8 @@ With  exact instances of all  algorithms failing to match  real-time requirement
 We parameterize \alg, \pRA, \pNRA, and \sNRA\/ with $\Delta=10$ ms. 
 This yields high recall in all four algorithms,  and satisfactory performance (meeting SLA requirements) in \alg. 
 We instantiate \pBMW\/ with $f=5$ for high recall and $f=10$ for low recall.  
-{\inred{Finally, \pJASS\/ is instantiated with $p=0.01$ for low recall and $p=0.02$ for high recall (using $p=0.1$, as suggested, e.g., 
-in~\cite{Crane:2017}, produced unacceptably high latencies).}
+{Finally, \pJASS\/ is instantiated with $p=0.005$ for low recall and $p=0.02$ for high recall (using $p=0.1$, as suggested, e.g., 
+in~\cite{Crane:2017}, produced unacceptably high latencies).
 
 {\bf Accuracy.\ } Table~\ref{tab:recall-mrr-distance} depicts the empirical accuracy results for 12-term queries. 
 %We see that the MRR-distance is high for the high-recall algorithms, 
@@ -287,16 +290,17 @@ Figure~\ref{fig:terms-scaling} depicts the scaling of single-query latency of th
 as the number of terms scales from $1$ to $12$. The number of workers in each test 
 is equal to the number of terms (for \alg, \pRA, and \pNRA, this allows maximal parallelism). 
 
-Figure~\ref{fig:terms-scaling}(a) and Figure~\ref{fig:terms-scaling}(b) present, respectively, the  mean and  
-$95\%$ latencies of queries\bigdataset{ on  {\cw}}. The latter captures the so-called ``tail latency'' of 
-the slowest $5\%$ of the queries.
+Figure~\ref{fig:terms-scaling-high-avg} and Figure~\ref{fig:terms-scaling-high-95} present, respectively, the  mean and  
+$95\%$ latencies of queries\bigdataset{ on  {\cw}} for \alg\hi\ and the rest of the high-recall algorithms. The latter captures the so-called ``tail latency'' of 
+the slowest $5\%$ of the queries. Figure~\ref{fig:terms-scaling-low-avg} and Figure~\ref{fig:terms-scaling-low-95} present the same for \alg\hi\ and the low-recall algorithms.
+
 \bigdataset{
 ;  Figure~\ref{fig:terms-scaling}(c) depicts the mean latency
 for \cwten.
 }
 %
-\alg\/ outperforms its competitors on all query sizes. The margin is especially big for verbose queries
-($5+$ terms). \alg's average query latency scales perfectly with the dataset size, 
+\alg\/ outperforms its competitors (guaranteeing either high or low recall) on all query sizes. The margin is especially big for verbose queries
+($5+$ terms). \alg's average query latency scales perfectly, 
 remaining below $180$ ms for all query lengths.
 \bigdataset{
  for both \cw\/ and \cwten.  
@@ -310,24 +314,31 @@ Its  $95\%$ latency is below $500$ ms.
 \begin{figure*}[tbh]
 \centering
 \begin{tabular}{ccc}
-      \begin{subfigure}[t]{0.25\textwidth}
+      \begin{subfigure}[t]{0.4\textwidth}
          \includegraphics[width=\textwidth]{figures/latency_12threads_clueweb.pdf}
-        \caption[]{Average\bigdataset{, \cw}}
+        \caption[]{Average\bigdataset{, \cw} - high recall algorithms}
+        \label{fig:terms-scaling-high-avg}
       \end{subfigure}     
 
-	\begin{subfigure}[t]{0.25\textwidth}
+	\begin{subfigure}[t]{0.4\textwidth}
     	\includegraphics[width=\textwidth]{figures/latency_95th_percentile_clueweb.pdf}
-	\caption{95\%\bigdataset{, \cw}}
-    \end{subfigure}  
+	\caption{95\%\bigdataset{, \cw} - high recall algorithms}
+	\label{fig:terms-scaling-high-95}
+    \end{subfigure} 
     
-          \begin{subfigure}[t]{0.25\textwidth}
+\end{tabular} 
+\begin{tabular}{ccc}
+    
+          \begin{subfigure}[t]{0.4\textwidth}
          \includegraphics[width=\textwidth]{figures/latency_high_low_12threads_clueweb.pdf}
-        \caption[]{Average\bigdataset{, \cw}}
+        \caption[]{Average\bigdataset{, \cw} - low recall algorithms}
+        \label{fig:terms-scaling-low-avg}
       \end{subfigure}     
 
-	\begin{subfigure}[t]{0.25\textwidth}
+	\begin{subfigure}[t]{0.4\textwidth}
     	\includegraphics[width=\textwidth]{figures/latency_95th_percentile_high_low_clueweb.pdf}
-	\caption{95\%\bigdataset{, \cw}}
+	\caption{95\%\bigdataset{, \cw} - low recall algorithms}
+	\label{fig:terms-scaling-low-95}
     \end{subfigure} 
 
 \bigdataset{
@@ -339,7 +350,7 @@ Its  $95\%$ latency is below $500$ ms.
     
 \end{tabular}
 \caption{Top-k ($k=1000$) query latency scaling with the number of query terms. 
-The intra-query parallelism is equal to the number of terms in all algorithms. }
+The intra-query parallelism is equal to the number of terms in all algorithms. Figures \ref{fig:terms-scaling-high-avg}-\ref{fig:terms-scaling-high-95} compare \alg\hi with the high recall algorithms and figures \ref{fig:terms-scaling-low-avg}-\ref{fig:terms-scaling-low-95} compare \alg\hi with the low recall algorithms}
 \label{fig:terms-scaling}
 \end{figure*}
 
@@ -377,14 +388,17 @@ However, this is seldom the case when diverse queries are applied to a large ind
 %besides, it does not manifest with the \cwten\/ dataset in statistically significant way. 
 } 
 
-We see that 
-\pBMW, the best-in-class algorithm in the literature, fails to match \alg's speed. For example, for 12-term queries, 
-\pBMW\hi\/ completes  within $630$ ms on average 
+We see that both
+\pBMW\ and \pJASS\
+%the best-in-class algorithm in the literature, 
+fail to match \alg's speed. For example, for 12-term queries, 
+\pBMW\hi\/ completes  within $630$ ms on average, 
 \bigdataset{
 on \cw, and within as long as $9.9$ seconds on \cwten. 
 } 
 \pBMW\lo, 
-which sacrifices $20\%$ of the recall for performance, only succeeds to improve this latency by $10\%$ to $15\%$. 
+which sacrifices $20\%$ of the recall for performance, only succeeds to improve this latency by $10\%$ to $15\%$, 
+\pJASS\hi\ completes  after more than a second on average, and \pJASS\lo\ completes  within $292$ ms on average.
 
 \bigdataset{
 On \cw, 
@@ -432,10 +446,10 @@ recall over the running time. We focus on 12-term queries in a 12-worker configu
 Figure~\ref{fig:dynamics}\bigdataset{
 (a) and Figure~\ref{fig:dynamics}(b) for the \cw\/ and \cwten\/ datasets, respectively 
 }.
-Because the approximate versions of \alg\ and \pRA\ are  identical to the respective exact versions until they stop, 
+Because the approximate versions of \alg\, \pRA\ and \pJASS\ are  identical to the respective exact versions until they stop, 
 we show the dynamics of the exact versions only.  The same is not true for \pBMW, where $f$ impacts the algorithm's results from the outset.
 Hence, we show the dynamics of all three instances of \pBMW. 
-In the exact algorithms's curves, the rightmost data point corresponds to the exact algorithm's completion time.   
+%In the exact algorithms's curves, the rightmost data point corresponds to the exact algorithm's completion time.   
 
 We see that \alg's recall growth is the fastest. For instance, it surpasses $80\%$ recall in less than $50$ ms, 
 and $90\%$ recall in less than 100. But over time, its returns  diminish, and most of the work becomes unproductive. Whereas
@@ -443,7 +457,8 @@ and $90\%$ recall in less than 100. But over time, its returns  diminish, and mo
 most relevant documents   have complete  scores. 
 \pBMW\/ scans the postings in the order of document ids, which is unrelated to document scores, and hence accumulates the true hits 
 at a near-linear rate. Obviously, the convergence rate of \pBMW\hi\/ and \pBMW\lo\/ is faster than that of \pBMW\ex. For both datasets, the first 
-two accrue results at similar rates until \pBMW\lo\/ stops at approximately $80\%$ recall. 
+two accrue results at similar rates until \pBMW\lo\/ stops at approximately $80\%$ recall.
+\pJASS's behavior  is similar to \alg's, but it is a bit slower and does not reach a $100\%$ recall within a minute of execution.
 
 %Figure~\ref{fig:terms-scaling}(c) zooms in on \alg's performance versus other variants of NRA: AllPar -- a na\"{\i}ve parallelization  (without the initial sequential phase),  Seq -- a sequential implementation, and SharedState -- a version of \alg\ that does not use local \TMap\/s. Neither of the first two scales with real-time latency. Interestingly, AllPar is slower than Seq, underscoring the importance of aggressive pruning prior to starting the concurrent execution. SharedState is substantially faster, but fails to utilize the hardware cache efficiently due to lack of locality. It thus lags behind \alg\/ by approximately $35\%$ for long queries. 
 {\bf Parallelism.\ } 
