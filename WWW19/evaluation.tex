@@ -316,13 +316,13 @@ Its  $95\%$ latency is below $500$ ms.
 \begin{tabular}{ccc}
       \begin{subfigure}[t]{0.4\textwidth}
          \includegraphics[width=\textwidth]{figures/latency_12threads_clueweb.pdf}
-        \caption[]{Average latency\bigdataset{, \cw} - high recall algorithms}
+        \caption[]{Average\bigdataset{, \cw} - high recall algorithms}
         \label{fig:terms-scaling-high-avg}
       \end{subfigure}     
 
 	\begin{subfigure}[t]{0.4\textwidth}
     	\includegraphics[width=\textwidth]{figures/latency_95th_percentile_clueweb.pdf}
-	\caption{95\% latency\bigdataset{, \cw} - high recall algorithms}
+	\caption{95\%\bigdataset{, \cw} - high recall algorithms}
 	\label{fig:terms-scaling-high-95}
     \end{subfigure} 
     
@@ -331,13 +331,13 @@ Its  $95\%$ latency is below $500$ ms.
     
           \begin{subfigure}[t]{0.4\textwidth}
          \includegraphics[width=\textwidth]{figures/latency_high_low_12threads_clueweb.pdf}
-        \caption[]{Average latency\bigdataset{, \cw} - low recall algorithms}
+        \caption[]{Average\bigdataset{, \cw} - low recall algorithms}
         \label{fig:terms-scaling-low-avg}
       \end{subfigure}     
 
 	\begin{subfigure}[t]{0.4\textwidth}
     	\includegraphics[width=\textwidth]{figures/latency_95th_percentile_high_low_clueweb.pdf}
-	\caption{95\% latency\bigdataset{, \cw} - low recall algorithms}
+	\caption{95\%\bigdataset{, \cw} - low recall algorithms}
 	\label{fig:terms-scaling-low-95}
     \end{subfigure} 
 
@@ -350,10 +350,7 @@ Its  $95\%$ latency is below $500$ ms.
     
 \end{tabular}
 \caption{Top-k ($k=1000$) query latency scaling with the number of query terms. 
-The intra-query parallelism is equal to the number of terms in all algorithms. 
-Figures \ref{fig:terms-scaling-high-avg} and~\ref{fig:terms-scaling-high-95} compare \alg\hi\/ to the high-recall competitors. 
-Figures \ref{fig:terms-scaling-low-avg} and~\ref{fig:terms-scaling-low-95} compare \alg\hi\/ to the low-recall competitors. 
-}
+The intra-query parallelism is equal to the number of terms in all algorithms. Figures \ref{fig:terms-scaling-high-avg}-\ref{fig:terms-scaling-high-95} compare \alg\hi with the high recall algorithms and figures \ref{fig:terms-scaling-low-avg}-\ref{fig:terms-scaling-low-95} compare \alg\hi with the low recall algorithms}
 \label{fig:terms-scaling}
 \end{figure*}
 
@@ -509,10 +506,10 @@ than \pBMW, but also requires less resources, which benefits throughput as we ne
 
 \begin{table}[htb]
 \centering
-\begin{tabular}{| c | c  | c | c | c | }
+\begin{tabular}{| c | c  | c | c |}
 \hline
-   \alg\hi &  \pRA\hi & \pBMW\hi & \pBMW\lo & pJASS \\  \hline
-    12.5 &  10.9 & 5.95 &  6.64 & \inred{TBD} \\ \hline
+   \alg\hi &  \pRA\hi & \pBMW\hi & \pJASS\hi \\  \hline
+    12.5 &  10.9 & 5.95 & 10.8 \\ \hline
 \bigdataset{
   \cwten & 9.6 & 1.8 & 0.38 & 0.42 \\
   }
