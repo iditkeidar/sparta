@@ -467,7 +467,8 @@ two accrue results at similar rates until \pBMW\lo\/ stops at approximately $80\
 {\bf Parallelism.\ } 
 %We next study the scaling of query latency with  intra-query parallelism. 
 We next consider  $12$-term queries with a number of threads varying from $1$ to $12$. 
-The results appear in Figure~\ref{fig:threads-scaling}\bigdataset{(a) (for \cw) and Figure~\ref{fig:threads-scaling}(b) (for \cwten). The latter depicts only \alg\/ and \pRA\/ 
+The average latencies appear in Figure~\ref{fig:threads-scaling}
+\bigdataset{(a) (for \cw) and Figure~\ref{fig:threads-scaling}(b) (for \cwten). The latter depicts only \alg\/ and \pRA\/ 
 because none of the \pBMW\/ instances scales close to real-time performance}.  
 The left-most data point in each curve corresponds to the performance of 
 the respective sequential algorithm.
@@ -481,6 +482,7 @@ is $840$ ms, which is  above typical SLA requirements. Most of the gain is achie
 On the other hand, for \pBMW, much higher parallelism is essential -- its latency is inversely proportional to the number of threads. Thus, \alg\ is not only faster 
 than \pBMW, but also requires less resources, which benefits throughput as we next show.
 %offers the system designer a latency-throughput tradeoff if some slack in latency can be tolerated. 
+Notice that \pJASS\ does not benefit from higher levels of parallelism at all, due to unequal thread workloads.
 
 \begin{figure}[tbh]
 \centering
@@ -503,9 +505,23 @@ than \pBMW, but also requires less resources, which benefits throughput as we ne
       \end{subfigure}
 \end{tabular}
 }
-\caption{Top-k query latency scaling with intra-query parallelism, for $12$-term queries.}
+\caption{Average query latency scaling with intra-query parallelism, for $12$-term queries.}
 \label{fig:threads-scaling}
 \end{figure}
+
+{\bf Throughput.\ } Finally, we compare the throughput (in queries per second) provided by the different
+algorithms. To this end, we generate a workload with the query size distribution reported in~\cite{sigir/Guy16},
+where the average query length is $4.2$ (std: $2.96$), and more than $5\%$ of the queries are $10$ terms or longer.
+The queries are generated as follows: we first sample a query length $\ell$ from the distribution in~\cite{sigir/Guy16}, and then 
+select a query uniformly at random among all the length-$\ell$ queries in the complete set of  $1200$ AOL queries. 
+
+Table~\ref{tab:thpt} depicts the results of running this query mix on a shared worker pool  of $12$ threads. 
+Here too, \alg\/ improves over its competitors by a wide margin.
+\bigdataset{
+, especially on \cwten, where its throughput
+is 25x that of \pBMW\hi. 
+}
+This  advantage is thanks to a combination of \alg's speed and lower resource utilization.
 
 \begin{table}[htb]
 \centering
@@ -521,18 +537,4 @@ than \pBMW, but also requires less resources, which benefits throughput as we ne
 \caption{Average throughput (in queries per second) of the approximate algorithms on a query distribution measured for voice queries in production. }
 \label{tab:thpt}
 \end{table}
-
-{\bf Throughput.\ } Finally, we compare the throughput (in queries per second) provided by the different
-algorithms. To this end, we generate a workload with the query size distribution reported in~\cite{sigir/Guy16},
-where the average query length is $4.2$ (std: $2.96$), and more than $5\%$ of the queries are $10$ terms or longer.
-The queries are generated as follows: we first sample a query length $\ell$ from the distribution in~\cite{sigir/Guy16}, and then 
-select a query uniformly at random among all the length-$\ell$ queries in the complete set of  $1200$ AOL queries. 
-
-Table~\ref{tab:thpt} depicts the results of running this query mix on a shared worker pool  of $12$ threads. 
-Here too, \alg\/ improves over its competitors by a wide margin.
-\bigdataset{
-, especially on \cwten, where its throughput
-is 25x that of \pBMW\hi. 
-}
-This  advantage is thanks to a combination of \alg's speed and lower resource utilization.
  
