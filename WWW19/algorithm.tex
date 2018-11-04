@@ -3,7 +3,7 @@
 
 \alg\/ is a parallel algorithm that adapts NRA  to shared-memory multiprocessor hardware platforms. 
 Like our implementation of RA and NRA described above, 
-it can be configured to provide approximate results by stopping after the heap does not change for some $\Delta$ time. 
+it can be safe, or can be configured to provide approximate results by stopping after the heap does not change for some $\Delta$ time. 
 
 Section~\ref{ssec:ds} describes the algorithm's data
 structures. Section~\ref{sssec:tasks} explains how we divide the work involved in query processing among threads. Section~\ref{sec:synch} describes synchronization around the shared data structures.

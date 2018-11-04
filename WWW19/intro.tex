@@ -14,7 +14,7 @@ is becoming a major challenge as more queries become longer.
 
  Most search systems today evaluate queries via a two-stage process~\cite{Wang:2011}. 
 The first stage is \emph{top-k retrieval}: it 
- roughly matches the top-k documents most relevant to the query (typically, hundreds to thousands) based on some simple relevance scoring function like TF-IDF or BM25~\cite{Baeza-Yates:1999:MIR:553876}. The second  re-ranks the  documents via some sophisticated (e.g., machine-learned) function, to produce the final result list (typically, a few tens of documents). 
+ roughly matches the top-k documents most relevant to the query (typically, hundreds to thousands) based on some simple relevance scoring function like tf-idf or BM25~\cite{Baeza-Yates:1999:MIR:553876}. The second stage then re-ranks the  documents via some sophisticated (e.g., machine-learned) function, to produce the final result list (typically, a few tens of documents). 
 The first stage  sifts through huge volumes of data and dominates the execution time. 
 We therefore focus on the latency induced by this stage. 
 
@@ -95,7 +95,7 @@ both  corpus size and
 query length.
 E.g., on the 50M-document TREC ClueWeb09B dataset~\cite{ClueWeb09}, %\footnote{\url{https://lemurproject.org/clueweb09}}, 
 \alg\ can serve verbose 12-term queries within less than 200 ms, 
-whereas a parallel execution of RA (denoted, \pRA) processes them in 400 ms, and pBMW takes more than 600 ms. 
+whereas a parallel execution of RA processes them in 400 ms, and a parallel execution of BMW takes more than 600 ms. 
 %Moreover, \alg\ scales much better with the corpus size:  
 \bigdataset{
 On a 500M-document index,  its latency is virtually unchanged, whereas 
@@ -104,7 +104,7 @@ On a 500M-document index,  its latency is virtually unchanged, whereas
 pBMW's processing time grows linearly with the index size.
 }
 %While \alg's advantages are most pronounced for long queries, its 
-\alg's throughput on a production-grade query mix (with the query length distribution measured in~\cite{sigir/Guy16}) is twice that of pBMW.
+\alg's throughput on a production-grade query mix (with the query length distribution measured in~\cite{sigir/Guy16}) is twice that of parallel BMW.
 \bigdataset{
  on the small corpus, and 25x faster on the large one.
 }

@@ -21,12 +21,13 @@ algorithms, for completeness, we also experiment with their exact counterparts.
 %\inred{
 In order to crystallize the comparison among  the core algorithms, 
 we abstract away other contributors to the wall-clock  latency, e.g., index compression. 
-As recent studies show, with the state-of-the-art compression techniques the impact 
-of decompression on the end-to-end performance is marginal (e.g., up to $6\%$ surplus with the QMX-D4 compression~\cite{Lin:2017}).  Compression effectiveness of document-order vs score-order indexes is beyond the context of this paper.
+As recent studies show, given state-of-the-art compression techniques, the impact 
+of decompression on end-to-end performance is marginal (e.g., up to $6\%$ with QMX-D4 compression~\cite{Lin:2017}).  
+%Compression effectiveness of document-order vs score-order indexes is beyond the context of this paper.
 
-We focus on disk-resident search indexes (most of the algorithms under study are of 
-streaming nature, and hence CPU-bound; fitting the index in RAM does not affect 
-their performance significantly). 
+We focus on disk-resident search indexes. 
+%(most of the algorithms under study are of streaming nature, and hence CPU-bound; fitting the index in RAM does not affect their performance significantly). 
+We also experimented with RAM resident indexes, and in all cases \pRA got similar results, which is not surprising given that the algorithms traverse posting lists sequentially. These results are omitted.
 %}
 
 In what follows, Section~\ref{ssec:setup} describes the experiment setup, 
@@ -46,15 +47,15 @@ A  \emph{benchmark driver} draws queries from an input queue and submits them to
 %In both modes, the algorithm exploits 
 uses a thread pool for intra-query parallelism. 
 The driver controls the pool size. % by notifying the algorithm how many threads are available to it.
-When testing latency, the thread pool is used by a single query. 
+When testing latency, the entire thread pool is used by a single query. 
 In the throughput evaluation mode, queries are scheduled first-come-first-served, 
 and a new query is scheduled for execution (i.e., assigned threads) 
 once  there are idle threads with no outstanding work from currently executing queries.
 All queries scheduled for execution equally share the thread pool.
 
-In all experiments, the appropriate index (either in id order or in score order)
+In all experiments, the appropriate index (either in document order or in score order)
 is pre-built offline and stored on disk uncompressed as a collection of binary files, 
-each storing a shard of data partitioned by term.  The benchmark environment memory-maps the content 
+each storing a shard of data partitioned by term.  The benchmark environment memory-maps the contents 
 of these files via the MappedByteBuffer API~\cite{java-bytebuffer}.
 Prior to each experiment, we flush the file system's page cache so all pages are physically read from disk during the experiment.
 
@@ -93,7 +94,7 @@ We also  experimented with a query log of another commercial web search engine; 
 produced statistically similar results, and so we omit them here.  
 
 We use  $k=1000$, {based on the assumption that simple tf-idf retrieval is the first phase of multi-stage ranking, 
-which may require large values of $k$ for effectiveness~\cite{Wang:2011}. (Indeed, Crane et. al.~\cite{Crane:2017} report
+which may require large values of $k$ for effectiveness~\cite{Wang:2011}. (Indeed, Crane et al.~\cite{Crane:2017} report
 that the classical AP and RBP quality metrics are close to optimal with this choice of $k$, for multiple datasets.)}  
 Experiments with $k=100$ produced qualitatively similar results.% {\inred{which we omit for lack of space}}.
 
@@ -114,7 +115,7 @@ and $|D|$ is the number of tokens in $D$.
 Posting lists are stored as contiguous uncompressed arrays;  {\pRA} also stores 
 its secondary index (document id to position in the posting list mapping) in the same form. 
 Term scores (namely, tf-idf) are stored in the posting lists as integers, scaled by $10^6$ and rounded as in~\cite{Bortnikov:2017}. 
-Using integer arithmetics instead of floating-point significantly speeds up document evaluation. 
+Using integer arithmetic instead of floating-point significantly speeds up document evaluation. 
 
 The specific algorithm implementations are as follows.
 
@@ -134,9 +135,9 @@ most of the time.
 Each thread maintains a thread-local heap with the current top-k documents. (We also experimented with a shared heap and 
 got inferior results; a similar finding was reported in~\cite{rojas2013distributing}.)
 Similarly, each thread $T$ maintains a local threshold $\Theta_T$ for filtering heap insertions; 
-$\Theta_T$ is \emph{at least} the lowest score in the local heap, but may be higher thanks to the progress of other threads.  
+$\Theta_T$ is \emph{at least} the lowest score in the local heap, but may be higher due to the progress of other threads.  
 %Specifically, threads benefit from each other's progress via a shared $\Theta$ variable. 
-Thread $T$ periodically compares $\Theta$ to its local $\Theta_T$, and promotes the smaller of the two to $\max(\Theta_T, \Theta)$. 
+Thread $T$ periodically compares $\Theta$ to its local $\Theta_T$ and promotes the smaller of the two to $\max(\Theta_T, \Theta)$. 
 This way,  slower workers catch up with  faster ones.
 
 \pBMW\
@@ -149,7 +150,7 @@ The approximate version's pruning aggressiveness is  controlled by  a parameter
 $f \geq 1$, which multiplies $\Theta$ to relax the threshold for score upper bounds~\cite{Broder:2003}. For $f=1$, the algorithm is exact.
 
 %\inred{
-\paragraph{pJASS}
+\paragraph{\pJASS}
 Our implementation of pJASS  follows the description in~\cite{parallel-jass}. It traverses all posting lists in parallel, in score order, and accumulates the encountered scores 
 per-document in  \emph{docMap}. Each document is protected by a lock, and a thread that encounters a document locks it, adds the partial score from the term it traversed, and then unlocks it.
 The algorithm stops after a predefined fraction of postings (denoted $p$) are scanned.
@@ -157,12 +158,14 @@ The algorithm stops after a predefined fraction of postings (denoted $p$) are sc
 
 \subsubsection{Parallel TA variants}
 
+\paragraph{\sNRA}
 \sNRA\ is a shared-nothing parallelization of NRA, where the index is partitioned to $12$ shards by document id. 
 Each thread finds the top-k documents in its shard by running NRA independently with thread-local data structures. 
 When all threads complete, their lists are merged and the global top-k documents are kept.  
 
+\paragraph{\pNRA}
 \pNRA\ is a na\"{\i}ve shared-state parallelization of NRA that does not employ \alg's optimizations. 
-Namely, it uses a shared document map, which it does not clean, and updates the term
+Namely, it uses a shared document map, which it does not clean, and it updates the term
 upper bounds upon every document evaluation. As in \alg, a dedicated task checks the stopping condition.
 (Distributed stopping detection yielded worse results).
 
@@ -173,7 +176,8 @@ instead of maintaining partial scores.
 Note that {\pRA} is the only studied algorithm that exercises random access to persistent storage.  
 } 
 
-{\pRA} maintains its results in a shared heap (experiments did not show any advantage to using local heaps).
+\paragraph{\pRA}
+Our implementation of \pRA\ maintains its results in a shared heap (experiments did not show any advantage to using local heaps).
 Note that the algorithm's multiple worker threads may encounter postings of the same document independently, 
 and consequently score that document and try to insert it into the heap multiple times. The implementation guarantees 
 the uniqueness of insertion (only the first one takes effect).
@@ -190,8 +194,8 @@ decide to stop.
 \label{ssec:results}
 
 For an algorithm A, we consider the following variants: exact (denoted A\ex), high-recall (denoted A\hi), and
-low-recall (denoted A\lo). Note that the approximate algorithms' parameters ($\Delta$ and $f$) affect the recall
-but do not directly control it; our high recall instances are ones that empirically achieve a  recall of $97\%$ or 
+low-recall (denoted A\lo). Note that the approximate algorithms' parameters ($\Delta$, $f$ and $p$) affect the recall
+but do not directly control it; our high recall instances are ones that empirically achieve a  recall of $96\%$ or 
 higher.
 \bigdataset{ 
 for both datasets.
@@ -291,15 +295,17 @@ as the number of terms scales from $1$ to $12$. The number of workers in each te
 is equal to the number of terms (for \alg, \pRA, and \pNRA, this allows maximal parallelism). 
 
 Figure~\ref{fig:terms-scaling-high-avg} and Figure~\ref{fig:terms-scaling-high-95} present, respectively, the  mean and  
-$95\%$ latencies of queries\bigdataset{ on  {\cw}} for \alg\hi\ and the rest of the high-recall algorithms. The latter captures the so-called ``tail latency'' of 
-the slowest $5\%$ of the queries. Figure~\ref{fig:terms-scaling-low-avg} and Figure~\ref{fig:terms-scaling-low-95} present the same for \alg\hi\ and the low-recall algorithms.
+$95\%$ latencies of queries\bigdataset{ on  {\cw}} in the high-recall algorithms. The latter captures the so-called ``tail latency'' of 
+the slowest $5\%$ of the queries. Figure~\ref{fig:terms-scaling-low-avg} and Figure~\ref{fig:terms-scaling-low-95} present the same for \alg\hi\ and the low-recall variants of the algorithms.
 
 \bigdataset{
 ;  Figure~\ref{fig:terms-scaling}(c) depicts the mean latency
 for \cwten.
 }
 %
-\alg\/ outperforms its competitors (guaranteeing either high or low recall) on all query sizes. The margin is especially big for verbose queries
+When compared to other high recall algorithms, \alg\/ outperforms all of them in terms of both average latency and the 95th percentile, on all query lengths.
+%\alg\/ outperforms its competitors (guaranteeing either high or low recall) on all query sizes. 
+The margin is noticeable for verbose queries
 ($5+$ terms). \alg's average query latency scales perfectly, 
 remaining below $180$ ms for all query lengths.
 \bigdataset{
@@ -331,13 +337,13 @@ Its  $95\%$ latency is below $500$ ms.
     
           \begin{subfigure}[t]{0.4\textwidth}
          \includegraphics[width=\textwidth]{figures/latency_high_low_12threads_clueweb.pdf}
-        \caption[]{Average\bigdataset{, \cw} - low recall algorithms}
+        \caption[]{Average\bigdataset{, \cw} - \alg\ vs. low recall algorithms}
         \label{fig:terms-scaling-low-avg}
       \end{subfigure}     
 
 	\begin{subfigure}[t]{0.4\textwidth}
     	\includegraphics[width=\textwidth]{figures/latency_95th_percentile_high_low_clueweb.pdf}
-	\caption{95\%\bigdataset{, \cw} - low recall algorithms}
+	\caption{95\%\bigdataset{, \cw} - \alg\ vs. low recall algorithms}
 	\label{fig:terms-scaling-low-95}
     \end{subfigure} 
 
@@ -350,7 +356,7 @@ Its  $95\%$ latency is below $500$ ms.
     
 \end{tabular}
 \caption{Top-k ($k=1000$) query latency scaling with the number of query terms. 
-The intra-query parallelism is equal to the number of terms in all algorithms. Figures \ref{fig:terms-scaling-high-avg}-\ref{fig:terms-scaling-high-95} compare \alg\hi with the high recall algorithms and figures \ref{fig:terms-scaling-low-avg}-\ref{fig:terms-scaling-low-95} compare \alg\hi with the low recall algorithms}
+The intra-query parallelism is equal to the number of terms in all algorithms. Figures \ref{fig:terms-scaling-high-avg}-\ref{fig:terms-scaling-high-95} compare \alg\hi\ with the high recall algorithms and figures \ref{fig:terms-scaling-low-avg}-\ref{fig:terms-scaling-low-95} compare \alg\hi\ with the low recall algorithms}
 \label{fig:terms-scaling}
 \end{figure*}
 
@@ -369,13 +375,9 @@ is equal to the number of terms in all parallel algorithms.}
 }
 
 
-In contrast, \pRA\/ exhibits much weaker scalability. For example, for $12$-term queries it is slower than \alg\
-by more than $2$x. 
-\bigdataset{
-when applied to \cw, and by more than $10$x on \cwten. 
-}
+In contrast, \pRA\/ exhibits much weaker scalability. For example, for $12$-term queries it is more than $2$x slower than \alg\. 
 We explain this by the cost of evaluating the complete 
-document scores in \pRA, which forces  intensive access to the secondary index. This translates to volumes of random 
+document scores in \pRA, which requires intensive access to the secondary index. This translates to volumes of random 
 I/O that cannot be sustained even with modern SSD hardware. Note that this trend is the reverse of the one observed for \pRA\ex, 
 which outperforms \alg\ex\/ (Table~\ref{tab:safe-latency}). That is, \alg\/ spends much more work than \pRA\/ 
 in order to collect the remaining $2.5\%$ of the exact result set. We revisit this phenomenon  below. 
@@ -388,10 +390,9 @@ However, this is seldom the case when diverse queries are applied to a large ind
 %besides, it does not manifest with the \cwten\/ dataset in statistically significant way. 
 } 
 
-We see that both
-\pBMW\ and \pJASS\
-%the best-in-class algorithm in the literature, 
-fail to match \alg's speed. For example, for 12-term queries, 
+%We see that both \pBMW\ and \pJASS\ fail to match \alg's speed. 
+By sacrificing recall, pBMW and pJASS manage to improve performance and bring their tail latencies for short queries lower than Sparta’s tail latency with high recall. Nevertheless, Sparta’s average latency is still smaller than theirs, as is  its tail latency for long queries.
+For example, for 12-term queries, 
 \pBMW\hi\/ completes  within $630$ ms on average, 
 \bigdataset{
 on \cw, and within as long as $9.9$ seconds on \cwten. 
@@ -403,10 +404,12 @@ which sacrifices $20\%$ of the recall for performance, only succeeds to improve 
 \bigdataset{
 On \cw, 
 }
-The shared-nothing and unoptimized parallelization of NRA are weaker than all other alternatives:
+The shared-nothing and unoptimized parallelizations of NRA are weaker than all other alternatives:
 \pNRA's  average latency for 12-term queries is $1$ second, and \sNRA's is $1.7$ seconds. 
+\bigdataset{
 On the larger dataset, \pNRA\ and \sNRA\ are still poorer than \alg, but perform better than \pBMW. 
 This is thanks to the high scalability and early-stopping nature of the approximate NRA approach.
+}
 These results emphasize the necessity of sharing information among threads (unlike \sNRA) on the one hand,
 and the importance of \alg's locality optimizations, (which are missing in \pNRA), on the other. 
 Specifically, the background cleaning and local copies of \DMap\ and the lazy updates of \emph{UB} allow \alg\ to benefit from 
@@ -456,7 +459,7 @@ and $90\%$ recall in less than 100. But over time, its returns  diminish, and mo
 \pRA\/ takes much longer to converge because it needs to fully score each encountered document,  its concluding phase is faster because 
 most relevant documents   have complete  scores. 
 \pBMW\/ scans the postings in the order of document ids, which is unrelated to document scores, and hence accumulates the true hits 
-at a near-linear rate. Obviously, the convergence rate of \pBMW\hi\/ and \pBMW\lo\/ is faster than that of \pBMW\ex. For both datasets, the first 
+at a near-linear rate. Obviously, the convergence rate of \pBMW\hi\/ and \pBMW\lo\/ is faster than that of \pBMW\ex. The first 
 two accrue results at similar rates until \pBMW\lo\/ stops at approximately $80\%$ recall.
 \pJASS's behavior  is similar to \alg's, but it is a bit slower and does not reach a $100\%$ recall within a minute of execution.
 
@@ -466,7 +469,7 @@ two accrue results at similar rates until \pBMW\lo\/ stops at approximately $80\
 We next consider  $12$-term queries with a number of threads varying from $1$ to $12$. 
 The results appear in Figure~\ref{fig:threads-scaling}\bigdataset{(a) (for \cw) and Figure~\ref{fig:threads-scaling}(b) (for \cwten). The latter depicts only \alg\/ and \pRA\/ 
 because none of the \pBMW\/ instances scales close to real-time performance}.  
-The left-most data point in each curve refers to the performance of 
+The left-most data point in each curve corresponds to the performance of 
 the respective sequential algorithm.
 
 \alg\ requires some level of parallelism in order to achieve real-time speed, e.g., its sequential

@@ -8,10 +8,10 @@ Crane et al.~\cite{Crane:2017} showed that  document-order algorithms
 are susceptible to tail queries that may take orders of magnitude longer than the median query; approximate query evaluation in WAND and BMW does not significantly reduce the variance. Moreover, in agreement with our findings, they showed that score-order algorithms  are less sensitive to tail queries due to their effective early termination capability. 
 
 %\inred{
-Mackenzie et al.~\cite{parallel-jass} suggest \pJASS -- a parallel version of an earlier score-order algorithm named JASS~\cite{Lin:2015}. JASS's virtue is its simplicity -- 
-it performs very little processing per-posting. In order to achieve early termination, JASS applies different heuristics that limit the fraction of processed terms. 
+Mackenzie et al.~\cite{parallel-jass} suggest \pJASS -- a parallel version of the score-order algorithm JASS~\cite{Lin:2015}. JASS's virtue is its simplicity -- 
+it performs very little processing per-posting. In order to achieve early termination, JASS applies heuristics that limit the fraction of processed terms. 
 %On the theoretical side, unlike TA, it provides no instance-optimality guarantee, and therefore, its exact variant is inefficient. 
-Similarly to \alg, \pJASS\/ focuses on approximate top-k retrieval (its exact variant is inefficient). We show that \alg\ achieves better performance and better recall, thanks to multiple optimizations -- e.g., continuous result-set pruning that leads to better locality, fine-tuned termination, and careful synchronization. \alg's additional advantage is its small RAM footprint, contrast to \pJASS\/ that intentionally avoids pruning, and ends up maintaining a huge in-memory document map throughout the query evaluation. 
+Similarly to \alg, \pJASS\/ focuses on approximate top-k retrieval (its exact variant is inefficient). We show that \alg\ achieves better performance and better recall thanks to multiple optimizations -- e.g., continuous result-set pruning that leads to better locality, fine-tuned termination, and careful synchronization. \alg's additional advantage is its small RAM footprint, whereas \pJASS\/ intentionally avoids pruning and maintains a huge in-memory document map throughout the query evaluation. 
 %and maintenance of a top-k heap instead of discovering the top documents at the end of the traversal. 
 %}
 
@@ -28,6 +28,7 @@ Jeon et al.~\cite{Jeon:2014}
 %argued that parallelizing the processing of an individual query gives limited benefits compared to sequential execution since short-running queries, which dominate the workload, do not benefit from parallelization. On the other hand, parallelization substantially reduces the execution time of long-running queries.  They 
 presented an adaptive resource management algorithm that chooses the degree of parallelism at runtime for each query, based on predicting high-latency queries.
 Such efforts are orthogonal to the performance improvement we achieve via parallelization of (long) queries.
+
 Other works~\cite{Ao:2011,Liu:2018:GUC:3178487.3178512} have explored using GPU hardware for information retrieval;~\cite{Liu:2018:GUC:3178487.3178512} 
 focused on adaptively choosing whether to use a CPU or a GPU based on the query's difficulty, and~\cite{Ao:2011} focused on optimizing throughput rather than latency. 
 In contrast, our work leverages standard server-grade multi-threaded CPUs. 

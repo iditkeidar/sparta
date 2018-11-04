@@ -21,11 +21,11 @@ where $ts(D, t_i)$ is the term score of term $t_i$ to document $D$.
 
 An \emph{exact} top-k retrieval primitive returns a list of the $k$ documents with the highest scores for the query.
 An \emph{approximate} solution returns a list of $k$ results that approximates the top $k$. 
-Let $L$ be the exact list of top-k documents sorted in decreasing order of document scores,  
+Let $L$ be the exact list of top-k documents,  
 and let $A$ be the list returned by an approximate solution. 
 The quality (or accuracy) of  $A$ is measured by its
 %two metrics. First, 
-\emph{recall}, which is  the fraction of the actual top-k included in $A$.
+\emph{recall}, which is  the fraction of $L$ included in $A$.
 %\begin{equation} \label{eq:recall}
 %\dfrac{\mid L \cap A \mid}{k}
 %\nonumber
@@ -72,10 +72,10 @@ Such algorithms track the top-k documents among those scored so far (typically, 
 
 %\inred{
 The disadvantage of  document-order algorithms is that high-scoring documents may  be discovered late in the traversal, because document ids  are not correlated with query relevance,
-and so the algorithm does not produce useful partial results before it completes.
+and so the algorithm does not always produce useful partial results before it completes.
 This is mitigated by \emph{score-order} algorithms (sometimes called \emph{impact-order}), e.g.,  JASS~\cite{Lin:2015}, which traverse posting lists in decreasing order of term score. 
 These algorithms accumulate the score of each document throughout the traversal, and thus document scores may be inaccurate at first and improve over time. 
-Score-order algorithms have shown to be slower but  have more predictable performance than document-based ones~\cite{Crane:2017}.
+Score-order algorithms have been shown to be slower but  have more predictable performance than document-based ones~\cite{Crane:2017}.
 %}
 
 \subsection{The Threshold Algorithm}
@@ -88,7 +88,7 @@ TA~\cite{Fagin:2003} was originally presented in a database setting, where the p
 %\inred{
 TA is a score-order algorithm.
 %}
-To evaluate a query $q = t_1, \dots t_m$, it dynamically traverses the $m$ corresponding posting lists of the query terms in an interleaved manner. 
+To evaluate a query $q = t_1, \dots t_m$, it dynamically traverses the posting lists of the $m$ query terms in an interleaved manner. 
 An \emph{upper bound} vector, $UB$[$m$], 
 bounds the term scores of documents that were not yet visited in each term's posting list. 
 %Table~\ref{table:threshold-ds} lists the data structures used by TA, and 
@@ -139,7 +139,7 @@ the following \emph{upper bound stopping condition} holds:
 At this point, no non-traversed document can achieve a high enough score to be included in the heap. RA's output is the set of documents in the heap, ordered by their scores.
 
 RA is an exact  algorithm as it returns the top-k results. In our evaluation, we implement an approximate variant of RA by stopping whenever the heap does not change for some parameter $\Delta$ ms. 
-Note that the Threshold Algorithm is amenable to such early stopping because it traverses posting lists in order of score. High scoring documents are likely to become evident early, and finding new high scoring documents becomes less and less likely as the algorithm progresses. This is in contrast with algorithms like BMW (and consequently, pBMW), which traverse posting lists in order of document id, and hence finding high scoring documents remains equally likely throughout their execution.
+Note that the Threshold Algorithm is amenable to such early stopping because it traverses posting lists in order of score. High scoring documents are likely to become evident early, and finding new high scoring documents becomes less and less likely as the algorithm progresses. This is in contrast with document-order algorithms like BMW, where finding high scoring documents remains equally likely throughout the execution.
 
 \remove{
 RA was shown to be \emph{instance-optimal} in~\cite{Fagin:2003}, namely, the number of times it accesses data items is asymptotically close the optimum for every problem instance. Nevertheless, this analysis assumes that all accesses to data items have the same cost. 
@@ -162,7 +162,7 @@ For a document $D$ and a term $t_i$, we define the upper bound $UB(D, t_i)$ to b
 UB(D) \triangleq \sum_{i=1}^m UB(D, t_i) \ ; \  
 LB(D) \triangleq \sum_{i=1}^m LB(D, t_i).
 \] 
-E.g., in Figure~\ref{fig:lists}, $UB(D_{57}) = 38+40+41 = 119$ and $LB(D_{57}) = 40+41 = 81$, whereas its actual score  is $11+ 40+41 = 92$.
+For example, in Figure~\ref{fig:lists}, $UB(D_{57}) = 38+40+41 = 119$ and $LB(D_{57}) = 40+41 = 81$, whereas its actual score  is $11+ 40+41 = 92$.
 
 NRA maintains the top-k heap according to the document \emph{lower bounds}, and $\Theta$ holds the smallest value among them. 
 Its output is the set of documents in the heap, sorted by LB.

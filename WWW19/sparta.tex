@@ -58,14 +58,13 @@
 
 
 \begin{abstract}
-Top-k document retrieval is emerging as a performance bottleneck in query processing as verbose queries are becoming 
+Top-k document retrieval is emerging as a performance bottleneck in query processing, as verbose queries are becoming 
 mainstream, while state-of-the-art algorithms fail to process such long queries in real time. To date, attempts to
 accelerate top-k evaluation via approximate result computation and intra-query parallelism have produced limited results. 
 
 We present \alg\ -- a practical parallel algorithm that exploits multi-core hardware to run approximate top-k retrieval 
 within interactive latency bounds. Its design is inspired by  Fagin et al.'s seminal Threshold Algorithm for  aggregation in databases. 
-\alg\ scales through lightweight coordination and context sharing among concurrent threads. The resulting algorithm 
-is highly scalable.
+\alg\ scales through lightweight coordination and context sharing among concurrent threads. 
 \bigdataset{ 
 both in the number of query terms and in the searched index size. 
 }
