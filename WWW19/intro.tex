@@ -30,7 +30,7 @@ We explore this approach in this paper.
 % Approximate is the only option
 Obtaining the exact top-k matches out of a large corpus is typically too slow to meet stringent SLA requirements. 
 Given that the top-k selection is only the first query  processing step, perfect results are often not essential, as later query processing 
-stages can be satisfied by approximate results~\cite{Lin:2015}. Based on this observation we focus on \emph{approximate} 
+stages can be satisfied by approximate results~\cite{Crane:2017, Lin:2015, Wang:2011}. Based on this observation we focus on \emph{approximate} 
 (sometimes called \emph{non-safe}) query evaluation, tuned to achieve a certain high recall (e.g., $97\%$ or more). 
 %of the original results).
 % that is deemed sufficient for the application at hand. 
@@ -51,8 +51,7 @@ Parallelizing these algorithms can improve performance by 30\%--40\%~\cite{rojas
 %Rojas et al.~\cite{rojas2013efficient} propose a \emph{parallel} variant of BMW, which we call \emph{pBMW}, achieving 
 %performance improvements of 30\%--40\%. 
 % ;  we refer to their  algorithm as \emph{pBMW}. %-- with a considerable performance improvement.
-our experiments show that such a parallel BMW implementation still has limited scalability, both in the number of query terms and in the index size,
-falling short of expected SLAs on long queries or large indices. 
+our experiments show that such a parallel BMW implementation still has limited scalability, falling short of expected SLAs on long queries. 
 %(e.g., 1 second for 
 %12-term query over ClueWeb with eight threads, in our experiments). 
 %The algorithm does not achieve high recall when stopped early. 

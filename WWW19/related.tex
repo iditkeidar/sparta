@@ -5,11 +5,11 @@ Verbose queries challenge standard top-k processing techniques in terms of runti
 In this work we ignore the query pre-processing phase and consider the query as a bag of words given after textual analysis.
 
 Crane et al.~\cite{Crane:2017} showed that  document-order algorithms 
-are susceptible to tail queries that may take orders of magnitude longer than the median query; approximate query evaluation in WAND and BMW does not significantly reduce the variance. Moreover, in agreement with our findings, they showed that score-order algorithms  are less sensitive to tail queries due to their effective early termination capability. 
+are susceptible to tail queries that may take orders of magnitude longer than the median query; approximate query evaluation in WAND and BMW does not significantly reduce the variance. Moreover, they showed that score-order algorithms  are less sensitive to tail queries due to their effective early termination capability. 
 
 %\inred{
 Mackenzie et al.~\cite{parallel-jass} suggest \pJASS -- a parallel version of the score-order algorithm JASS~\cite{Lin:2015}. JASS's virtue is its simplicity -- 
-it performs very little processing per-posting. In order to achieve early termination, JASS applies heuristics that limit the fraction of processed terms. 
+it performs very little processing per-posting. In order to achieve early termination, JASS applies a heuristic to limit the fraction of processed terms. 
 %On the theoretical side, unlike TA, it provides no instance-optimality guarantee, and therefore, its exact variant is inefficient. 
 Similarly to \alg, \pJASS\/ focuses on approximate top-k retrieval (its exact variant is inefficient). We show that \alg\ achieves better performance and better recall thanks to multiple optimizations -- e.g., continuous result-set pruning that leads to better locality, fine-tuned termination, and careful synchronization. \alg's additional advantage is its small RAM footprint, whereas \pJASS\/ intentionally avoids pruning and maintains a huge in-memory document map throughout the query evaluation. 
 %and maintenance of a top-k heap instead of discovering the top documents at the end of the traversal. 
@@ -42,8 +42,7 @@ Yuan et al.~\cite{yuan:2012} observed that the number of accesses to the sorted 
 %this algorithm is not safe. Moreover, 
 as the authors pointed out, the effectiveness of this approach in terms of run-time latency still has to be explored.
 
-In the IR setting, TA has received much less attention. A few exceptional examples are
-\cite{Theobald:2004,Bast:2006,Theobald:2008}, which experimented with TA on web data  using standard IR metrics. Bast et al.~\cite{Bast:2006} optimized the TA scheduling method based on a cost model for sequential and random accesses. Theobald et al.~\cite{Theobald:2008} extended TA for XML query languages. Another work by Theobald et al.~\cite{Theobald:2004} introduced an approximate TA algorithm based on probabilistic arguments: When scanning the posting lists in descending order of local scores, various forms of derived bounds are employed to predict when it is safe, with high probability, to skip candidate items hence trading off accuracy for sorted access. Applying similar probabilistic pruning rules for Sparta  may prove beneficial and is left for future work.
+In the IR setting, a few works \cite{Theobald:2004,Bast:2006,Theobald:2008} have experimented with TA on web data  using standard IR metrics. Bast et al.~\cite{Bast:2006} optimized the TA scheduling method based on a cost model for sequential and random accesses. Theobald et al.~\cite{Theobald:2008} extended TA for XML query languages. Another work by Theobald et al.~\cite{Theobald:2004} introduced an approximate TA algorithm based on probabilistic arguments: When scanning the posting lists in descending order of local scores, various forms of derived bounds are employed to predict when it is safe, with high probability, to skip candidate items hence trading off accuracy for sorted access. Applying similar probabilistic pruning rules for Sparta  may prove beneficial and is left for future work.
 
 
 %Gong et al. \cite{Gong:2010} proposed a distributed version of the TA algorithm. It partitions the original inverted files into sub-files . Each process retrieves the top-k results in its portion independently using TA algorithm, and the results from all portions are then merged to provide the final top-k answers. 

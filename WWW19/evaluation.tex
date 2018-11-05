@@ -27,7 +27,7 @@ of decompression on end-to-end performance is marginal (e.g., up to $6\%$ with Q
 
 We focus on disk-resident search indexes. 
 %(most of the algorithms under study are of streaming nature, and hence CPU-bound; fitting the index in RAM does not affect their performance significantly). 
-We also experimented with RAM resident indexes, and in all cases \pRA got similar results, which is not surprising given that the algorithms traverse posting lists sequentially. These results are omitted.
+We also experimented with RAM-resident indexes, and in all cases, all algorithms except \pRA\ got similar results, which is not surprising given that the algorithms traverse posting lists sequentially. These results are omitted.
 %}
 
 In what follows, Section~\ref{ssec:setup} describes the experiment setup, 
@@ -129,7 +129,7 @@ result. The algorithm then merges the partial results to obtain the final top-k.
 
 Similarly to \alg, \pBMW's threads obtain jobs from a common job queue. Here, a job defines a range of document ids to scan. 
 We set the number of jobs to be twice the number of worker threads, and assign equal-size ranges to all threads.  
-This partition results in well-balanced execution in which the whole worker pool is utilized 
+This partition results in well-balanced executions in which the whole worker pool is utilized 
 most of the time. 
 
 Each thread maintains a thread-local heap with the current top-k documents. (We also experimented with a shared heap and 
@@ -194,7 +194,7 @@ decide to stop.
 \label{ssec:results}
 
 For an algorithm A, we consider the following variants: exact (denoted A\ex), high-recall (denoted A\hi), and
-low-recall (denoted A\lo). Note that the approximate algorithms' parameters ($\Delta$, $f$ and $p$) affect the recall
+low-recall (denoted A\lo). Note that the approximate algorithms' parameters ($\Delta$, $f$, and $p$) affect the recall
 but do not directly control it; our high recall instances are ones that empirically achieve a  recall of $96\%$ or 
 higher.
 \bigdataset{ 
@@ -241,7 +241,7 @@ Most of the algorithms complete within
 13 seconds on \cw\/ and 1.5 minutes on \cwten.
 } 
 
-We will revisit the algorithms' execution dynamics -- namely, how fast they accrue their results -- 
+We revisit the algorithms' execution dynamics -- namely, how fast they accrue their results -- 
 as we study approximate algorithms in the sequel. 
  
 \subsubsection{Approximate Algorithms}
@@ -294,9 +294,9 @@ Figure~\ref{fig:terms-scaling} depicts the scaling of single-query latency of th
 as the number of terms scales from $1$ to $12$. The number of workers in each test 
 is equal to the number of terms (for \alg, \pRA, and \pNRA, this allows maximal parallelism). 
 
-Figure~\ref{fig:terms-scaling-high-avg} and Figure~\ref{fig:terms-scaling-high-95} present, respectively, the  mean and  
+Figures~\ref{fig:terms-scaling-high-avg} and \ref{fig:terms-scaling-high-95} present, respectively, the  mean and  
 $95\%$ latencies of queries\bigdataset{ on  {\cw}} in the high-recall algorithms. The latter captures the so-called ``tail latency'' of 
-the slowest $5\%$ of the queries. Figure~\ref{fig:terms-scaling-low-avg} and Figure~\ref{fig:terms-scaling-low-95} present the same for \alg\hi\ and the low-recall variants of the algorithms.
+the slowest $5\%$ of the queries. Figures~\ref{fig:terms-scaling-low-avg} and \ref{fig:terms-scaling-low-95} present the same for \alg\hi\ and the low-recall variants of the algorithms.
 
 \bigdataset{
 ;  Figure~\ref{fig:terms-scaling}(c) depicts the mean latency
@@ -391,15 +391,15 @@ However, this is seldom the case when diverse queries are applied to a large ind
 } 
 
 %We see that both \pBMW\ and \pJASS\ fail to match \alg's speed. 
-By sacrificing recall, pBMW and pJASS manage to improve performance and bring their tail latencies for short queries lower than Sparta’s tail latency with high recall. Nevertheless, Sparta’s average latency is still smaller than theirs, as is  its tail latency for long queries.
+By sacrificing recall, \pBMW\ and \pJASS\ manage to improve performance and bring their tail latencies for short queries below \alg's tail latency with high recall. Nevertheless, \alg's average latency is still smaller than theirs for all query lengths, as is its tail latency for long queries.
 For example, for 12-term queries, 
 \pBMW\hi\/ completes  within $630$ ms on average, 
 \bigdataset{
 on \cw, and within as long as $9.9$ seconds on \cwten. 
 } 
 \pBMW\lo, 
-which sacrifices $20\%$ of the recall for performance, only succeeds to improve this latency by $10\%$ to $15\%$, 
-\pJASS\hi\ completes  after more than a second on average, and \pJASS\lo\ completes  within $292$ ms on average.
+which sacrifices $20\%$ of the recall for performance, only succeeds to improve this latency by $15\%$, 
+\pJASS\hi\ completes  after more than a second on average, and \pJASS\lo\ improves this to $292$ ms on average.
 
 \bigdataset{
 On \cw, 
@@ -449,7 +449,7 @@ recall over the running time. We focus on 12-term queries in a 12-worker configu
 Figure~\ref{fig:dynamics}\bigdataset{
 (a) and Figure~\ref{fig:dynamics}(b) for the \cw\/ and \cwten\/ datasets, respectively 
 }.
-Because the approximate versions of \alg\, \pRA\ and \pJASS\ are  identical to the respective exact versions until they stop, 
+Because the approximate versions of \alg, \pRA, and \pJASS\ are  identical to the respective exact versions until they stop, 
 we show the dynamics of the exact versions only.  The same is not true for \pBMW, where $f$ impacts the algorithm's results from the outset.
 Hence, we show the dynamics of all three instances of \pBMW. 
 %In the exact algorithms's curves, the rightmost data point corresponds to the exact algorithm's completion time.   
@@ -461,7 +461,7 @@ most relevant documents   have complete  scores.
 \pBMW\/ scans the postings in the order of document ids, which is unrelated to document scores, and hence accumulates the true hits 
 at a near-linear rate. Obviously, the convergence rate of \pBMW\hi\/ and \pBMW\lo\/ is faster than that of \pBMW\ex. The first 
 two accrue results at similar rates until \pBMW\lo\/ stops at approximately $80\%$ recall.
-\pJASS's behavior  is similar to \alg's, but it is a bit slower and does not reach a $100\%$ recall within a minute of execution.
+\pJASS's behavior  is similar to \alg's, but it is a bit slower and fails to reach $100\%$ recall within a minute of execution.
 
 %Figure~\ref{fig:terms-scaling}(c) zooms in on \alg's performance versus other variants of NRA: AllPar -- a na\"{\i}ve parallelization  (without the initial sequential phase),  Seq -- a sequential implementation, and SharedState -- a version of \alg\ that does not use local \TMap\/s. Neither of the first two scales with real-time latency. Interestingly, AllPar is slower than Seq, underscoring the importance of aggressive pruning prior to starting the concurrent execution. SharedState is substantially faster, but fails to utilize the hardware cache efficiently due to lack of locality. It thus lags behind \alg\/ by approximately $35\%$ for long queries. 
 {\bf Parallelism.\ } 
@@ -473,16 +473,11 @@ because none of the \pBMW\/ instances scales close to real-time performance}.
 The left-most data point in each curve corresponds to the performance of 
 the respective sequential algorithm.
 
-\alg\ requires some level of parallelism in order to achieve real-time speed, e.g., its sequential
-latency 
-\bigdataset{
-on \cw\/  
-}
-is $840$ ms, which is  above typical SLA requirements. Most of the gain is achieved at low-parallelism levels (2 threads suffice). 
+\alg\ requires some level of parallelism in order to achieve real-time speed -- its sequential latency is $840$ ms, which is  above typical SLA requirements. Most of the gain is achieved at low-parallelism levels (2 threads suffice). 
+The same is true for \pJASS, which hardly improves when afforded more threads, due to unequal thread workloads.
 On the other hand, for \pBMW, much higher parallelism is essential -- its latency is inversely proportional to the number of threads. Thus, \alg\ is not only faster 
 than \pBMW, but also requires less resources, which benefits throughput as we next show.
 %offers the system designer a latency-throughput tradeoff if some slack in latency can be tolerated. 
-Notice that \pJASS\ does not benefit from higher levels of parallelism at all, due to unequal thread workloads.
 
 \begin{figure}[tbh]
 \centering
@@ -505,7 +500,7 @@ Notice that \pJASS\ does not benefit from higher levels of parallelism at all, d
       \end{subfigure}
 \end{tabular}
 }
-\caption{Average query latency scaling with intra-query parallelism, for $12$-term queries.}
+\caption{Average query latency scaling with intra-query parallelism, for $12$-term queries, high recall algorithms.}
 \label{fig:threads-scaling}
 \end{figure}
 
@@ -516,12 +511,12 @@ The queries are generated as follows: we first sample a query length $\ell$ from
 select a query uniformly at random among all the length-$\ell$ queries in the complete set of  $1200$ AOL queries. 
 
 Table~\ref{tab:thpt} depicts the results of running this query mix on a shared worker pool  of $12$ threads. 
-Here too, \alg\/ improves over its competitors by a wide margin.
+Here too, \alg\/ improves over its competitors.
 \bigdataset{
 , especially on \cwten, where its throughput
 is 25x that of \pBMW\hi. 
 }
-This  advantage is thanks to a combination of \alg's speed and lower resource utilization.
+Its pronounced advantage over \pBMW\ is thanks to a combination of \alg's speed and lower resource utilization.
 
 \begin{table}[htb]
 \centering

@@ -122,7 +122,7 @@ when we discuss synchronization and locality below.
 
 A na\"ive attempt to parallelize NRA would be to 
 %assign a thread per term and 
-share the data structures among all threads. (Note that sharing state is essential because the partial document scores, and consequently the lower bounds, are affected by multiple threads that generate term scores). This approach 
+share the data structures among all threads. (Note that sharing state is important because the partial document scores, and consequently the lower bounds, are affected by multiple threads that generate term scores). This approach 
 \remove{
 suffers from multiple drawbacks. For one, it requires a predefined number of threads, while a server running many queries may not always have the required number of threads available. More importantly, straightforward sharing 
 }
@@ -133,8 +133,8 @@ leads to high contention, primarily around $\DMap$.%, even when the implementati
 %Instead, we redesign the algorithm flow in a way that reduces contention. 
 To reduce contention, we 
 consider the point in time when the first stopping condition (Equation~\ref{eq:stop}) holds. From this time on, no new document's score can surpass the lower bound of any document in the shared \DHeap. Therefore, adding new documents to \DMap\ is no longer helpful (a similar observation was made  in~\cite{Mamoulis:2007}). 
-On the other hand, it is possible to shrink \DMap\ by removing documents whose upper bounds are smaller than $\Theta$.
-This is cardinal for the concurrent implementation, which can stop sharing \DMap\ among the threads once it is sufficiently small, thereby eliminating the synchronization overhead. 
+On the other hand, it is possible to shrink \DMap\ by removing documents whose upper bounds have been exceeded by $\Theta$.
+This is exploited by our concurrent implementation, which stops sharing \DMap\ among the threads once it is sufficiently small, thereby eliminating the synchronization overhead altogether.
 
 
 
@@ -148,7 +148,7 @@ A  thread that finishes its assigned segment inserts into the queue a new task f
 (line~\ref{l:new-task}). Thus, we  progress on all posting lists at the same rate modulo the segment size. 
 In case $m$ threads are available, a large segment size can be used.
 
-In addition to  posting list-traversing tasks, the 
+In addition to  posting list-traversing tasks, a task executing the 
 {\sc cleaner} function (lines~\ref{l:clean-start}--~\ref{l:clean-end}) performs maintenance on the \DMap.
 This task is invoked once Equation~\ref{eq:stop} holds and so  \DMap\ no longer grows.
 The cleaner serves two purposes. First, as its name suggests, it removes 
@@ -186,8 +186,8 @@ To avoid races around evaluating a \Docobj's
 lower bound and inserting it into \DHeap, we update the lower bound in a lazy manner while holding the global lock on \DHeap: Every thread that adds a document to the heap updates the lower bounds of all heap documents (lines \ref{l:for-all-heap-docs}-\ref{l:fix-heap}).
 
 Before the first stopping condition (Equation~\ref{eq:stop}) holds, multiple workers update \DMap\/ concurrently. 
-We therefore protected each hash bucket by a granular lock, which  
-performed better than the generic Java concurrent hashmap~\cite{java-hashmap}.
+We therefore protect each hash bucket by a granular lock, which  
+performs better than the generic Java concurrent hashmap~\cite{java-hashmap}.
 
 
 The cleaner task starts removing elements from  \DMap\/ after it is guaranteed that 
@@ -220,7 +220,8 @@ But
 once it becomes small enough to fully fit in the local cache, there is no need to keep using the global copy. 
 
 To this end, \alg\/ associates a local map replica, \TMap, with each posting list. \TMap\ is created by the worker that currently owns that posting list once \DMap's size drops below a threshold $\Phi$,
-in our implementation, $\Phi=10$K entries. The {\sc initMap} function scans \DMap, and copies to \TMap\ the references to those \Docobj{} objects that do not contain the score for the worker's term yet.  Once a \TMap\ has been created, every worker that handles its posting list uses it.
+in our implementation, $\Phi=10$K entries. 
+In lines \ref{l:hash-chash-loop}-\ref{l:hash-chash}, we scan \DMap, and copy to \TMap\ the references to those \Docobj{} objects that do not contain the score for the worker's term yet.  Once a \TMap\ has been created, every worker that handles its posting list uses it.
 Note that since every posting list is accessed by a single worker at any given time, no synchronization is required.
 %
 %We show in the next section that by using \TMap s, we expedite \alg's query processing latency by up to $35\%$.
@@ -234,7 +235,7 @@ exact version ($\Delta = \infty$) is safe, and returns the top-k results.
 In terms of performance, NRA was shown to be \emph{instance-optimal} when  random access is impossible~\cite{Fagin:2003}, 
 namely, its number of accesses to posting list entries is asymptotically close the optimum for every problem instance.  
 This property holds for pNRA as long as the rates in which different threads access different posting lists are within constant multiples of each other~\cite{Fagin:2003}, because in this case a thread that ``runs ahead'' without knowing it should stop only accesses a constant factor more entries than the algorithm needs to, which the asymptotic
-analysis ignores. \alg\ differs from pNRA in deferring updates to UB until the end of the segment, 
+analysis ignores. \alg\ further differs from pNRA in deferring updates to UB until the end of the segment, 
 which may further delay stopping for \emph{segSize} additional posting list accesses. Since \emph{segSize} is constant, \alg\ is asymptotically
 instance-optimal under the same assumptions as pNRA.
 

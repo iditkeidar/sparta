@@ -71,7 +71,7 @@ Such algorithms track the top-k documents among those scored so far (typically, 
 % For DAAT-based methods, all posting lists must be sorted by the same unique key, typically by increasing document id. 
 
 %\inred{
-The disadvantage of  document-order algorithms is that high-scoring documents may  be discovered late in the traversal, because document ids  are not correlated with query relevance,
+The disadvantage of  document-order algorithms is that high-scoring documents may  be discovered late in the traversal because document ids  are not correlated with query relevance,
 and so the algorithm does not always produce useful partial results before it completes.
 This is mitigated by \emph{score-order} algorithms (sometimes called \emph{impact-order}), e.g.,  JASS~\cite{Lin:2015}, which traverse posting lists in decreasing order of term score. 
 These algorithms accumulate the score of each document throughout the traversal, and thus document scores may be inaccurate at first and improve over time. 

@@ -36,7 +36,7 @@
 %		\If{$\TMap[i]=\DMap$}  
 			\Statex \Comment  \DMap\  is shrinking and small -- create a local copy for term $i$
 			\State \TMap[i] $\leftarrow$ new hash map
-    			\ForAll{$D \in$ \DMap\ s.t. $D.score[i] = 0$} 
+    			\ForAll{$D \in$ \DMap\ s.t. $D.score[i] = 0$} \label{l:hash-chash-loop}
             			\State add $D$ to \TMap[i] \label{l:hash-chash}
             		\EndFor
 %	  	\EndIf 
