@@ -1,0 +1,154 @@
+\relax 
+\citation{Spink:2001:SWP:362968.362979}
+\citation{sigir/Guy16}
+\citation{Arapakis:2014:IRL:2600428.2609627}
+\citation{Wang:2011}
+\citation{Baeza-Yates:1999:MIR:553876}
+\@writefile{toc}{\contentsline {title}{Fast Parallel Top-K Retrieval of Verbose Queries}{1}}
+\@writefile{toc}{\authcount {5}}
+\@writefile{toc}{\contentsline {author}{Gali Sheffi\and Dmitry Basin\and Edward Bortnikov\and David Carmel\and Idit Keidar }{1}}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}}
+\newlabel{sec:intro}{{1}{1}}
+\citation{Crane:2017, Lin:2015, Wang:2011}
+\citation{Ding:2011}
+\citation{Bortnikov:2017}
+\citation{rojas2013efficient}
+\citation{Fagin:2003}
+\citation{Fagin:2003}
+\citation{ClueWeb09}
+\citation{sigir/Guy16}
+\citation{Wang:2011}
+\citation{Fagin:2003}
+\citation{Strohman:2005,Turtle:1995}
+\citation{Broder:2003}
+\citation{Ding:2011}
+\citation{Lin:2015}
+\citation{Crane:2017}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Top-k Retrieval}{3}}
+\newlabel{sec:problem}{{2}{3}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Background}{3}}
+\newlabel{sec:background}{{3}{3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}State-of-the-art Top-k Algorithms}{3}}
+\citation{Fagin:2003}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}The Threshold Algorithm}{4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Traversal example in RA and NRA variants of the Threshold Algorithm (TA). Posting lists are sorted by decreasing term score. Vertical arrows depict iterator positions. UB holds upper bounds on the terms' contributions to scores of untraversed documents. The RA document heap is ordered by full document score, and the NRA heap by partial score (lower bound).}}{4}}
+\newlabel{fig:lists}{{1}{4}}
+\@writefile{toc}{\contentsline {subsubsection}{Random Access (RA)}{4}}
+\newlabel{eq:stop}{{1}{5}}
+\@writefile{toc}{\contentsline {subsubsection}{No Random Access (NRA)}{5}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Sparta\ }{6}}
+\newlabel{sec:alg}{{4}{6}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Sparta\ Data Structures}{6}}
+\newlabel{ssec:ds}{{4.1}{6}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Sparta's data structures and initial values.}}{6}}
+\newlabel{alg:sparta-ds}{{1}{6}}
+\newlabel{eq:stop2}{{2}{6}}
+\citation{Mamoulis:2007}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Sparta\/ data structures. The \textit  {docMap}\ keeps track of partially scored documents; \textit  {tmpDocMap}\ and \textit  {termMap}\ are local partial copies of \textit  {docMap}.}}{7}}
+\newlabel{fig:sparta_ds}{{2}{7}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Splitting the Work}{7}}
+\newlabel{sssec:tasks}{{4.2}{7}}
+\citation{Gursky:2008}
+\citation{java-hashmap}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Synchronization}{8}}
+\newlabel{sec:synch}{{4.3}{8}}
+\citation{Fagin:2003}
+\citation{Fagin:2003}
+\citation{rojas2013efficient}
+\citation{parallel-jass}
+\citation{Lin:2015}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Analysis}{9}}
+\newlabel{ssec:analysis}{{4.4}{9}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Evaluation}{9}}
+\newlabel{sec:eval}{{5}{9}}
+\citation{Lin:2017}
+\citation{java-bytebuffer}
+\citation{ClueWeb09}
+\citation{lucene}
+\citation{Baeza-Yates:1999:MIR:553876}
+\citation{aol}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Experiment Setup}{10}}
+\newlabel{ssec:setup}{{5.1}{10}}
+\citation{Wang:2011}
+\citation{Crane:2017}
+\citation{Bortnikov:2017}
+\citation{rojas2013distributing}
+\citation{Ding:2011}
+\citation{rojas2013distributing}
+\citation{Ding:2011}
+\citation{Broder:2003}
+\citation{parallel-jass}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Implementation}{11}}
+\newlabel{ssec:implementation}{{5.2}{11}}
+\@writefile{toc}{\contentsline {subsubsection}{State-of-the-art parallel search algorithms}{11}}
+\@writefile{toc}{\contentsline {paragraph}{pBMW}{11}}
+\@writefile{toc}{\contentsline {paragraph}{pJASS}{11}}
+\citation{Crane:2017}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Average query latency (in ms) of 12-term queries with exact algorithms using 12 threads. None of the algorithms meets real-time SLAs. }}{12}}
+\newlabel{tab:safe-latency}{{2}{12}}
+\@writefile{toc}{\contentsline {subsubsection}{Parallel TA variants}{12}}
+\@writefile{toc}{\contentsline {paragraph}{sNRA}{12}}
+\@writefile{toc}{\contentsline {paragraph}{pNRA}{12}}
+\@writefile{toc}{\contentsline {paragraph}{pRA}{12}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Results}{12}}
+\newlabel{ssec:results}{{5.3}{12}}
+\@writefile{toc}{\contentsline {subsubsection}{Exact Algorithms}{12}}
+\@writefile{toc}{\contentsline {subsubsection}{Approximate Algorithms}{13}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Recall of approximate algorithms for 12-term queries.}}{13}}
+\newlabel{tab:recall-mrr-distance}{{3}{13}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Top-k ($k=1000$) query latency scaling (average and 95\%) with the number of query terms. The intra-query parallelism is equal to the number of terms in all algorithms. }}{13}}
+\newlabel{fig:terms-scaling}{{3}{13}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Recall dynamics with elapsed time, for 12-term queries, with 12 worker threads.}}{14}}
+\newlabel{fig:dynamics}{{4}{14}}
+\citation{sigir/Guy16}
+\citation{sigir/Guy16}
+\citation{Huston:2010}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Average query latency scaling with intra-query parallelism, for $12$-term queries, high recall algorithms.}}{15}}
+\newlabel{fig:threads-scaling}{{5}{15}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Related Work}{15}}
+\newlabel{sec:related}{{6}{15}}
+\citation{Crane:2017}
+\citation{parallel-jass}
+\citation{Lin:2015}
+\citation{Tatikonda:2011,Liu:2018:GUC:3178487.3178512}
+\citation{Bonacic:2010,rojas2013efficient}
+\citation{rojas2013efficient}
+\citation{Jeon:2014}
+\citation{Ao:2011,Liu:2018:GUC:3178487.3178512}
+\citation{Liu:2018:GUC:3178487.3178512}
+\citation{Ao:2011}
+\citation{Fagin:2003,Akbarinia:2007}
+\citation{ilyas2008survey}
+\citation{Mamoulis:2007}
+\citation{Gursky:2008}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Average throughput (in queries per second) of the approximate algorithms on a query distribution measured for voice queries in production. }}{16}}
+\newlabel{tab:thpt}{{4}{16}}
+\citation{yuan:2012}
+\citation{Theobald:2004,Bast:2006,Theobald:2008}
+\citation{Bast:2006}
+\citation{Theobald:2008}
+\citation{Theobald:2004}
+\bibstyle{splncs04}
+\bibdata{references}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusions}{17}}
+\newlabel{sec:conclusions}{{7}{17}}
+\newlabel{l:par-init-job}{{2}{18}}
+\newlabel{l:start-threads}{{3}{18}}
+\newlabel{l:par-end}{{7}{18}}
+\newlabel{l:hash-start}{{9}{18}}
+\newlabel{l:hash-chash-loop}{{11}{18}}
+\newlabel{l:hash-chash}{{12}{18}}
+\newlabel{l:hash-end}{{12}{18}}
+\newlabel{l:thread-update-ub}{{25}{18}}
+\newlabel{l:new-task}{{26}{18}}
+\newlabel{l:lock-heap}{{28}{18}}
+\newlabel{l:for-all-heap-docs}{{31}{18}}
+\newlabel{l:fix-heap}{{33}{18}}
+\newlabel{l:unlock-heap}{{39}{18}}
+\newlabel{l:clean-start}{{40}{18}}
+\newlabel{l:clean-local-copy}{{42}{18}}
+\newlabel{l:clean-replace}{{46}{18}}
+\newlabel{l:clean-stop-cond}{{47}{18}}
+\newlabel{l:clean-end}{{49}{18}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces Sparta\ algorithm.}}{18}}
+\newlabel{alg:sparta}{{1}{18}}
