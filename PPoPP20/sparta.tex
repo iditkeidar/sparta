@@ -1,20 +1,16 @@
-\documentclass[sigconf,review,anonymous]{acmart}
-
-% Copyright
-\setcopyright{rightsretained}
-% DOI
-%\acmDOI{10.475/123_4}
-% ISBN
-%\acmISBN{123-4567-24-567/08/06}
-%Conference
-%\acmConference[WWW'19]{The Web Conference}{May 2019}{San Francisco, CA, USA}
-%\acmYear{2019}
-\copyrightyear{2020}
-%\acmArticle{4}
-%\acmPrice{15.00}
-
-%\usepackage{microtype}%if unwanted, comment out or use option "draft"
+\documentclass[sigplan,10pt,review,anonymous]{acmart}
 \settopmatter{printfolios=true,printccs=false,printacmref=false}
+
+
+\acmConference[PPoPP'20]{PPoPP 2019: 25th ACM SIGPLAN Annual Symposium on Principles and Practice of Parallel Programming}{2020}{San Diego, CA, USA}
+\acmYear{2020}
+\acmISBN{} % \acmISBN{978-x-xxxx-xxxx-x/YY/MM}
+\acmDOI{} % \acmDOI{10.1145/nnnnnnn.nnnnnnn}
+\startPage{1}
+\setcopyright{none}
+\bibliographystyle{ACM-Reference-Format}
+
+
 %\usepackage{balance}  % for  \balance command ON LAST PAGE  (only there!)
 \usepackage{color}
 \usepackage{subcaption}
@@ -57,30 +53,30 @@
 
 \begin{abstract}
 
-\inred{To do: generalize message to top-k beyond web search.}
 
-Top-k document retrieval is emerging as a performance bottleneck in query processing, as verbose queries are becoming 
+
+Many big data processing applications rely on a \emph{top-k retrieval} building block, which identifies the $k$ highest scoring data items based on an 
+aggregation of attributes. For example, in the context of web search, a query is comprised of a list of $n$ search terms, and a document's score is computed as the sum 
+of its partial scores on the $n$ terms. Top-k query retrieval is typically used to sift through massive amounts of data and identify a smaller set of data items for 
+further (more complex) analysis. Thus, its scalability is crucial for overall performance. Modern use-cases increase the number of attributes the score is computed over, 
+which challenges existing top-k algorithms. 
+For example, in web search, top-k document retrieval is emerging as a performance bottleneck in query processing, as verbose queries are becoming 
 mainstream, while state-of-the-art algorithms fail to process such long queries in real time. To date, attempts to
 accelerate top-k evaluation via approximate result computation and intra-query parallelism have produced limited results. 
 
 We present \alg\ -- a practical parallel algorithm that exploits multi-core hardware to run approximate top-k retrieval 
 within interactive latency bounds. Its design is inspired by  Fagin et al.'s seminal Threshold Algorithm for  aggregation in databases. 
-\alg\ scales through lightweight coordination and context sharing among concurrent threads. 
-\bigdataset{ 
+\alg\ scales through lightweight coordination and context sharing among concurrent threads,  
 both in the number of query terms and in the searched index size. 
-}
-%For example, 
-When applied to the 50M-document public ClueWeb09B 
+For example, when applied to the 50M-document public ClueWeb09B 
 dataset, \alg\  processes $12$-term queries $3.6$ times faster than the state-of-the-art. 
-\bigdataset{
 On a tenfold  bigger index, 
 \alg\ continues to process queries at the same speed, whereas today's best-in-class algorithm is more than 60 times slower. 
-}
-\alg\ further significantly improves the overall system throughput for workloads abundant with verbose queries.  
-% on production-motivated query mixes. 
+\alg\ further significantly improves the overall system throughput for workloads abundant with verbose queries  
+on production-motivated query mixes. 
 \end{abstract}
 
-\keywords{Parallel computing, web-search, top-k}%mandatory
+% \keywords{Parallel computing, multi-threading, information retrieval, web-search, top-k}%mandatory in camera-ready
 
 \maketitle
 
