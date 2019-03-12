@@ -55,25 +55,27 @@
 
 
 
-Many big data processing applications rely on a \emph{top-k retrieval} building block, which identifies the $k$ highest scoring data items based on an 
-aggregation of attributes. For example, in the context of web search, a query is comprised of a list of $n$ search terms, and a document's score is computed as the sum 
-of its partial scores on the $n$ terms. Top-k query retrieval is typically used to sift through massive amounts of data and identify a smaller set of data items for 
-further (more complex) analysis. Thus, its scalability is crucial for overall performance. Modern use-cases increase the number of attributes the score is computed over, 
-which challenges existing top-k algorithms. 
-For example, in web search, top-k document retrieval is emerging as a performance bottleneck in query processing, as verbose queries are becoming 
-mainstream, while state-of-the-art algorithms fail to process such long queries in real time. To date, attempts to
-accelerate top-k evaluation via approximate result computation and intra-query parallelism have produced limited results. 
+Many big data processing applications rely on a \emph{top-k retrieval} building block, which identifies or approximates the $k$ highest scoring data items based on an 
+aggregation of features. For example, a web search query consists of $n$ search terms, where a document's score is the sum 
+of its partial scores on the $n$ terms. Top-k  retrieval is often used to sift through massive amounts of data in order to identify a smaller subset of the data  for 
+further (more detailed) analysis. Thus, its scalability is crucial for overall performance. Modern use-cases increase the number of features the score is computed over. 
+% challenging existing top-k algorithms. 
+In web search, for example, top-k document retrieval is emerging as a performance bottleneck in query processing, as verbose queries are becoming 
+mainstream while state-of-the-art algorithms fail to process such long queries in real time. To date, attempts to
+accelerate top-k evaluation via 
+%approximate result computation and 
+intra-query parallelism have produced limited results. 
 
-We present \alg\ -- a practical parallel algorithm that exploits multi-core hardware to run approximate top-k retrieval 
-within interactive latency bounds. Its design is inspired by  Fagin et al.'s seminal Threshold Algorithm for  aggregation in databases. 
-\alg\ scales through lightweight coordination and context sharing among concurrent threads,  
-both in the number of query terms and in the searched index size. 
-For example, when applied to the 50M-document public ClueWeb09B 
-dataset, \alg\  processes $12$-term queries $3.6$ times faster than the state-of-the-art. 
+We present \alg\ -- a practical parallel algorithm that exploits multi-core hardware for approximate top-k retrieval 
+with interactive latency bounds. %Its design is inspired by  Fagin et al.'s seminal Threshold Algorithm for  aggregation in databases. 
+Thanks to lightweight coordination and context sharing among concurrent threads,
+\alg\ scales both in the number of query terms and in the searched index size. 
+For example, on the 50M-document public ClueWeb09B 
+dataset, \alg\  processes $12$-term queries twice as fast as  the state-of-the-art. 
 On a tenfold  bigger index, 
-\alg\ continues to process queries at the same speed, whereas today's best-in-class algorithm is more than 60 times slower. 
-\alg\ further significantly improves the overall system throughput for workloads abundant with verbose queries  
-on production-motivated query mixes. 
+\alg\ continues to process queries at the same speed, whereas existing algorithms deteriorate significantly.
+%\alg\ further significantly improves the overall system throughput for workloads abundant with verbose queries  
+%on production-motivated query mixes. 
 \end{abstract}
 
 % \keywords{Parallel computing, multi-threading, information retrieval, web-search, top-k}%mandatory in camera-ready
