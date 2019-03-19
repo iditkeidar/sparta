@@ -2,44 +2,47 @@
 \label{sec:intro}
 
 %Top-k retrieval is an essential building block in various big data processing domains. 
-Many Interactive big data environments need to select data based on an aggregate score consisting of multiple features; 
-such queries are prevalent in information retrieval, web search, data mining, data analytics, and more~\cite{top-k-survey}. 
+Interactive big data processing is proliferating in a wide range of applications involving
+information retrieval, web search, data mining, data analytics, and more~\cite{top-k-survey}. 
+To answer complex queries, such services need to identify relevant data based on multiple features (or attributes).  
 Consider, e.g., a real-time analytics engine~\cite{flurry} maintaining daily lists of application access statistics, where each entry
 is the number of unique users accessing a given application on the given day.  
-A query may retrieve the popular applications over a ten-day period by aggregating such access statistics from multiple lists.
-Real-time analytics databases such as Apache Druid support TopN~\cite{druid-topN} queries in order to facilitate such queries.
+A query may retrieve the popular applications over a ten-day period by aggregating the access statistics from ten lists;
+popular real-time analytics databases explicitly support such TopN queries~\cite{druid-topN}.
 
 % Problem: long queries
-In modern use cases,  queries are becoming more complex and involve a larger number of features. 
-Case in point - Internet users are changing the ways in which they interact with search engines. 
+In modern use cases,  data sets are becoming larger and queries exceedingly  involve more features. 
+A case in point is web search:  
+% Internet users are changing the ways in which they interact with search engines. 
 While  early days web queries were short (2.4 terms on average~\cite{Spink:2001:SWP:362968.362979}), 
 modern search experiences (query suggestion, reformulation, conversational interfaces, etc.) stimulate their users to submit much longer queries. 
 For example, more than 5\% of queries submitted via voice search on mobile devices exceed 10 terms~\cite{sigir/Guy16}. 
-At the same time, usability studies
-(e.g.,~\cite{Arapakis:2014:IRL:2600428.2609627}) show that users are extremely sensitive to end-to-end delays beyond 500 ms, 
-and any excess delay beyond 250 ms leads to material degradation in their experience. Maintaining this \emph{service-level agreement} ({\em SLA}) 
-is becoming a major challenge as more queries become longer.
+As more queries become longer, answering queries within a real-time \emph{service-level agreement} ({\em SLA}) 
+is becoming a major challenge.  
+% At the same time, usability studies (e.g.,~\cite{Arapakis:2014:IRL:2600428.2609627}) show that users are extremely sensitive to end-to-end delays beyond 500 ms, 
+%and any excess delay beyond 250 ms leads to material degradation in their experience. 
 
 %Two stages
-Data processing in these domains usually proceeds in two stages~\cite{Wang:2011}. 
+Interactive data processing   usually involves two stages~\cite{Wang:2011}. 
 The first  is \emph{top-k retrieval}, which roughly matches the top-k documents most relevant to the query 
 (typically, hundreds to thousands) based on some simple relevance scoring function. 
 %For example, web queries commonly employ  tf-idf or BM25~\cite{Baeza-Yates:1999:MIR:553876}. 
-The second stage performs more elaborate analysis, e.g., a web query engine 
-re-ranks the  documents via some sophisticated (e.g., machine-learned) function, to produce the final result list (typically, a few tens of documents). 
-The first stage  sifts through huge volumes of data and dominates the execution time. 
+The second  performs more elaborate analysis, for instance,   web query engines 
+re-rank the  documents via some sophisticated function. 
+%, to produce the final result list (typically, a few tens of documents). 
+The first stage  sifts through huge volumes of data and therefore dominates the execution time. 
 
-%\inred{
-The retrieval stage is typically executed in a backend  tier on dedicated search nodes, each of which retrieves the top-k results from a local index shard. 
+\remove{
+% Shards are getting bigger
+Top-k retrieval is often executed on dedicated search nodes, each of which retrieves the top-k results from a local index shard. 
 With the advance of storage and memory technologies, the size of index shards increases, thus increasing the load on each search node. 
 A promising approach to handle this load is to  parallelize query evaluation on multiprocessor hardware. 
 The current trend in server architecture, which favors parallelism over sequential speed, makes this approach particularly attractive. 
 We explore this approach in this paper.
-%}
-
+}
 
 % Approximate is the only option
-Obtaining the exact top-k matches out of a large corpus is typically too slow to meet stringent SLA requirements. 
+Yet obtaining the exact top-k matches out of a large corpus is typically too slow to meet stringent SLA requirements. 
 Given that the top-k selection is only the first query  processing step, perfect results are often not essential, as later query processing 
 stages can be satisfied by approximate results~\cite{Crane:2017,Lin:2015,Wang:2011,druid-topN}. 
 Based on this observation we focus on \emph{approximate} 
@@ -47,6 +50,7 @@ Based on this observation we focus on \emph{approximate}
 %of the original results).
 % that is deemed sufficient for the application at hand. 
 
+\remove{
 %Top-k retrieval algorithms have been  studied in the query processing literature~\cite{Baeza-Yates:1999:MIR:553876,
 %Broder:2003:EQE:956863.956944, Ding:2011:FTD:2009916.2010048}. They capitalize on aggressive pruning of the search space, 
 %in order to reduce the traversal time. 
@@ -65,24 +69,27 @@ our experiments show that such a parallel BMW implementation still has limited s
 %(e.g., 1 second for 
 %12-term query over ClueWeb with eight threads, in our experiments). 
 %The algorithm does not achieve high recall when stopped early. 
+}
 
-We present \emph{\alg} (Scalable PARallel Threshold Algorithm) -- a novel 
-concurrent algorithm that substantially improves search time for verbose queries over large search indices. Its
-%the tail
- query latencies fit well within  real-time SLAs on standard  server hardware. 
-
+We present \emph{\alg}  -- \emph{Scalable PARallel Threshold Algorithm} -- for (approximate)
+top-k retrieval on multi-core hardware. 
+%\alg\ performs top-k retrieval much faster than the state-of-the-art, particularly for long queries and large search corpora. 
+%Its
+% tail
+% query latencies fit well within  real-time SLAs on standard  server hardware. 
+%
 \alg's design is inspired by the seminal \emph{Threshold Algorithm (TA)} by Fagin et al.~\cite{Fagin:2003}.  
 %for retrieving the top-k objects from a database based on an aggregation of attributes that may reside in multiple nodes. 
 %%%%Perhaps surprisingly, this algorithm was largely ignored in the web search literature.
 %, despite its relevance. 
 %In the web setting, term posting lists represent attributes and the ranking function is a linear aggregation of term scores. 
-TA has two variants: (1) \emph{Random Access} ({\em RA}), which  
+TA has two variants: (1) RA (\emph{random access}), which  
  relies on random access to  attribute lists; 
 %\inred{Gali: shouldn't we mention that TA's "regular" posting lists are sorted by term scores?} 
-and (2) \emph{No Random Access} ({\em NRA}), which 
+and (2) {\em NRA} (\emph{no random access}),  which 
  only traverses them sequentially. The former is ineffective in the context of real-time search 
 because it requires (1)  a secondary random-access index (which doubles the required index space), 
-and (2) random I/O to the on-disk secondary index, which incurs high overhead when the index  is too big to be 
+and (2) random I/O to the secondary index, which incurs high overhead when the index  is too big to be 
 kept entirely in RAM. We therefore base our algorithm on  NRA. 
 
 
@@ -92,7 +99,7 @@ shared state can become a major bottleneck unless carefully designed. On the one
 sharing state among threads is essential in order to benefit from TA's early stopping feature.
 Indeed, our experiments show  that a shared-nothing (partitioned) parallelization of NRA performs two times 
 worse than a single-threaded implementation. On the other hand, 
-a na\"ive attempt to parallelize NRA using shared memory also results in 
+a na\"ive attempt to parallelize NRA using shared memory also results in even 
 worse performance than the sequential algorithm. \alg\ judiciously shares 
 information among threads while significantly reducing the synchronization 
 overhead and memory overlap among them, 
@@ -101,23 +108,27 @@ leading to major performance gains.
 
 Our results show that \alg\ scales well with both  corpus size and query length.
 E.g., on the 50M-document TREC ClueWeb09B dataset~\cite{ClueWeb09}, %\footnote{\url{https://lemurproject.org/clueweb09}}, 
-\alg\ can serve verbose 12-term queries within less than 200 ms, 
-whereas a parallel execution of RA processes them in 400 ms, and a parallel execution of BMW takes more than 600 ms. 
-Moreover, \alg\ scales much better with the corpus size:  
-On a 500M-document index,  its latency is virtually unchanged, whereas 
- \pRA\ requires 2 seconds and pBMW's latency surges to almost 10 seconds.  
-  The latter occurs because unlike \alg\ and \pRA, 
-pBMW's processing time grows linearly with the index size.
+\alg\ can serve  12-term queries within less than 200 ms, 
+whereas a parallel execution of RA processes them in 400 ms, and the best-in-class single-index algorithm  
+takes more than 600 ms. 
+%
+On a 500M-document index,  \alg's latency is virtually unchanged, whereas 
+ RA takes 2 seconds and \inred{the latency of other existing parallel search algorithm surges even further. [Waiting for pJASS results on big data set.]}
+ %pBMW's latency surges to almost 10 seconds.  
+  %The latter occurs because unlike \alg\ and \pRA, 
+%pBMW's processing time grows linearly with the index size.
 %While \alg's advantages are most pronounced for long queries, its 
-\alg's throughput on a production-grade query mix (with the query length distribution measured in~\cite{sigir/Guy16}) is twice that of parallel BMW
- on the small corpus, and 25x faster on the large one.
+\alg's throughput on a production-grade query mix (with the query length distribution measured in~\cite{sigir/Guy16}) is 
+\inred{20\% higher} than that achieved by the best previous algorithm  
+%twice that of parallel BMW
+ on the small corpus, and \inred{20x} faster on the large one.
 
 % Summing up, we present 
 %
-%The paper proceeds as follows: 
-Section~\ref{sec:problem} defines the top-k retrieval problem and associated metrics, and 
+This paper proceeds as follows: 
+Section~\ref{sec:problem} defines the top-k retrieval problem, and  %associated metrics, and 
 Section~\ref{sec:background} gives background on existing algorithms. 
 Section~\ref{sec:alg} presents \alg, a practical scalable parallel algorithm. 
 Section~\ref{sec:eval}  evaluates it, showing  that \alg\  significantly improves the state-of-the-art latency  of long query processing on large search indices.
-Finally, 
+%Finally, 
 Section~\ref{sec:related} discusses related work and Section~\ref{sec:conclusions} concludes the paper.
