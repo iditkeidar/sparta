@@ -6,12 +6,16 @@
 \section{Top-k Retrieval}
 \label{sec:problem}
 
-We focus on the fundamental primitive of top-k retrieval, commonly used by search engines for initial selection of documents over which more refined search is performed~\cite{Wang:2011}. 
+We focus on the fundamental primitive of top-k retrieval, widely used in 
+information retrieval, web search, data mining, data analytics, and more~\cite{top-k-survey}. 
+This primitive is commonly used for initial selection of documents over which more refined search is performed~\cite{Wang:2011}. 
 %The primitive uses a scoring function, denoted as $\textit{score}(D, q)$, that scores each document
 %$D$ based on an estimation of its relevance to the query $q$.
-Given a query $q$, the primitive retrieves the top $k$ scored documents in the corpus according to a scoring function $\textit{score}(D, q)$.  
-%
-More specifically, a \emph{query} is given as a list of terms (to search for). Given an $m$-term query $q = t_1, \dots t_m$ and a document $D$, the score of $D$ for query $q$ is 
+
+Given a query $q$, the primitive retrieves the top $k$ scored  \emph{documents} (data items) in a given corpus
+according to a scoring function $\textit{score}(D, q)$.  
+%More specifically, 
+A \emph{query} is given as a list of terms (features). Given an $m$-term query $q = t_1, \dots t_m$ and a document $D$, the score of $D$ for query $q$ is 
 %\begin{equation} \label{eq:score}
 $\textit{score}(D, q) \triangleq \sum_{i=1}^m ts(D, t_i)$ 
 %\nonumber
@@ -19,10 +23,10 @@ $\textit{score}(D, q) \triangleq \sum_{i=1}^m ts(D, t_i)$
 %\[ \textit{score}(D, q) \triangleq \sum_{i=1}^m ts(D, t_i).\]  
 where $ts(D, t_i)$ is the term score of term $t_i$ to document $D$. 
 
-An \emph{exact} top-k retrieval primitive returns a list of the $k$ documents with the highest scores for the query.
-An \emph{approximate} solution returns a list of $k$ results that approximates the top $k$. 
+An \emph{exact} top-k retrieval primitive returns the $k$ documents with the highest scores for the query.
+An \emph{approximate} solution returns $k$ results that approximate the top $k$. 
 Let $L$ be the exact list of top-k documents,  
-and let $A$ be the list returned by an approximate solution. 
+and let $A$ be an approximate result. 
 The quality (or accuracy) of  $A$ is measured by its
 %two metrics. First, 
 \emph{recall}, which is  the fraction of $L$ included in $A$.
@@ -50,10 +54,10 @@ the \emph{MRR weight} of the $i$-th item in the list is $1/i$, and the \emph{MRR
 \label{sec:background}
 
 %\alg\ belongs to the family of \emph{dynamic pruning algorithms}, and is closely based on Fagin et al.'s Threshold Algorithm~\cite{Fagin:2003}. In this section, 
-We  provide background on  state-of-the-art top-k algorithms and Fagin et al.'s TA~\cite{Fagin:2003}.
+We  provide background on  state-of-the-art top-k algorithms used in web search and on Fagin et al.'s TA~\cite{Fagin:2003}.
 %that we compare our work to. 
 
-\subsection{State-of-the-art Top-k Algorithms}
+\subsection{State-of-the-art Web Search Algorithms}
 %\label{ssec:pruning}
 
 Search algorithms use a preprocessed inverted index of the corpus. The index is organized according to terms. For each term, the index holds a \emph{posting list} listing all documents associated with that term. Top-k retrieval algorithms typically traverse  posting lists sequentially; multiple lists may be scanned simultaneously. For big datasets, only a small portion of the index can reside in RAM at any given time. However, the I/O overhead is low because 
