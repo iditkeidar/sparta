@@ -1,4 +1,4 @@
-\section{Evaluation} \label{sec:eval}
+\section{Case Study: Web Search} \label{sec:eval}
 
 We compare the performance of \alg\ to the following multiprocessor algorithms: 
 %\inred{
@@ -218,28 +218,26 @@ for $k=1000$.
 \begin{tabular}{l | c  c  c  c  c  c}
 %\hline
    & Sparta & \pNRA & \sNRA & \pRA & \pBMW & pJASS \\ \hline
- \cw & $860$ & $13\!,291$ & $5\!,553$ & $480$ & $750$ & $54\!,343$ \\ \hline
- \cwten & $12\!,010$ & $90\!,000+$ & $56\!,223$ & $7\!,410$ & $10\!,210$ &  \\
+ small & $860$ & $13\!,291$ & $5\!,553$ & $480$ & $750$ & $54\!,343$ \\ \hline
+ large & $12\!,010$ & $90\!,000+$ & $56\!,223$ & $7\!,410$ & $10\!,210$ & \inred{TBD} \\
 
 %\hline
 \end{tabular}
 \end{center}
 \caption{Average query latency (in ms) of 12-term queries with exact algorithms using 12  threads. 
+The small dataset is \cw, and the large one is \cwten.
 None of the algorithms meets  real-time SLAs. }
 \label{tab:safe-latency}
 \end{table}
 
-Our first experiment shows that none of the exact algorithms meets a real-time SLA for  verbose queries. 
+Our first experiment looks into the feasibility of using exact algorithms. 
+Usability studies (e.g.,~\cite{Arapakis:2014:IRL:2600428.2609627}) show that users are extremely sensitive to end-to-end delays beyond 500 ms, 
+and any excess delay beyond 250 ms leads to material degradation in their experience. 
+Our experiment shows that none of the exact algorithms meets a real-time SLA for  long queries. 
 Table~\ref{tab:safe-latency} depicts the mean processing latencies of 12-term queries with 12 worker 
 threads (i.e., a single query fully exploits the multi-core CPU). 
-\bigdataset{
-Most of the algorithms complete within 
-%500 ms to 
-1 second for on the {\cw} dataset, but run for many seconds on \cwten. 
-{\pRA} is the fastest algorithm in this setting, whereas
-\pNRA\/ is much worse than the other algorithms. Its average latency exceeds 
-13 seconds on \cw\/ and 1.5 minutes on \cwten.
-} 
+While on \cw\ some algorithms complete within less than a second, 
+on \cwten,  algorithms take between 7 seconds and \inred{1.5 minutes}, which is clearly unacceptable.
 
 We revisit the algorithms' execution dynamics -- namely, how fast they accrue their results -- 
 as we study approximate algorithms in the sequel. 

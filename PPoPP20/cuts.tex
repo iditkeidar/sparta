@@ -1,0 +1,65 @@
+%%% Cuts from the introduction %%% 
+
+% At the same time, usability studies (e.g.,~\cite{Arapakis:2014:IRL:2600428.2609627}) show that users are extremely sensitive to end-to-end delays beyond 500 ms, 
+%and any excess delay beyond 250 ms leads to material degradation in their experience. 
+
+%Two stages
+I
+%For example, web queries commonly employ  tf-idf or BM25~\cite{Baeza-Yates:1999:MIR:553876}. 
+
+%, to produce the final result list (typically, a few tens of documents). 
+
+
+
+% Shards are getting bigger
+Top-k retrieval is often executed on dedicated search nodes, each of which retrieves the top-k results from a local index shard. 
+With the advance of storage and memory technologies, the size of index shards increases, thus increasing the load on each search node. 
+A promising approach to handle this load is to  parallelize query evaluation on multiprocessor hardware. 
+The current trend in server architecture, which favors parallelism over sequential speed, makes this approach particularly attractive. 
+We explore this approach in this paper.
+
+
+
+
+
+%Top-k retrieval algorithms have been  studied in the query processing literature~\cite{Baeza-Yates:1999:MIR:553876,
+%Broder:2003:EQE:956863.956944, Ding:2011:FTD:2009916.2010048}. They capitalize on aggressive pruning of the search space, 
+%in order to reduce the traversal time. 
+State-of-the-art sequential algorithms for approximate top-k  retrieval, 
+%which have both exact (safe) and approximate versions, 
+e.g., \emph{Block-Max WAND} ({\em BMW})~\cite{Ding:2011}, serve traditional (short) web queries with impressive speed. 
+However, these algorithms do not scale well to verbose queries
+and big data collections 
+(as pointed out in~\cite{Bortnikov:2017} and confirmed by our experiments). 
+%
+Parallelizing these algorithms can improve performance by 30\%--40\%~\cite{rojas2013efficient},    but 
+%Rojas et al.~\cite{rojas2013efficient} propose a \emph{parallel} variant of BMW, which we call \emph{pBMW}, achieving 
+%performance improvements of 30\%--40\%. 
+% ;  we refer to their  algorithm as \emph{pBMW}. %-- with a considerable performance improvement.
+our experiments show that such a parallel BMW implementation still has limited scalability, falling short of expected SLAs on long queries. 
+%(e.g., 1 second for 
+%12-term query over ClueWeb with eight threads, in our experiments). 
+%The algorithm does not achieve high recall when stopped early. 
+
+
+TA has two variants: (1) RA (\emph{random access}), which  
+ relies on random access to  attribute lists; 
+%\inred{Gali: shouldn't we mention that TA's "regular" posting lists are sorted by term scores?} 
+and (2) {\em NRA} (\emph{no random access}),  which 
+ only traverses them sequentially. The former is ineffective in the context of real-time search 
+because it requires (1)  a secondary random-access index (which doubles the required index space), 
+and (2) random I/O to the secondary index, which incurs high overhead when the index  is too big to be 
+kept entirely in RAM. We therefore base our algorithm on  NRA. 
+
+
+ %pBMW's latency surges to almost 10 seconds.  
+  %The latter occurs because unlike \alg\ and \pRA, 
+%pBMW's processing time grows linearly with the index size.
+%While \alg's advantages are most pronounced for long queries, its 
+
+%twice that of parallel BMW
+
+
+% Summing up, we present 
+%
+
