@@ -2,27 +2,27 @@
 \label{sec:intro}
 
 %Top-k retrieval is an essential building block in various big data processing domains. 
-Interactive big data processing is proliferating with a slew of applications involving
+Interactive big data processing is proliferating with  applications like
 information retrieval, web search, data mining, data analytics, and more~\cite{top-k-survey}. 
-Such services often need to identify relevant data based on multiple \emph{features}, or query \emph{terms}.  
-For instance, a real-time analytics engine (e.g.,~\cite{flurry}) might keep daily lists of application access statistics, where each list entry
-is the number of unique users accessing a given application on a given day.  
-A query may then retrieve the popular applications over a  ten-day period by aggregating  access statistics from ten lists.
-Real-time analytics databases facilitate such queries by offering a TopN search primitive~\cite{druid-topN}.
+Such services often need to identify relevant data based on multiple {features}, or query \emph{terms}.  
+For instance, a real-time analytics engine (e.g.,~\cite{flurry}) might keep daily lists of application access statistics -- the 
+number of  users accessing every application on a given day.  
+A query may then retrieve the popular applications over a  ten-day period by aggregating over ten lists.
+Real-time analytics databases offer a TopN search primitive to facilitate such queries~\cite{druid-topN}.
 
 % Problem: long queries
 In modern use cases,  data sets are becoming larger and queries exceedingly  involve more features. 
 A case in point is web search:  
 While  early days web queries were short (2.4 terms on average~\cite{Spink:2001:SWP:362968.362979}), 
-modern search experiences (query suggestion, reformulation, conversational interfaces, etc.) stimulate their users to submit much longer queries. 
+modern search experiences (query suggestion, reformulation, conversational interfaces, etc.) stimulate  users to submit much longer queries. 
 E.g., more than 5\% of voice search queries exceed 10 terms~\cite{sigir/Guy16}. 
 %As more queries become longer, answering queries within a real-time \emph{service-level agreement} ({\em SLA}) is becoming a major challenge.  
 
 %Two stages
 Interactive data processing   usually involves two stages~\cite{Wang:2011}. 
 The first  is \emph{top-k retrieval}, roughly matching the top-k documents most relevant to the query
-(typically, hundreds to thousands) based on some simple multi-feature  score. 
-The second  performs more elaborate analysis via some sophisticated function. 
+(e.g., $k=1000$) based on a simple multi-feature  score. 
+It is followed by a more elaborate analysis. 
 The first stage  sifts through huge volumes of data and therefore dominates the execution time. 
 
 % Approximate is the only option
@@ -36,10 +36,9 @@ Based on this observation, we focus on \emph{approximate}
 (sometimes called \emph{non-safe}) query evaluation, tuned to achieve a certain high recall (e.g., $97\%$ or more). 
 
 In this paper, we accelerate approximate top-k retrieval on multi-core hardware. 
-We design and implement  \emph{\alg}~-- {Scalable PARallel Threshold Algorithm} --  
- and extensively evaluate its performance in 
-a web search use case. 
-
+We design and implement  \emph{\alg}~-- {Scalable PARallel Threshold Algorithm}.  
+% and extensively evaluate its performance in a web search use case. 
+%
 \alg's design is inspired by the seminal \emph{Threshold Algorithm (TA)} by Fagin et al.~\cite{Fagin:2003}, which
 retrieves the top-k objects from a database based on an aggregation of features that may reside in multiple nodes. 
 Transforming TA into an efficient concurrent algorithm is challenging because coordination around 
@@ -55,7 +54,7 @@ information among threads, thus keeping the synchronization
 overhead and memory overlap low. 
 
 %In Section~\ref{sec:eval} 
-We conduct a web search case study comparing \alg\ to various TA variants and 
+We evaluate \alg\ via a web search case study, comparing \alg\ to various TA variants and 
 state-of-the-art web search algorithms. 
 Our results show that \alg\ scales well with both  corpus size and query length.
 E.g., on the 50M-document TREC ClueWeb09B dataset~\cite{ClueWeb09}, 

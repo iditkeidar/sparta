@@ -54,9 +54,10 @@
 \begin{abstract}
 
 
-Many big data processing applications rely on a \emph{top-k retrieval} building block, which  (or approximates) the $k$ highest-scoring data items based on an aggregation of features. 
-In web search, for instance, a document's score is the sum of its scores for all query terms. Top-k retrieval is often used to sift through massive amounts of data and identify a smaller subset of it for further  analysis. Because it filters out the bulk of the data, despite its relative simplicity, the top-k retrieval stage constitutes the main performance bottleneck
-in many systems.  
+Many big data processing applications rely on a \emph{top-k retrieval} building block, which selects (or approximates) the $k$ highest-scoring data items based on an aggregation of features. 
+In web search, for instance, a document's score is the sum of its scores for all query terms. Top-k retrieval is often used to sift through massive data and identify a smaller subset of it for further  analysis. Because it filters out the bulk of the data, 
+%despite its relative simplicity, 
+it often constitutes the main performance bottleneck.  
 
 Beyond the rise in data sizes, today's data processing scenarios also increase the number of features contributing to the overall score. 
 In web search, for example, 
@@ -67,14 +68,11 @@ while state-of-the-art algorithms fail to process long queries in real-time.
 We present \alg, a practical parallel algorithm that exploits multi-core hardware for fast (approximate) top-k retrieval. 
 Thanks to lightweight coordination and judicious context sharing among threads,
 \alg\ scales both in the number of features and in the searched index size. 
-In our web search case study using 
-the 50M-document  ClueWeb09B 
-dataset, \alg\  processes $12$-term queries more than twice as fast as the state-of-the-art. 
+In our web search case study on 
+50M documents, \alg\  processes $12$-term queries more than twice as fast as the state-of-the-art. 
 On a tenfold  bigger index, 
-\alg\ continues to process queries at the same speed, whereas the average latency of 
+\alg\ processes queries at the same speed, whereas the average latency of 
 existing algorithms soars to be an order-of-magnitude larger than \alg's.
-
-
 \end{abstract}
 
 % \keywords{Parallel computing, multi-threading, information retrieval, web-search, top-k}%mandatory in camera-ready
