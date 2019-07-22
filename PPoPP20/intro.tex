@@ -4,13 +4,11 @@
 %Top-k retrieval is an essential building block in various big data processing domains. 
 Interactive big data processing is proliferating with a slew of applications involving
 information retrieval, web search, data mining, data analytics, and more~\cite{top-k-survey}. 
-%To answer complex queries, 
 Such services often need to identify relevant data based on multiple \emph{features}, or query \emph{terms}.  
 For instance, a real-time analytics engine (e.g.,~\cite{flurry}) might keep daily lists of application access statistics, where each list entry
 is the number of unique users accessing a given application on a given day.  
 A query may then retrieve the popular applications over a  ten-day period by aggregating  access statistics from ten lists.
-%To support such queries,
-Real-time analytics databases facilitate such queries by offering a  TopN search primitive~\cite{druid-topN}.
+Real-time analytics databases facilitate such queries by offering a TopN search primitive~\cite{druid-topN}.
 
 % Problem: long queries
 In modern use cases,  data sets are becoming larger and queries exceedingly  involve more features. 
@@ -22,22 +20,22 @@ E.g., more than 5\% of voice search queries exceed 10 terms~\cite{sigir/Guy16}.
 
 %Two stages
 Interactive data processing   usually involves two stages~\cite{Wang:2011}. 
-The first  is \emph{top-k retrieval}, which roughly matches the top-k documents most relevant to the query 
-(typically, hundreds to thousands) based on some simple multi-feature  scoring function. 
-The second  performs more elaborate analysis, 
-often re-ranking the  results via some sophisticated function. 
+The first  is \emph{top-k retrieval}, roughly matching the top-k documents most relevant to the query
+(typically, hundreds to thousands) based on some simple multi-feature  score. 
+The second  performs more elaborate analysis via some sophisticated function. 
 The first stage  sifts through huge volumes of data and therefore dominates the execution time. 
 
 % Approximate is the only option
 Yet obtaining the exact top-k matches out of a large corpus is typically too slow to meet real-time latency requirements, 
 especially as the number of searched features becomes large.
  %stringent SLA requirements. 
-Given that  top-k retrieval is only the first query  processing step, perfect results are typically not essential, as later  processing 
+Luckily, 
+perfect results are usually not essential, as later  processing 
 stages can work with approximate results~\cite{Crane:2017,Lin:2015,Wang:2011,druid-topN}. 
 Based on this observation, we focus on \emph{approximate} 
 (sometimes called \emph{non-safe}) query evaluation, tuned to achieve a certain high recall (e.g., $97\%$ or more). 
 
-In this paper we accelerate approximate top-k retrieval on multi-core hardware. 
+In this paper, we accelerate approximate top-k retrieval on multi-core hardware. 
 We design and implement  \emph{\alg}~-- {Scalable PARallel Threshold Algorithm} --  
  and extensively evaluate its performance in 
 a web search use case. 
@@ -45,33 +43,31 @@ a web search use case.
 \alg's design is inspired by the seminal \emph{Threshold Algorithm (TA)} by Fagin et al.~\cite{Fagin:2003}, which
 retrieves the top-k objects from a database based on an aggregation of features that may reside in multiple nodes. 
 Transforming TA into an efficient concurrent algorithm is challenging because coordination around 
-shared state can become a major bottleneck unless carefully designed. On the one hand,
+shared state can become a major bottleneck.
+% unless carefully designed. 
+On the one hand,
 sharing state among threads is essential in order to benefit from TA's early stopping feature.
 Indeed, we show  that a shared-nothing (partitioned) parallelization  performs two times 
-worse than a single-threaded implementation. On the other hand, 
+worse than even a single-threaded implementation. On the other hand, 
 a na\"ive attempt to parallelize TA using shared memory also results in even 
-worse performance than the sequential algorithm. \alg\ judiciously shares pertinent
-information among threads %while significantly reducing the 
-keeping the synchronization 
-overhead and memory overlap low, which 
-leads to major performance gains. 
+worse performance than the sequential algorithm. \alg\ instead judiciously shares pertinent
+information among threads, thus keeping the synchronization 
+overhead and memory overlap low. 
 
-We implement \alg\ and perform an extensive web search case study comparing \alg\ to various TA variants and 
+%In Section~\ref{sec:eval} 
+We conduct a web search case study comparing \alg\ to various TA variants and 
 state-of-the-art web search algorithms. 
 Our results show that \alg\ scales well with both  corpus size and query length.
 E.g., on the 50M-document TREC ClueWeb09B dataset~\cite{ClueWeb09}, 
 \alg\ can serve  12-term queries within less than 200 ms, 
-whereas 
-%a parallel execution of a TA processes them in 400 ms, and 
-state-of-the-art algorithms  take more than \inred{600 ms}. 
+whereas today's best algorithms  take at least twice as long.
 %
-On a 500M-document index,  \alg's latency is virtually unchanged, whereas 
-the best existing algorithm
- takes 2 seconds. % \inred{[Awaiting pJASS  big data set.]}
- \alg's throughput on a production-grade query mix (with the query length distribution measured in~\cite{sigir/Guy16}) is 
-\inred{20\% higher} than that achieved by the best previous algorithm
- on the small corpus, and \inred{20x higher}  on the large one.
+On a 500M-document index,  \alg's average latency is virtually unchanged, whereas the next best algorithm (one of TA variants)
+takes over a second. 
+ \alg's throughput on a production-grade query mix (with the query length distribution from~\cite{sigir/Guy16}) is 
+20\% higher than that achieved by the best previous algorithm on the small corpus, and 5x higher  on the large one.
 
+\remove{
 This paper proceeds as follows: 
 Section~\ref{sec:problem} defines the top-k retrieval problem, and  
 Section~\ref{sec:background} gives background on existing algorithms. 
@@ -79,3 +75,4 @@ Section~\ref{sec:alg} presents \alg, our practical scalable parallel algorithm.
 Section~\ref{sec:eval}  features an extensive web-search case study.
 %, showing  that \alg\  significantly improves the state-of-the-art latency  of long query processing on large search indices.
 Section~\ref{sec:related} discusses related work and Section~\ref{sec:conclusions} concludes the paper.
+}

@@ -3,7 +3,7 @@
 % Problem 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Top-k Retrieval}
+\section{Problem Statement: Top-k Retrieval}
 \label{sec:problem}
 
 We focus on the fundamental primitive of top-k retrieval, widely used in 
@@ -60,17 +60,19 @@ We  provide background on  state-of-the-art top-k algorithms used in web search 
 \subsection{State-of-the-art Web Search Algorithms}
 %\label{ssec:pruning}
 
-Search algorithms use a preprocessed inverted index of the corpus. The index is organized according to terms. For each term, the index holds a \emph{posting list} listing all documents associated with that term. Top-k retrieval algorithms typically traverse  posting lists sequentially; multiple lists may be scanned simultaneously. For big datasets, only a small portion of the index can reside in RAM at any given time. However, the I/O overhead is low because 
-contiguous chunks of the lists are infrequently fetched from disk into memory.
+Search algorithms use a preprocessed inverted index of the corpus. The index is organized according to terms and holds a \emph{posting list} of all documents associated with each term. Top-k retrieval algorithms typically traverse  posting lists sequentially. %, possibly scanning multiple lists simultaneously. 
+	They track the top-k documents among those scored so far in a \emph{heap}. A variable $\Theta$ -- called the \emph{threshold} -- holds the score of the $k$-th (lowest-ranked) document in the heap;  any document whose  score is below this threshold is not a candidate for the final top-k list. As long as the heap contains fewer than $k$ documents, $\Theta$ remains zero.
 
-In order to avoid scoring a huge number of documents per query, state-of-the-art algorithms reduce the number of evaluated documents while identifying the top scored results. 
-{\em MaxScore}~\cite{Strohman:2005,Turtle:1995}, {\em WAND}~\cite{Broder:2003}, and {\em Block-Max WAND (BMW)}~\cite{Ding:2011} are popular examples of such algorithms, 
-widely used in production systems. 
-They  simultaneously scan all relevant posting lists in order of document id, evaluating the full score of each document before moving to the next one. 
-%\inred{
-We therefore refer to these as \emph{document-order} algorithms. 
-%}
-Such algorithms track the top-k documents among those scored so far (typically, in a heap). A variable $\Theta$ -- called the \emph{threshold} -- holds the score of the $k$-th (lowest-ranked) document in the heap;  any document whose  score is below this threshold is not a candidate for the final top-k list. As long as the heap contains fewer than $k$ documents, $\Theta$ remains zero.
+For big datasets, only a small portion of the index can reside in RAM at a given time. The I/O overhead is kept low by  fetching contiguous chunks of the lists  from disk. 
+Additionally, algorithms use various heuristics to reduce the number of documents whose score needs to be evaluated. 
+% In order to avoid scoring a huge number of documents per query, state-of-the-art algorithms reduce the number of evaluated documents while identifying the top scored results. 
+
+Popular production top-k algorithms, e.g., 
+{\em MaxScore}~\cite{Strohman:2005,Turtle:1995}, {\em WAND}~\cite{Broder:2003}, and {\em Block-Max WAND (BMW)}~\cite{Ding:2011}, 
+simultaneously scan all relevant posting lists in order of document id, fully scoring each document before moving to the next one. 
+We  refer to these as \emph{document-order} algorithms. 
+
+
 % and can be safely pruned.
 % For DAAT-based methods, all posting lists must be sorted by the same unique key, typically by increasing document id. 
 
@@ -84,7 +86,8 @@ Score-order algorithms have been shown to be slower but  have more predictable p
 
 \subsection{The Threshold Algorithm}
 
-TA~\cite{Fagin:2003} was originally presented in a database setting, where the partial scores of an item (term scores  in our context)  reside at different nodes. We cast it here in the IR setting, where partial scores are obtained from posting lists rather than nodes, and query evaluation occurs on a single machine, possibly using multiple threads accessing shared memory. 
+TA~\cite{Fagin:2003} was originally presented in a database setting, where the partial scores of an item (term scores  in our context)  reside at different nodes. We cast it here in the IR setting, where partial scores are obtained from posting lists rather than nodes, and query evaluation occurs on a single machine.
+%, possibly using multiple threads accessing shared memory. 
 %Although Fagin et al.\ have mentioned the applicability of TA to top-k retrieval over inverted files \cite{Fagin:2001}, it has been largely overlooked by the IR community.
 %;  to the best of our knowledge, TA has not been directly compared with other dynamic pruning algorithms for the top-k retrieval task.
 
@@ -92,13 +95,13 @@ TA~\cite{Fagin:2003} was originally presented in a database setting, where the p
 %\inred{
 TA is a score-order algorithm.
 %}
-To evaluate a query $q = t_1, \dots t_m$, it dynamically traverses the posting lists of the $m$ query terms in an interleaved manner. 
+To evaluate a query $q = t_1, \dots t_m$, it  traverses the posting lists of the $m$ query terms in an interleaved manner. 
 An \emph{upper bound} vector, $UB$[$m$], 
 bounds the term scores of documents that were not yet visited in each term's posting list. 
 %Table~\ref{table:threshold-ds} lists the data structures used by TA, and 
 %
 Figure~\ref{fig:lists} shows
-an example posting list traversal and the corresponding values in UB. Here, $m=3$ and the scores of the last traversed items in each list are $UB$[1] = 38, $UB$[2] = 32, and $UB$[3] = 41. 
+an example traversal with $m=3$.  The scores of the last traversed items in each list are $UB$[1] = 38, $UB$[2] = 32, and $UB$[3] = 41. 
 
 \remove{
 
@@ -121,7 +124,7 @@ $UB[m]$  & upper bounds on non-traversed postings\\
 
 \begin{figure*}[tbh]
 \centering
-\includegraphics[width=\linewidth]{figures/postingsLists}
+\includegraphics[width=0.95\linewidth]{figures/postingsLists}
 \caption{Traversal example in  RA and NRA variants of the Threshold Algorithm (TA). Posting lists are sorted by decreasing term score. Vertical arrows depict  iterator positions.  UB  holds upper bounds on the terms' contributions to scores of untraversed documents. The RA document heap is ordered by full document score, and the NRA heap  by partial score (lower bound).}
 \label{fig:lists}
 \end{figure*}
@@ -133,7 +136,7 @@ It stops when no candidate can exceed the threshold score.
 Fagin et al.\ present two flavors of the algorithm, which we now describe.
 %The algorithm comes in two flavors.
 
-\subsubsection{Random Access (RA)} 
+\paragraph{Random Access (RA)} 
 The RA variant assumes that given a document id, we can use random access in order to obtain all its term scores in order to compute its total score. It thus computes the full score for every document it encounters. If the score is higher than the threshold, it is inserted into the heap. Then, $\Theta$ and the corresponding term's UB are updated. The algorithm stops when 
 the following \emph{upper bound stopping condition} holds:
 \begin{equation} \label{eq:stop}
@@ -142,8 +145,11 @@ the following \emph{upper bound stopping condition} holds:
 
 At this point, no non-traversed document can achieve a high enough score to be included in the heap. RA's output is the set of documents in the heap, ordered by their scores.
 
-RA is an exact  algorithm as it returns the top-k results. In our evaluation, we implement an approximate variant of RA by stopping whenever the heap does not change for some parameter $\Delta$ ms. 
-Note that the Threshold Algorithm is amenable to such early stopping because it traverses posting lists in order of score. High scoring documents are likely to become evident early, and finding new high scoring documents becomes less and less likely as the algorithm progresses. This is in contrast with document-order algorithms like BMW, where finding high scoring documents remains equally likely throughout the execution.
+%RA is an exact  algorithm as it returns the top-k results. 
+In our evaluation, we implement an approximate variant of RA by stopping whenever the heap does not change for some parameter $\Delta$ ms. 
+Note that being a score-order algorithm,  TA is amenable to such early stopping: high scoring documents are likely to be discovered early.
+%, and finding new high scoring documents becomes less and less likely as the algorithm progresses. 
+This is in contrast with document-order algorithms, where finding high scoring documents remains equally likely throughout the execution.
 
 \remove{
 RA was shown to be \emph{instance-optimal} in~\cite{Fagin:2003}, namely, the number of times it accesses data items is asymptotically close the optimum for every problem instance. Nevertheless, this analysis assumes that all accesses to data items have the same cost. 
@@ -152,9 +158,9 @@ This assumption holds if full scoring information about all data items is availa
 %that do not fit into RAM (at least as long as non-volatile storage hardware does not provide memory-speed random access).
 Unfortunately, random access is costly,  in particular for large data sets that do not reside fully in RAM.
 Whereas a sequential posting list traversal requires infrequent I/O (at the end of each data block) and exhibits cache-friendly locality of access,  each random document access entails an I/O request and a cache miss.  
-RA has an additional drawback in the IR setting, as it needs to maintain a secondary index by document id in addition to the posting lists sorted by term score, which doubles its footprint. 
+An additional drawback is RA is the need to maintain a secondary index by document id in addition to the one sorted by term score, which doubles its footprint. 
 
-\subsubsection{No Random Access (NRA)} 
+\paragraph{No Random Access (NRA)} 
 The alternative NRA method %scans the posting lists sequentially in an interleaved manner while avoiding random access. It
 refrains from computing the full score for each traversed document, and instead
 maintains lower and upper bounds for candidate documents based on {\em partially\/} computed scores. 
@@ -166,7 +172,7 @@ For a document $D$ and a term $t_i$, we define the upper bound $UB(D, t_i)$ to b
 UB(D) \triangleq \sum_{i=1}^m UB(D, t_i) \ ; \  
 LB(D) \triangleq \sum_{i=1}^m LB(D, t_i).
 \] 
-For example, in Figure~\ref{fig:lists}, $UB(D_{57}) = 38+40+41 = 119$ and $LB(D_{57}) = 40+41 = 81$, whereas its actual score  is $11+ 40+41 = 92$.
+In Figure~\ref{fig:lists}, $UB(D_{57}) = 38+40+41 = 119$ and $LB(D_{57}) = 40+41 = 81$, whereas its actual score  is $11+ 40+41 = 92$.
 
 NRA maintains the top-k heap according to the document \emph{lower bounds}, and $\Theta$ holds the smallest value among them. 
 Its output is the set of documents in the heap, sorted by LB.
