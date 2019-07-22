@@ -268,6 +268,7 @@ Summing up, under certain parameter choices the approximate algorithms achieve v
   
 \begin{table*}[htbp]
 \centering
+\small
 \begin{tabular}{ l | c  c  c  c  c  c  c  c }
 %\hline
        &    \alg\hi &  \pRA\hi & \pNRA\hi & \sNRA\hi & \pBMW\hi & \pBMW\lo & \pJASS\hi & \pJASS\lo \\ \hline
@@ -287,16 +288,16 @@ Summing up, under certain parameter choices the approximate algorithms achieve v
 \end{table*}
 
 {\bf Latency.\ } 
-Figure~\ref{fig:terms-scaling} depicts the scaling of single-query latency of the approximate algorithms  
+Figures~\ref{fig:terms-scaling-high-avg}--~\ref{fig:terms-scaling-10x-avg} depict the scaling of single-query latency of the approximate algorithms  
 as the number of terms scales from $1$ to $12$. The number of workers in each test 
 is equal to the number of terms (for \alg, \pRA, and \pNRA, this allows maximal parallelism). 
 
 Figures~\ref{fig:terms-scaling-high-avg} and \ref{fig:terms-scaling-high-95} present, respectively, the  mean and  
-$95\%$ latencies of queries\bigdataset{ on  {\cw}} in the high-recall algorithms. The latter captures the so-called ``tail latency'' of 
-the slowest $5\%$ of the queries. Figures~\ref{fig:terms-scaling-low-avg} and \ref{fig:terms-scaling-low-95} present the same for \alg\hi\ and the low-recall variants of the algorithms.
-\bigdataset{
-Figure~\ref{fig:terms-scaling}(c) depicts the mean latency for \cwten versus all algorithms.
-}
+$95\%$ latencies of queries  on  {\cw} in the high-recall algorithms. The latter captures the so-called ``tail latency'' of 
+the slowest $5\%$ of the queries. Figure~\ref{fig:terms-scaling-low-avg} presents the average latency for \alg, which has high recall, and the low-recall variants of the algorithms.
+The $95\%$ latencies exhibit similar trends, and are omitted for lack of space.
+%
+Figure~\ref{fig:terms-scaling-10x-avg} depicts the mean latency for \cwten\ versus all algorithms.
 %
 When compared to other high recall algorithms, \alg\/ outperforms all of them in terms of both average latency and the 95th percentile, on all query lengths.
 %\alg\/ outperforms its competitors (guaranteeing either high or low recall) on all query sizes. 
@@ -312,39 +313,50 @@ Its  $95\%$ latency is below $500$ ms.
 
 \begin{figure*}[tbh]
 
-      \begin{subfigure}{0.4\textwidth}
+      \begin{subfigure}{0.32\textwidth}
          \includegraphics[width=\textwidth]{figures/latency_12threads_clueweb.pdf}
-        \caption{Average\bigdataset{, \cw} -- high recall algorithms}
+        \caption{Average latency, \cw, high recall algorithms}
         \label{fig:terms-scaling-high-avg}
-      \end{subfigure}%     
-	\begin{subfigure}{0.4\textwidth}
+      \end{subfigure}
+     \hfill    
+	\begin{subfigure}{0.32\textwidth}
     	\includegraphics[width=\textwidth]{figures/latency_95th_percentile_clueweb.pdf}
-	\caption{95\%\bigdataset{, \cw} -- high recall algorithms}
+	\caption{95\% latency, \cw, high recall algorithms}
 	\label{fig:terms-scaling-high-95}
     \end{subfigure} 
-
-    
-          \begin{subfigure}[t]{0.4\textwidth}
+ \hfill
+     \begin{subfigure}{0.32\textwidth}
          \includegraphics[width=\textwidth]{figures/latency_high_low_12threads_clueweb.pdf}
-        \caption{Average\bigdataset{, \cw} -- \alg\ vs. low recall algorithms}
+        \caption{Average latency, \cw, \alg\ vs. low recall algorithms}
         \label{fig:terms-scaling-low-avg}
-      \end{subfigure}%     
-	\begin{subfigure}[t]{0.4\textwidth}
-    	\includegraphics[width=\textwidth]{figures/latency_95th_percentile_high_low_clueweb.pdf}
-	\caption{95\%\bigdataset{, \cw} -- \alg\ vs. low recall algorithms}
-	\label{fig:terms-scaling-low-95}
-    \end{subfigure}
-    
-    \begin{subfigure}[t]{0.4\textwidth}
+      \end{subfigure}
+         
+ %     	\begin{subfigure}[t]{0.4\textwidth}
+ %  	\includegraphics[width=\textwidth]{figures/latency_95th_percentile_high_low_clueweb.pdf}
+%	\caption{95\%\bigdataset{, \cw} -- \alg\ vs. low recall algorithms}
+%	\label{fig:terms-scaling-low-95}
+%    \end{subfigure}
+%    
+    \begin{subfigure}{0.32\textwidth}
     \includegraphics[width=\textwidth]{figures/latency_12threads_cluewebX10.pdf}
-	\caption{Average, \cwten}
+	\caption{Average latency, \cwten}
 	        \label{fig:terms-scaling-10x-avg}
     \end{subfigure}  
+	\hfill
+      \begin{subfigure}{0.32\textwidth}
+         \includegraphics[width=\textwidth]{figures/cumulative_12threads_clueweb.pdf}
+        \caption{Recall dynamics, \cw}
+        \label{fig:dynamics-clueweb}
+      \end{subfigure}% 
+	\hfill 
+      \begin{subfigure}{0.32\textwidth}
+      	\includegraphics[width=\textwidth]{figures/cumulative_12threads_cluewebX10.pdf}
+        \caption{Recall dynamics, \cwten}
+	\label{fig:dynamics-cluewebX10}
+      \end{subfigure}  
 
-\caption{Top-k ($k=1000$) query latency scaling with the number of query terms. 
-The intra-query parallelism is equal to the number of terms in all algorithms. Figures \ref{fig:terms-scaling-high-avg}--\ref{fig:terms-scaling-high-95} compare \alg\hi\ with the high recall algorithms and Figures \ref{fig:terms-scaling-low-avg}--\ref{fig:terms-scaling-low-95} compare \alg\hi\ with the low recall algorithms on \cw. 
-Figure \ref{fig:terms-scaling-10x-avg} compares  \alg\hi\ to all approximate algorithms on \cwten. }
-\label{fig:terms-scaling}
+\caption{Top-k ($k=1000$) query latency. Plots (a)--(d) show scaling with the number of query terms; plots (e)--(f) show recall dynamics with elapsed time for 12-term queries.  
+The intra-query parallelism is equal to the number of terms in all plots. }
 \end{figure*}
 
 %
@@ -388,29 +400,12 @@ Specifically, the background cleaning and local copies of \DMap\ and the lazy up
 local access to data that resides in hardware caches. 
 We omit \pNRA\/ and \sNRA\/ from further discussion. 
 
-\begin{figure}[hbt]
-\centering
-      \begin{subfigure}[t]{0.4\textwidth}
-         \includegraphics[width=\textwidth]{figures/cumulative_12threads_clueweb.pdf}
-        \caption[]{ClueWeb}
-        \label{fig:dynamics-clueweb}
-      \end{subfigure}% 
-    \hfill %
-      \begin{subfigure}[t]{0.4\textwidth}
-      	\includegraphics[width=\textwidth]{figures/cumulative_12threads_cluewebX10.pdf}
-	    \caption{ClueWebX10}
-	\label{fig:dynamics-cluewebX10}
-      \end{subfigure}  
-       \caption{Recall dynamics with elapsed time, for 12-term queries, with 12 worker threads.}
-       \label{fig:dynamics}
-\end{figure}
+
 
 {\bf Recall dynamics.\ } 
 In order to understand how the top-k results get accrued by the different algorithms, we zoom in on the dynamics of query 
 recall over the running time. We focus on 12-term queries in a 12-worker configuration. The results are presented in 
-Figure~\ref{fig:dynamics}\bigdataset{
-(a) and Figure~\ref{fig:dynamics}(b) for the \cw\/ and \cwten\/ datasets, respectively 
-}.
+Figures~\ref{fig:dynamics-clueweb} and~\ref{fig:dynamics-cluewebX10} for the \cw\/ and \cwten\/ datasets, respectively.
 Because the approximate versions of \alg, \pRA, and \pJASS\ are  identical to the respective exact versions until they stop, 
 we show the dynamics of the exact versions only.  The same is not true for \pBMW, where $f$ impacts the algorithm's results from the outset.
 Hence, we show the dynamics of all three instances of \pBMW. 
@@ -443,12 +438,12 @@ than \pBMW, but also requires less resources, which benefits throughput as we ne
 
 \begin{figure}[tbh]
 \centering
-      \begin{subfigure}[t]{0.4\textwidth}
+      \begin{subfigure}[t]{0.35\textwidth}
          \includegraphics[width=\textwidth]{figures/latency_12terms_clueweb.pdf}
         \caption{\cw}
       \end{subfigure} %
 \hfill %
-      \begin{subfigure}[t]{0.4\textwidth}
+      \begin{subfigure}[t]{0.35\textwidth}
       \includegraphics[width=\textwidth]{figures/latency_12terms_cluewebX10.pdf}
 	  \caption{\cwten}
       \end{subfigure}
@@ -470,7 +465,7 @@ Its pronounced advantage over \pBMW\ is thanks to a combination of \alg's speed 
 \begin{figure}[tbh]
 \centering
 \begin{tabular}{ccc}
-      \begin{subfigure}[t]{0.3\textwidth}
+      \begin{subfigure}[t]{0.35\textwidth}
          \includegraphics[width=\textwidth]{figures/throughput_12threads_clueweb.pdf}
       \end{subfigure}      
 \end{tabular}

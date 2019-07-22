@@ -132,8 +132,12 @@ $UB[m]$  & upper bounds on non-traversed postings\\
 
 %Additionally, and similarly to DAAT-based algorithms, 
 TA also maintains a threshold $\Theta$ -- the score of the $k$-th document in the heap.
-It stops when no candidate's score can exceed $\Theta$. Its output is the set of documents in the heap.
-Fagin et al.\ present two flavors of TA, which we now describe.
+It stops when no candidate's score can exceed $\Theta$. 
+We implement approximate variants of TA by stopping whenever the heap does not change for some parameter $\Delta$ ms. 
+Either way, 
+TA's output is the set of documents in the heap.
+%Fagin et al.\ present two flavors of 
+TA has two flavors, which we now describe.
 %The algorithm comes in two flavors.
 
 \paragraph{Random Access (RA)} 
@@ -146,7 +150,6 @@ the following \emph{upper bound stopping condition} holds:
 At this point, no non-traversed document can achieve a high enough score to be included in the heap. 
 
 %RA is an exact algorithm as it returns the top-k results. 
-In our evaluation, we implement an approximate variant of RA by stopping whenever the heap does not change for some parameter $\Delta$ ms. 
 Note that being a score-order algorithm,  TA is amenable to such early stopping: high scoring documents are likely to be discovered early.
 %, and finding new high scoring documents becomes less and less likely as the algorithm progresses. 
 This is in contrast with document-order algorithms, in which finding high scoring documents remains equally likely throughout the execution.
@@ -180,5 +183,5 @@ NRA maintains the top-k heap according to the document \emph{lower bounds}, and 
 NRA's safe variant stops when (1) the \RAStop\ stopping condition of RA holds, 
 and (2) all the visited documents that are not in the heap have \emph{upper bounds} lower than or equal to $\Theta$. These two conditions are complementary: (1) ensures that no non-traversed documents are among the final top-k, whereas (2) ensures the same for traversed documents that are not among the current top-k. 
 %While NRA does return the exact top-k results, unlike RA, it does not necessarily preserve the order among them, since some returned documents may be partially scored. 
-As in RA, the approximate variant stops after the heap has not changed for $\Delta$ ms.
+%As in RA, the approximate variant stops after the heap has not changed for $\Delta$ ms.
 
