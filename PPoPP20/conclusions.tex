@@ -15,11 +15,11 @@ NRA variant.
 It achieves high performance by 
 optimizing memory footprints, memory access patterns, inter-thread data sharing, and synchronization.  
 
-\alg\/ scales perfectly with data set size. In a web search use case, \alg\ yields average latencies of  $180$ ms on standard hardware for queries of up to $12$ terms,  
-when applied to data sets of both $50$M and $500$M documents. 
+\alg\/ scales perfectly with dataset size. In a web search use case, \alg\ yields average latencies of  $180$ ms on standard hardware for queries of up to $12$ terms,  
+when applied to datasets of both $50$M and $500$M documents. 
 It does so while producing a highly accurate approximation of the exact results (a recall of above $97.5\%$). 
 For comparison, its state-of-the-art parallel competitors, \pBMW\/ and \pJASS,  
-require $640$ ms and above 1 second, respectively, to provide similar accuracy on the 50M document data set;
-on the larger data set,  \pBMW's latency soars to almost 10 seconds, while \pJASS\ crashes. 
+require $640$ ms and above 1 second, respectively, to provide similar accuracy on the 50M document dataset;
+on the larger dataset,  \pBMW's latency soars to almost 10 seconds, while \pJASS\ crashes. 
 
 

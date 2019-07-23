@@ -159,7 +159,7 @@ RA was shown to be \emph{instance-optimal} in~\cite{Fagin:2003}, namely, the num
 This assumption holds if full scoring information about all data items is available in RAM (and resides in cache), but does not hold for big datasets. 
 }
 %that do not fit into RAM (at least as long as non-volatile storage hardware does not provide memory-speed random access).
-Unfortunately, random access is costly,  in particular for large data sets that do not reside fully in RAM.
+Unfortunately, random access is costly,  in particular for large datasets that do not reside fully in RAM.
 Whereas a sequential posting list traversal requires infrequent I/O (at the end of each data block) and exhibits cache-friendly locality of access,  each random document access entails an I/O request and a cache miss.  
 An additional drawback is RA is the need to maintain a secondary index by document id in addition to the one sorted by term score, which doubles its footprint. 
 
