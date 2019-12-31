@@ -6,7 +6,6 @@
 \begin{algorithmic}[1]
 \For{$i=1$ to $m$} \Comment processing $m$-term query
 \State add {\sc processTerm($i$)} to job queue \label{l:par-init-job}
-%\State \TMap[i] $\leftarrow$ pointer to \DMap
 \EndFor
 \State spawn up to $m$  threads to run jobs from queue\label{l:start-threads}
 \State wait until \RAStop
@@ -19,19 +18,6 @@
 
 \Statex 
 \Procedure{processTerm}{$i$} 
-%\Statex
-%	\State $\langle id,$ score$\rangle \leftarrow$ next entry in $i$th posting list
-%  	\If{$id \not\in \DMap$}
-%    	\State create new document object $D$
- %       \State add $D$ to $\DMap(id)$
-%	\Else 
- %   	\State $D \leftarrow \DMap(id)$
-%	\EndIf
-%	\State {\sc evaluate}($D$, score, $i$)
- %   \State $UB[i] \leftarrow$ score 
-  % 	\Comment update term's upper bound \label{l:seq-update-ub}
-%\EndIf
-%\Statex 
 	\If{\RAStop\, $\wedge\, |\DMap | < \Phi \, \wedge\  \TMap[i]=\DMap$} \label{l:hash-start}
 %		\Statex \Comment \DMap\  shrinking and small
 %		\If{$\TMap[i]=\DMap$}  
